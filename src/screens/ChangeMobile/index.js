@@ -7,7 +7,6 @@ import {
   BackHandler,
 } from 'react-native';
 import {Container, Form, Item, Input} from 'native-base';
-import FIcon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import I18n from '../../utils/i18n';
 import HeaderComponent from '../../components/Header';
@@ -130,7 +129,6 @@ export class ChangeMobile extends Component {
                           ],
                         }}
                       />
-                      {/* <FIcon name="phone" size={18} /> */}
                       <Input
                         placeholderTextColor="#8A8A8F"
                         minLength={8}
@@ -278,7 +276,6 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {changeMobile, clearErrors},
-)(ChangeMobile);
+export default connect(mapStateToProps, {changeMobile, clearErrors})(
+  ChangeMobile,
+);

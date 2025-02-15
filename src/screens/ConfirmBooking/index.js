@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -8,35 +8,35 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-} from "react-native";
-import FastImage from "@d11/react-native-fast-image";
-import { connect } from "react-redux";
-import normalize from "react-native-normalize";
-import { clearErrors } from "../../actions/errorAction";
+} from 'react-native';
+import FastImage from '@d11/react-native-fast-image';
+import {connect} from 'react-redux';
+import normalize from 'react-native-normalize';
+import {clearErrors} from '../../actions/errorAction';
 import {
   addBookingClass,
   getWhatsOnToday,
   getUpcomingClasses,
   getCompletedClasses,
-} from "../../actions/subscriptionActions";
-import { currentUser } from "../../actions/authActions";
-import isEmpty from "../../validation/is-empty";
-import { IMAGE_URI, API_URI } from "../../utils/config";
-import axios from "axios";
-const { height } = Dimensions.get("window");
+} from '../../actions/subscriptionActions';
+import {currentUser} from '../../actions/authActions';
+import isEmpty from '../../validation/is-empty';
+import {IMAGE_URI, API_URI} from '../../utils/config';
+import axios from 'axios';
+const {height} = Dimensions.get('window');
 
-import I18n from "../../utils/i18n";
-import moment from "moment-timezone";
-moment.tz.setDefault("Asia/Qatar");
-import PaymentWeb from "../../components/PaymentWeb";
-import Toast from "react-native-toast-notifications";
+import I18n from '../../utils/i18n';
+import moment from 'moment-timezone';
+moment.tz.setDefault('Asia/Qatar');
+import PaymentWeb from '../../components/PaymentWeb';
+import Toast from 'react-native-toast-notifications';
 export class ConfirmBooking extends Component {
   constructor(props) {
     super(props);
     this.state = {
       session_id: 0,
       credits: 0,
-      errors: "",
+      errors: '',
       isFullClass: false,
       selectedDates: {},
       selectedScheduleIds: [],
@@ -46,11 +46,11 @@ export class ConfirmBooking extends Component {
     };
   }
   UpdateRating(key) {
-    this.setState({ rating: key });
+    this.setState({rating: key});
   }
 
   buyMoreCredits = (needsCredits, userCredits) => {
-    const { lang } = this.props.setting;
+    const {lang} = this.props.setting;
 
     const addData = {
       credits: needsCredits - userCredits,
@@ -59,51 +59,51 @@ export class ConfirmBooking extends Component {
 
     axios
       .post(`${API_URI}/payments/buy_credits`, addData)
-      .then((res) => {
+      .then(res => {
         if (res.data.error.code) {
         } else {
-          const { data, payment_url } = res.data;
+          const {data, payment_url} = res.data;
           this.setState({
             isShowPaymentWeb: true,
             data: data,
             url: payment_url,
-            title: "",
+            title: '',
             isLoading: false,
           });
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.response.data.error) {
           this.setState({
             isLoading: false,
           });
         }
-        if (err.response.data.error.message === "Subscription expired") {
+        if (err.response.data.error.message === 'Subscription expired') {
           Alert.alert(
-            I18n.t("updateSubscription", { locale: lang }),
-            "",
+            I18n.t('updateSubscription', {locale: lang}),
+            '',
             [
               {
-                text: I18n.t("no", { locale: lang }),
+                text: I18n.t('no', {locale: lang}),
                 onPress: () => {},
-                style: "cancel",
+                style: 'cancel',
               },
               {
-                text: I18n.t("yes", { locale: lang }),
-                onPress: () => this.props.navigation.navigate("Membership"),
+                text: I18n.t('yes', {locale: lang}),
+                onPress: () => this.props.navigation.navigate('Membership'),
               },
             ],
             {
               cancelable: false,
-            }
+            },
           );
         }
       });
   };
 
-  handlePaymentWeb = async (status = "") => {
-    const { lang } = this.props.setting;
-    if (status === "success") {
+  handlePaymentWeb = async (status = '') => {
+    const {lang} = this.props.setting;
+    if (status === 'success') {
       this.setState({
         isShowPaymentWeb: false,
         isLoading: true,
@@ -125,15 +125,15 @@ export class ConfirmBooking extends Component {
         },
         () => {
           this.props.handleClassSuccessConfirm();
-        }
+        },
       );
-    } else if (status === "failed") {
-      toast.show(I18n.t("paymentFailed", { locale: this.props.setting.lang }), {
-        type: "danger",
-        placement: "bottom",
+    } else if (status === 'failed') {
+      toast.show(I18n.t('paymentFailed', {locale: this.props.setting.lang}), {
+        type: 'danger',
+        placement: 'bottom',
         duration: 2000,
         offset: 30,
-        animationType: "slide-in",
+        animationType: 'slide-in',
       });
       this.setState({
         isShowPaymentWeb: false,
@@ -158,37 +158,37 @@ export class ConfirmBooking extends Component {
   };
 
   handleBooking = () => {
-    this.setState(() => ({ onPress: true }));
-    const { lang } = this.props.setting;
+    this.setState(() => ({onPress: true}));
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
-        I18n.t("login", { locale: lang }),
-        I18n.t("loginToProceed", { locale: lang }),
+        I18n.t('login', {locale: lang}),
+        I18n.t('loginToProceed', {locale: lang}),
         [
           {
-            text: I18n.t("no", { locale: lang }),
-            onPress: () => this.setState(() => ({ onPress: false })),
-            style: "cancel",
+            text: I18n.t('no', {locale: lang}),
+            onPress: () => this.setState(() => ({onPress: false})),
+            style: 'cancel',
           },
           {
-            text: I18n.t("yes", { locale: lang }),
-            onPress: () => this.props.navigation.navigate("Login"),
+            text: I18n.t('yes', {locale: lang}),
+            onPress: () => this.props.navigation.navigate('Login'),
           },
         ],
         {
           cancelable: false,
-        }
+        },
       );
     } else {
-      const { session_id, totalCredits, selectedScheduleIds } = this.state;
+      const {session_id, totalCredits, selectedScheduleIds} = this.state;
 
-      const { credits } = this.props;
+      const {credits} = this.props;
 
       if (session_id) {
         if (selectedScheduleIds.length > 0) {
-          this.setState({ errors: "" });
-          const { user } = this.props.auth;
-          const { id, gym_id } = this.props.data;
+          this.setState({errors: ''});
+          const {user} = this.props.auth;
+          const {id, gym_id} = this.props.data;
 
           if (
             user.is_subscribed ||
@@ -208,11 +208,11 @@ export class ConfirmBooking extends Component {
 
               axios
                 .post(`${API_URI}/booking_classes`, addData)
-                .then((res) => {
+                .then(res => {
                   if (res.data.error.code) {
-                    this.setState({ errors: res.data.error.message });
+                    this.setState({errors: res.data.error.message});
                   } else {
-                    const { data } = res.data;
+                    const {data} = res.data;
 
                     this.props.handleConfirmBooking();
 
@@ -221,38 +221,38 @@ export class ConfirmBooking extends Component {
                     this.setState({
                       session_id: 0,
                       credits: 0,
-                      errors: "",
+                      errors: '',
                       selectedDates: {},
                       selectedScheduleIds: [],
                     });
                     //this.props.navigation.navigate('Profile');
                     this.props.handleClassSuccessConfirm();
-                    this.setState({ onPress: false });
+                    this.setState({onPress: false});
                   }
                 })
-                .catch((err) => {
+                .catch(err => {
                   if (err.response.data.error) {
                     if (
                       err.response.data.error.message ===
-                      "Your subscription validity is over"
+                      'Your subscription validity is over'
                     ) {
                       Alert.alert(
-                        I18n.t("message", { locale: lang }),
-                        I18n.t("youCurrentlyDoNotHaveAMembership", {
+                        I18n.t('message', {locale: lang}),
+                        I18n.t('youCurrentlyDoNotHaveAMembership', {
                           locale: lang,
                         }),
                         [
                           {
-                            text: I18n.t("no", { locale: lang }),
-                            onPress: () => console.log("cancel"),
-                            style: "cancel",
+                            text: I18n.t('no', {locale: lang}),
+                            onPress: () => console.log('cancel'),
+                            style: 'cancel',
                           },
                           {
-                            text: I18n.t("yes", { locale: lang }),
+                            text: I18n.t('yes', {locale: lang}),
                             onPress: () => {
                               this.props.handleConfirmBooking();
-                              this.props.navigation.navigate("Membership", {
-                                type: "new",
+                              this.props.navigation.navigate('Membership', {
+                                type: 'new',
                                 class_id: id,
                                 credits: credits,
                                 class_schedule_id: session_id,
@@ -264,11 +264,11 @@ export class ConfirmBooking extends Component {
                         ],
                         {
                           cancelable: false,
-                        }
+                        },
                       );
-                      this.setState({ onPress: false });
+                      this.setState({onPress: false});
                     } else {
-                      this.setState({ onPress: false });
+                      this.setState({onPress: false});
                       this.setState({
                         errors: err.response.data.error.message,
                       });
@@ -277,20 +277,20 @@ export class ConfirmBooking extends Component {
                 });
             } else {
               Alert.alert(
-                I18n.t("message", { locale: lang }),
-                I18n.t("yourCreditsLow", { locale: lang }),
+                I18n.t('message', {locale: lang}),
+                I18n.t('yourCreditsLow', {locale: lang}),
                 [
                   {
-                    text: I18n.t("no", { locale: lang }),
+                    text: I18n.t('no', {locale: lang}),
                     onPress: () => {
-                      this.setState(() => ({ onPress: false }));
+                      this.setState(() => ({onPress: false}));
                     },
-                    style: "cancel",
+                    style: 'cancel',
                   },
                   {
-                    text: I18n.t("yes", { locale: lang }),
+                    text: I18n.t('yes', {locale: lang}),
                     onPress: () => {
-                      this.setState(() => ({ onPress: false }));
+                      this.setState(() => ({onPress: false}));
                       this.props.handleConfirmBooking();
                       this.buyMoreCredits(credits, user.credits_balance);
                       // this.props.navigation.navigate('Membership', {
@@ -305,14 +305,14 @@ export class ConfirmBooking extends Component {
                 ],
                 {
                   cancelable: false,
-                }
+                },
               );
             }
           } else {
             this.props.handleConfirmBooking();
-            this.props.navigation.navigate("Membership", {
-              type: "new",
-              back: "GymClass",
+            this.props.navigation.navigate('Membership', {
+              type: 'new',
+              back: 'GymClass',
               back_id: id,
               class_id: id,
               credits: credits,
@@ -322,12 +322,12 @@ export class ConfirmBooking extends Component {
             });
           }
         } else {
-          this.setState({ errors: I18n.t("selectDate", { locale: lang }) });
-          this.setState({ onPress: false });
+          this.setState({errors: I18n.t('selectDate', {locale: lang})});
+          this.setState({onPress: false});
         }
       } else {
-        this.setState({ errors: I18n.t("selectSession", { locale: lang }) });
-        this.setState({ onPress: false });
+        this.setState({errors: I18n.t('selectSession', {locale: lang})});
+        this.setState({onPress: false});
       }
     }
   };
@@ -351,10 +351,10 @@ export class ConfirmBooking extends Component {
       ...this.props.subscription.completedClasses,
     ];
 
-    classesArr.forEach((classItem) => {
+    classesArr.forEach(classItem => {
       if (classItem.schedule_date.id === this.props.schedule_date_id) {
         this.setState(() => ({
-          errors: I18n.t("alreadyBookedError", {
+          errors: I18n.t('alreadyBookedError', {
             locale: this.props.setting.lang,
             dateString: classItem.schedule_date.date,
           }),
@@ -368,7 +368,7 @@ export class ConfirmBooking extends Component {
     getUpcomingClasses();
     getCompletedClasses();
     this.props.clearErrors();
-    const { class_schedule_id, schedule_date_id, credits } = this.props;
+    const {class_schedule_id, schedule_date_id, credits} = this.props;
     let selectedScheduleIds = [];
     selectedScheduleIds.push(schedule_date_id);
     this.setState({
@@ -376,7 +376,7 @@ export class ConfirmBooking extends Component {
       selectedScheduleIds: selectedScheduleIds,
       credits,
     });
-    this.focusListener2 = this.props.navigation.addListener("didFocus", () => {
+    this.focusListener2 = this.props.navigation.addListener('didFocus', () => {
       let selectedScheduleIds = [];
       selectedScheduleIds.push(schedule_date_id);
       this.setState({
@@ -387,7 +387,7 @@ export class ConfirmBooking extends Component {
     });
   }
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = prevProps => {
     if (
       this.props.subscription.completedClasses?.length !==
         prevProps.subscription.completedClasses?.length ||
@@ -403,8 +403,8 @@ export class ConfirmBooking extends Component {
       getUpcomingClasses();
       getCompletedClasses();
       this.props.clearErrors();
-      this.setState({ errors: "" });
-      const { class_schedule_id, schedule_date_id, credits } = this.props;
+      this.setState({errors: ''});
+      const {class_schedule_id, schedule_date_id, credits} = this.props;
       let selectedScheduleIds = [];
       selectedScheduleIds.push(schedule_date_id);
 
@@ -414,7 +414,7 @@ export class ConfirmBooking extends Component {
         credits,
       });
       this.focusListener2 = this.props.navigation.addListener(
-        "didFocus",
+        'didFocus',
         () => {
           let selectedScheduleIds = [];
           selectedScheduleIds.push(schedule_date_id);
@@ -423,7 +423,7 @@ export class ConfirmBooking extends Component {
             selectedScheduleIds: selectedScheduleIds,
             credits,
           });
-        }
+        },
       );
     }
   };
@@ -432,16 +432,16 @@ export class ConfirmBooking extends Component {
     this.props.clearErrors();
     this.focusListener2.remove();
   }
-  handleSelectSession = (id) => {
-    let selectedDates = { ...this.state.selectedDates };
+  handleSelectSession = id => {
+    let selectedDates = {...this.state.selectedDates};
     const class_schedules = [...this.props.data.class_schedules];
     let schedule = class_schedules.find(
-      (class_schedule) => class_schedule.id === id
+      class_schedule => class_schedule.id === id,
     );
 
-    const { start_date, end_date } = this.props.data;
+    const {start_date, end_date} = this.props.data;
     let today = new Date().getTime();
-    let todayTime = moment(today).format("YYYY-MM-DD");
+    let todayTime = moment(today).format('YYYY-MM-DD');
     let todayTimestamp = new Date(todayTime).getTime();
     let startTime = new Date(start_date).getTime(),
       endTime = new Date(end_date).getTime();
@@ -449,10 +449,10 @@ export class ConfirmBooking extends Component {
     for (loopTime = startTime; loopTime <= endTime; loopTime += 86400000) {
       var loopDay = new Date(loopTime);
       let scheduleDate = schedule.schedule_dates.filter(
-        (schedule_date) =>
-          new Date(schedule_date.date).getTime() === loopDay.getTime()
+        schedule_date =>
+          new Date(schedule_date.date).getTime() === loopDay.getTime(),
       );
-      let eDate = moment(loopTime).format("YYYY-MM-DD");
+      let eDate = moment(loopTime).format('YYYY-MM-DD');
       if (!isEmpty(scheduleDate)) {
         if (todayTimestamp > loopTime) {
           selectedDates[eDate.toString()] = {
@@ -472,27 +472,27 @@ export class ConfirmBooking extends Component {
     this.setState({
       session_id: id,
       credits: schedule ? schedule.credits : 0,
-      errors: "",
+      errors: '',
       selectedDates,
     });
   };
 
   handleIsFullClass = () => {
     let selectedScheduleIds = [];
-    const selectedDates = { ...this.state.selectedDates };
+    const selectedDates = {...this.state.selectedDates};
     const class_schedules = [...this.props.data.class_schedules];
     let schedule = class_schedules.find(
-      (class_schedule) => class_schedule.id === this.state.session_id
+      class_schedule => class_schedule.id === this.state.session_id,
     );
     if (!this.state.isFullClass) {
-      schedule.schedule_dates.map((schedule_date) => {
+      schedule.schedule_dates.map(schedule_date => {
         if (selectedDates[schedule_date.date]) {
           delete selectedDates[schedule_date.date];
         }
         selectedScheduleIds.push(schedule_date.id);
       });
     } else {
-      schedule.schedule_dates.map((schedule_date) => {
+      schedule.schedule_dates.map(schedule_date => {
         if (selectedDates[schedule_date.date]) {
           delete selectedDates[schedule_date.date];
         }
@@ -504,25 +504,25 @@ export class ConfirmBooking extends Component {
       selectedDates,
       totalCredits,
       selectedScheduleIds,
-      errors: "",
+      errors: '',
     });
   };
-  handleSelectDay = (dateData) => {
+  handleSelectDay = dateData => {
     const class_schedules = [...this.props.data.class_schedules];
     let schedule = class_schedules.find(
-      (class_schedule) => class_schedule.id === this.state.session_id
+      class_schedule => class_schedule.id === this.state.session_id,
     );
     let scheduleDate = schedule.schedule_dates.find(
-      (schedule_date) => schedule_date.date === dateData.dateString
+      schedule_date => schedule_date.date === dateData.dateString,
     );
-    let selectedDates = { ...this.state.selectedDates };
+    let selectedDates = {...this.state.selectedDates};
     let selectedScheduleIds = [...this.state.selectedScheduleIds];
     if (!isEmpty(selectedDates[dateData.dateString])) {
       if (!selectedDates[dateData.dateString].disabled) {
         delete selectedDates[dateData.dateString];
         if (!isEmpty(scheduleDate)) {
           selectedScheduleIds = selectedScheduleIds.filter(
-            (id) => id !== scheduleDate.id
+            id => id !== scheduleDate.id,
           );
         }
       }
@@ -535,21 +535,21 @@ export class ConfirmBooking extends Component {
       //let selectedDates = {...this.state.selectedDates};
       const class_schedules = [...this.props.data.class_schedules];
       let schedule = class_schedules.find(
-        (class_schedule) => class_schedule.id === this.state.session_id
+        class_schedule => class_schedule.id === this.state.session_id,
       );
-      const { start_date, end_date } = this.props.data;
+      const {start_date, end_date} = this.props.data;
       let today = new Date().getTime();
-      let todayTime = moment(today).format("YYYY-MM-DD");
+      let todayTime = moment(today).format('YYYY-MM-DD');
       let todayTimestamp = new Date(todayTime).getTime();
       let startTime = new Date(start_date).getTime(),
         endTime = new Date(end_date).getTime();
       for (loopTime = startTime; loopTime <= endTime; loopTime += 86400000) {
         var loopDay = new Date(loopTime);
         let scheduleDate = schedule.schedule_dates.filter(
-          (schedule_date) =>
-            new Date(schedule_date.date).getTime() === loopDay.getTime()
+          schedule_date =>
+            new Date(schedule_date.date).getTime() === loopDay.getTime(),
         );
-        let eDate = moment(loopTime).format("YYYY-MM-DD");
+        let eDate = moment(loopTime).format('YYYY-MM-DD');
         if (!isEmpty(scheduleDate)) {
           if (todayTimestamp > loopTime) {
             selectedDates[eDate.toString()] = {
@@ -569,7 +569,7 @@ export class ConfirmBooking extends Component {
 
       selectedDates[dateData.dateString] = {
         selected: true,
-        selectedColor: "green",
+        selectedColor: 'green',
       };
     }
 
@@ -579,7 +579,7 @@ export class ConfirmBooking extends Component {
       selectedDates,
       selectedScheduleIds,
       totalCredits,
-      errors: "",
+      errors: '',
     });
   };
   render() {
@@ -590,10 +590,10 @@ export class ConfirmBooking extends Component {
       session_id,
       totalCredits,
     } = this.state;
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let {
       id,
       name,
@@ -608,14 +608,14 @@ export class ConfirmBooking extends Component {
       class_schedules,
     } = this.props.data;
     class_schedules = class_schedules.sort((a, b) =>
-      a.start_time < b.start_time ? -1 : a.start_time > b.start_time ? 1 : 0
+      a.start_time < b.start_time ? -1 : a.start_time > b.start_time ? 1 : 0,
     );
 
     let image;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -628,9 +628,9 @@ export class ConfirmBooking extends Component {
         };
       }
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
-    const { user } = this.props.auth;
+    const {user} = this.props.auth;
     return (
       <>
         <Modal
@@ -639,39 +639,36 @@ export class ConfirmBooking extends Component {
           transparent={true}
           onRequestClose={() => {
             this.props.handleConfirmBooking();
-          }}
-        >
+          }}>
           <TouchableOpacity
             onPress={() => {
               this.props.handleConfirmBooking();
             }}
             style={{
               height: height - normalize(460),
-              backgroundColor: "rgba(34, 36, 42, 0.2)",
+              backgroundColor: 'rgba(34, 36, 42, 0.2)',
             }}
           />
           <View style={[styles.modalContent]}>
-            <View style={{ alignItems: "center" }}>
-              <View style={{ marginTop: normalize(6), alignItems: "center" }}>
+            <View style={{alignItems: 'center'}}>
+              <View style={{marginTop: normalize(6), alignItems: 'center'}}>
                 <Text
                   style={{
                     fontSize: normalize(24),
-                    fontWeight: "bold",
-                    color: "#FE9800",
-                  }}
-                >
+                    fontWeight: 'bold',
+                    color: '#FE9800',
+                  }}>
                   {!isEmpty(user.credits_balance) ? user.credits_balance : 0}
                 </Text>
                 <Text
                   style={{
                     fontSize: normalize(16),
-                    color: "#FE9800",
-                  }}
-                >
-                  {I18n.t("availableCredits", { locale: lang })}
+                    color: '#FE9800',
+                  }}>
+                  {I18n.t('availableCredits', {locale: lang})}
                 </Text>
               </View>
-              <View style={{ marginTop: normalize(10) }}>
+              <View style={{marginTop: normalize(10)}}>
                 {image.url ? (
                   <FastImage
                     style={{
@@ -687,7 +684,7 @@ export class ConfirmBooking extends Component {
                   />
                 ) : (
                   <Image
-                    resizeMode={"cover"}
+                    resizeMode={'cover'}
                     source={image}
                     style={{
                       width: normalize(94),
@@ -697,74 +694,71 @@ export class ConfirmBooking extends Component {
                   />
                 )}
               </View>
-              <View style={{ marginTop: normalize(6) }}>
-                <Text style={{ fontSize: normalize(20), fontWeight: "bold" }}>
-                  {!isEmpty(name) ? (lang === "ar" ? name_ar : name) : ""}
+              <View style={{marginTop: normalize(6)}}>
+                <Text style={{fontSize: normalize(20), fontWeight: 'bold'}}>
+                  {!isEmpty(name) ? (lang === 'ar' ? name_ar : name) : ''}
                 </Text>
               </View>
 
-              <View style={{ marginTop: normalize(4) }}>
-                <Text style={{ fontSize: normalize(14), color: "#8A8A8F" }}>
+              <View style={{marginTop: normalize(4)}}>
+                <Text style={{fontSize: normalize(14), color: '#8A8A8F'}}>
                   {!isEmpty(gym.name)
-                    ? lang === "ar"
+                    ? lang === 'ar'
                       ? gym.name_ar
                       : gym.name
-                    : ""}
+                    : ''}
                 </Text>
               </View>
-              <View style={{ marginTop: normalize(16) }}>
-                <Text style={{ fontSize: normalize(16) }}>
-                  {`${moment(this.props.date, "YYYY-MM-DD").format(
-                    "D MMM YYYY"
+              <View style={{marginTop: normalize(16)}}>
+                <Text style={{fontSize: normalize(16)}}>
+                  {`${moment(this.props.date, 'YYYY-MM-DD').format(
+                    'D MMM YYYY',
                   )}`}
                 </Text>
               </View>
               <View>
-                <Text style={{ fontSize: normalize(16) }}>
-                  {`${moment(this.props.start_time, "h:mm:ss").format(
-                    "h:mm A"
-                  )} - ${moment(this.props.end_time, "h:mm:ss").format(
-                    "h:mm A"
+                <Text style={{fontSize: normalize(16)}}>
+                  {`${moment(this.props.start_time, 'h:mm:ss').format(
+                    'h:mm A',
+                  )} - ${moment(this.props.end_time, 'h:mm:ss').format(
+                    'h:mm A',
                   )}`}
                 </Text>
               </View>
 
               {this.state.errors ? (
-                <Text style={{ fontSize: normalize(12), color: "red" }}>
+                <Text style={{fontSize: normalize(12), color: 'red'}}>
                   {this.state.errors}
                 </Text>
               ) : null}
 
-              <View style={{ marginTop: normalize(16), alignItems: "center" }}>
+              <View style={{marginTop: normalize(16), alignItems: 'center'}}>
                 {!isEmpty(this.props.credits) && this.props.credits > 0 ? (
                   <>
                     <Text
                       style={{
                         fontSize: normalize(24),
-                        fontWeight: "bold",
-                        color: "#0053FE",
-                      }}
-                    >
+                        fontWeight: 'bold',
+                        color: '#0053FE',
+                      }}>
                       {!isEmpty(this.props.credits) ? this.props.credits : 0}
                     </Text>
                     <Text
                       style={{
                         fontSize: normalize(16),
-                        color: "#0053FE",
-                      }}
-                    >
-                      {I18n.t("credits", { locale: lang })}
+                        color: '#0053FE',
+                      }}>
+                      {I18n.t('credits', {locale: lang})}
                     </Text>
                   </>
                 ) : (
                   <Text
                     style={{
                       fontSize: normalize(24),
-                      fontWeight: "bold",
-                      color: "#0053FE",
-                    }}
-                  >
-                    {I18n.t("free", { locale: lang })}
+                      fontWeight: 'bold',
+                      color: '#0053FE',
+                    }}>
+                    {I18n.t('free', {locale: lang})}
                   </Text>
                 )}
               </View>
@@ -777,28 +771,26 @@ export class ConfirmBooking extends Component {
                   marginHorizontal: normalize(32),
                   width: normalize(310),
                   height: normalize(48),
-                  backgroundColor: "#FE9800",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  backgroundColor: '#FE9800',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   borderRadius: normalize(24),
                   marginBottom: normalize(50),
                   opacity: this.state.onPress || this.state.errors ? 0.1 : 1,
-                }}
-              >
+                }}>
                 <Text
                   style={{
-                    color: "#ffffff",
+                    color: '#ffffff',
                     fontSize: normalize(16),
-                    fontWeight: "bold",
-                  }}
-                >
-                  {I18n.t("confirmMyReservation", { locale: lang })}
+                    fontWeight: 'bold',
+                  }}>
+                  {I18n.t('confirmMyReservation', {locale: lang})}
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
-        <Toast ref={(ref) => (global["toast"] = ref)} />
+        <Toast ref={ref => (global['toast'] = ref)} />
         {this.state.data &&
           this.state.data.access_code &&
           this.state.isShowPaymentWeb && (
@@ -818,18 +810,18 @@ export class ConfirmBooking extends Component {
 
 const styles = StyleSheet.create({
   errorMessage: {
-    textAlign: "center",
-    color: "red",
+    textAlign: 'center',
+    color: 'red',
     fontSize: normalize(12),
   },
   modalContainer: {
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   modalContent: {
     height: normalize(460),
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     //justifyContent: 'center',
-    alignItems: "center",
+    alignItems: 'center',
   },
   pickerAndroid: {
     //marginVertical: normalize(20),
@@ -838,18 +830,18 @@ const styles = StyleSheet.create({
     height: normalize(30),
     width: normalize(225),
     borderBottomWidth: 0,
-    backgroundColor: "#cfcfcf",
+    backgroundColor: '#cfcfcf',
   },
   pickerIos: {
     marginLeft: normalize(80),
     marginRight: normalize(80),
     //width: normalize(225),
     borderBottomWidth: 0,
-    backgroundColor: "#cfcfcf",
+    backgroundColor: '#cfcfcf',
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
   errors: state.errors,

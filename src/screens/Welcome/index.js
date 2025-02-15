@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect} from 'react';
 import {
   Text,
   View,
@@ -8,125 +8,125 @@ import {
   Platform,
   Alert,
   BackHandler,
-} from "react-native";
-import { connect } from "react-redux";
-import Geolocation from "@react-native-community/geolocation";
-import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+} from 'react-native';
+import {connect} from 'react-redux';
+import Geolocation from '@react-native-community/geolocation';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import I18n from "../../utils/i18n";
-import FIcon from "react-native-vector-icons/FontAwesome";
-import { LoginManager, AccessToken } from "react-native-fbsdk";
-import { socialLoginUser } from "../../actions/authActions";
+import I18n from '../../utils/i18n';
+import FIcon from '@react-native-vector-icons/fontawesome';
+import {LoginManager, AccessToken} from 'react-native-fbsdk';
+import {socialLoginUser} from '../../actions/authActions';
 
-import isEmpty from "../../validation/is-empty";
-import Loading from "../Loading";
+import isEmpty from '../../validation/is-empty';
+import Loading from '../Loading';
 import {
   clearErrors,
   clearSocialErrors,
   clearLoading,
-} from "../../actions/errorAction";
+} from '../../actions/errorAction';
 import appleAuth, {
   AppleAuthRequestOperation,
   AppleAuthRequestScope,
-} from "@invertase/react-native-apple-authentication";
+} from '@invertase/react-native-apple-authentication';
 
-import { setLatLong } from "../../actions/settingActions";
+import {setLatLong} from '../../actions/settingActions';
 
-const Welcome = (props) => {
+const Welcome = props => {
   useEffect(() => {
-    const { lang } = props.setting;
+    const {lang} = props.setting;
 
     if (!isEmpty(props.errors.socialError)) {
       Alert.alert(
-        I18n.t("loginFailed", { locale: lang }),
+        I18n.t('loginFailed', {locale: lang}),
         props.errors.socialError,
         [
           {
-            text: I18n.t("ok", { locale: lang }),
+            text: I18n.t('ok', {locale: lang}),
             onPress: () => props.clearSocialErrors(),
           },
         ],
-        { cancelable: false }
+        {cancelable: false},
       );
     }
   }, [props.setting, props.errors]);
 
   const handleLocation = async () => {
     Geolocation.getCurrentPosition(
-      async (position) => {
+      async position => {
         await AsyncStorage.setItem(
-          "latitude",
-          position.coords.latitude.toString()
+          'latitude',
+          position.coords.latitude.toString(),
         );
         await AsyncStorage.setItem(
-          "longitude",
-          position.coords.longitude.toString()
+          'longitude',
+          position.coords.longitude.toString(),
         );
 
         await props.setLatLong(
           position.coords.latitude,
-          position.coords.longitude
+          position.coords.longitude,
         );
         return true;
       },
-      (error) => {
+      error => {
         //Alert.alert(JSON.stringify(error));
       },
       {
         enableHighAccuracy: /* Platform.OS === 'ios' ? true : */ false,
         timeout: 20000,
         maximumAge: 10000,
-      }
+      },
     );
   };
 
   useEffect(async () => {
-    if (Platform.OS === "ios") {
+    if (Platform.OS === 'ios') {
       await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
-        .then(async (result) => {
-          if (result === "denied") {
+        .then(async result => {
+          if (result === 'denied') {
             await request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(
-              async (result) => {
-                if (result === "granted") {
+              async result => {
+                if (result === 'granted') {
                   await handleLocation();
                 }
-              }
+              },
             );
-          } else if (result === "granted") {
+          } else if (result === 'granted') {
             await handleLocation();
           }
         })
-        .catch((error) => {
+        .catch(error => {
           // …
         });
     } else {
       await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-        .then(async (result) => {
-          if (result === "denied") {
+        .then(async result => {
+          if (result === 'denied') {
             await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(
-              async (result) => {
-                if (result === "granted") {
+              async result => {
+                if (result === 'granted') {
                   await handleLocation();
                 }
-              }
+              },
             );
-          } else if (result === "granted") {
+          } else if (result === 'granted') {
             //alert(result);
             await handleLocation();
           }
         })
-        .catch((error) => {
+        .catch(error => {
           // …
         });
     }
   }, []);
 
   useEffect(() => {
-    const focusListener = props.navigation.addListener("didFocus", () => {
+    const focusListener = props.navigation.addListener('didFocus', () => {
       props.clearLoading();
     });
-    BackHandler.addEventListener("hardwareBackPress", handleBack);
+    BackHandler.addEventListener('hardwareBackPress', handleBack);
 
     return () => {
       focusListener.remove();
@@ -136,31 +136,31 @@ const Welcome = (props) => {
   useEffect(() => {
     return () => {
       props.clearErrors();
-      BackHandler.removeEventListener("hardwareBackPress", handleBack);
+      BackHandler.removeEventListener('hardwareBackPress', handleBack);
     };
   }, []);
 
   const handleGuestAccount = () => {
-    props.navigation.navigate("Main");
+    props.navigation.navigate('Main');
   };
 
   const handleBack = () => {
-    const { lang } = props.setting;
+    const {lang} = props.setting;
     Alert.alert(
-      I18n.t("exit", { locale: lang }),
-      I18n.t("areYouExitApp", { locale: lang }),
+      I18n.t('exit', {locale: lang}),
+      I18n.t('areYouExitApp', {locale: lang}),
       [
         {
-          text: I18n.t("no", { locale: lang }),
-          onPress: () => console.log("come"),
-          style: "cancel",
+          text: I18n.t('no', {locale: lang}),
+          onPress: () => console.log('come'),
+          style: 'cancel',
         },
         {
-          text: I18n.t("yes", { locale: lang }),
+          text: I18n.t('yes', {locale: lang}),
           onPress: () => BackHandler.exitApp(),
         },
       ],
-      { cancelable: false }
+      {cancelable: false},
     );
 
     return true;
@@ -168,35 +168,35 @@ const Welcome = (props) => {
 
   const handleFacebookLogin = async () => {
     LoginManager.logOut();
-    LoginManager.setLoginBehavior("browser");
+    LoginManager.setLoginBehavior('browser');
     /* if (Platform.OS === 'android') {
       LoginManager.setLoginBehavior('web_only');
     } */
     let data = await LoginManager.logInWithPermissions([
-      "public_profile",
-      "email",
-      "user_gender",
+      'public_profile',
+      'email',
+      'user_gender',
     ]).then(async function (result) {
       if (result.isCancelled) {
         return false;
       } else {
         let accessToken = await AccessToken.getCurrentAccessToken().then(
-          async (data) => {
-            const { accessToken } = data;
+          async data => {
+            const {accessToken} = data;
 
             return accessToken;
-          }
+          },
         );
 
         let addUserData = await initUser(accessToken);
 
         async function initUser(token) {
           let userData = await fetch(
-            "https://graph.facebook.com/me?fields=email,first_name,last_name,name&access_token=" +
-              token
+            'https://graph.facebook.com/me?fields=email,first_name,last_name,name&access_token=' +
+              token,
           )
-            .then((response) => response.json())
-            .then((json) => {
+            .then(response => response.json())
+            .then(json => {
               const addUserData = {
                 first_name: json.first_name,
                 last_name: json.last_name,
@@ -209,7 +209,7 @@ const Welcome = (props) => {
               return addUserData;
             })
             .catch(() => {
-              reject("ERROR GETTING DATA FROM FACEBOOK");
+              reject('ERROR GETTING DATA FROM FACEBOOK');
               return false;
             });
           return userData;
@@ -231,12 +231,12 @@ const Welcome = (props) => {
           AppleAuthRequestScope.FULL_NAME,
         ],
       })
-      .then((appleAuthRequestResponse) => {
-        let { email, fullName, identityToken, user } = appleAuthRequestResponse;
+      .then(appleAuthRequestResponse => {
+        let {email, fullName, identityToken, user} = appleAuthRequestResponse;
         const addUserData = {
-          first_name: fullName.givenName || "",
-          last_name: fullName.familyName || "",
-          email: email || "",
+          first_name: fullName.givenName || '',
+          last_name: fullName.familyName || '',
+          email: email || '',
           is_notification: true,
           is_social_login: true,
           social_login_id: user,
@@ -247,8 +247,8 @@ const Welcome = (props) => {
       });
   };
 
-  const flexDirection = props.setting.lang === "ar" ? "row-reverse" : "row";
-  const textAlign = props.setting.lang === "ar" ? "right" : "left";
+  const flexDirection = props.setting.lang === 'ar' ? 'row-reverse' : 'row';
+  const textAlign = props.setting.lang === 'ar' ? 'right' : 'left';
 
   return (
     <>
@@ -261,67 +261,61 @@ const Welcome = (props) => {
           </View>
           <View style={styles.imageContainer}>
             <Image
-              source={require("../../assets/img/Group_5602x.png")}
-              style={{ resizeMode: "cover", width: "100%", height: "100%" }}
+              source={require('../../assets/img/Group_5602x.png')}
+              style={{resizeMode: 'cover', width: '100%', height: '100%'}}
             />
           </View>
           <View style={styles.contentContainer}>
-            <Text style={[styles.contentTitle, { textAlign: textAlign }]}>
-              {I18n.t("welcomeTitle", { locale: props.setting.lang })}
+            <Text style={[styles.contentTitle, {textAlign: textAlign}]}>
+              {I18n.t('welcomeTitle', {locale: props.setting.lang})}
             </Text>
-            <Text style={[styles.contentSmallTitle, { textAlign: textAlign }]}>
-              {I18n.t("welcomeTitleSmall", { locale: props.setting.lang })}
+            <Text style={[styles.contentSmallTitle, {textAlign: textAlign}]}>
+              {I18n.t('welcomeTitleSmall', {locale: props.setting.lang})}
             </Text>
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("Signup")}
-              style={styles.accountButton}
-            >
+              onPress={() => props.navigation.navigate('Signup')}
+              style={styles.accountButton}>
               <Text style={styles.accountButtonText}>
-                {I18n.t("createAccountButton", { locale: props.setting.lang })}
+                {I18n.t('createAccountButton', {locale: props.setting.lang})}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleFacebookLogin}
-              style={[styles.facebookButton, { flexDirection: flexDirection }]}
-            >
+              style={[styles.facebookButton, {flexDirection: flexDirection}]}>
               <FIcon name="facebook" size={18} color="#3578E5" />
               <Text style={styles.facebookButtonText}>
-                {I18n.t("signUpFacebook", { locale: props.setting.lang })}
+                {I18n.t('signUpFacebook', {locale: props.setting.lang})}
               </Text>
             </TouchableOpacity>
-            {Platform.OS === "ios" && parseFloat(Platform.Version) >= 13 ? (
+            {Platform.OS === 'ios' && parseFloat(Platform.Version) >= 13 ? (
               <TouchableOpacity
                 onPress={onAppleButtonPress}
-                style={[styles.appleButton, { flexDirection: flexDirection }]}
-              >
+                style={[styles.appleButton, {flexDirection: flexDirection}]}>
                 <FIcon name="apple" size={18} color="#000000" />
                 <Text style={styles.appleButtonText}>
-                  {I18n.t("continueWithApple", { locale: props.setting.lang })}
+                  {I18n.t('continueWithApple', {locale: props.setting.lang})}
                 </Text>
               </TouchableOpacity>
             ) : null}
 
             <TouchableOpacity
               onPress={handleGuestAccount}
-              style={styles.guestAccount}
-            >
+              style={styles.guestAccount}>
               <Text style={styles.guestAccountText}>
-                {I18n.t("continueGuest", { locale: props.setting.lang })}
+                {I18n.t('continueGuest', {locale: props.setting.lang})}
               </Text>
             </TouchableOpacity>
             <View
-              style={[styles.alreadyAccount, { flexDirection: flexDirection }]}
-            >
+              style={[styles.alreadyAccount, {flexDirection: flexDirection}]}>
               <Text style={styles.alreadyAccountText}>
-                {I18n.t("alreadyAccount", { locale: props.setting.lang })}{" "}
+                {I18n.t('alreadyAccount', {locale: props.setting.lang})}{' '}
               </Text>
               <TouchableOpacity
-                onPress={() => props.navigation.navigate("Login")}
-              >
+                onPress={() => props.navigation.navigate('Login')}>
                 <Text style={styles.alreadyAccountTextLogin}>
-                  {I18n.t("logIn", { locale: props.setting.lang })}
+                  {I18n.t('logIn', {locale: props.setting.lang})}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -332,9 +326,9 @@ const Welcome = (props) => {
   );
 };
 
-import styles from "./styles";
+import styles from './styles';
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   setting: state.setting,
   errors: state.errors,
 });

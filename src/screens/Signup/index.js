@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import {Container, Form, Item, Input, CheckBox, Icon, Label} from 'native-base';
 import {Grid, Col} from 'react-native-easy-grid';
-import FIcon from 'react-native-vector-icons/FontAwesome';
+import FIcon from '@react-native-vector-icons/fontawesome';
 import {connect} from 'react-redux';
 import I18n from '../../utils/i18n';
 import HeaderComponent from '../../components/Header';
@@ -32,12 +32,7 @@ import LockIcon from '../../assets/img/lock.svg';
 
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {
-  LoginManager,
-  AccessToken,
-  GraphRequest,
-  GraphRequestManager,
-} from 'react-native-fbsdk';
+import {LoginManager, AccessToken} from 'react-native-fbsdk';
 import {socialLoginUser} from '../../actions/authActions';
 
 import Term from '../../components/Terms';
@@ -136,7 +131,7 @@ export class Signup extends Component {
   handleShowPassword = () => {
     this.setState({isSecure: !this.state.isSecure});
   };
-  
+
   handleTerms = () => {};
   handleMoveLogin = () => {
     this.setState({
@@ -261,9 +256,9 @@ export class Signup extends Component {
     let data = await LoginManager.logInWithPermissions([
       'public_profile',
       'email',
-      'user_gender'
+      'user_gender',
     ]).then(
-      async function(result) {
+      async function (result) {
         if (result.isCancelled) {
           return false;
         } else {
@@ -306,7 +301,7 @@ export class Signup extends Component {
           return addUserData;
         }
       },
-      function(error) {},
+      function (error) {},
     );
     if (data) {
       this.props.socialLoginUser(data, this.props.navigation);
@@ -354,11 +349,10 @@ export class Signup extends Component {
               </View>
               <KeyboardAwareScrollView
                 enableOnAndroid={true}
-                keyboardShouldPersistTaps={"handled"}
+                keyboardShouldPersistTaps={'handled'}
                 enableResetScrollToCoords={false}
                 scrollEnabled={isEnablrdScroll}
-                enableAutomaticScroll={isEnablrdScroll}
-                >
+                enableAutomaticScroll={isEnablrdScroll}>
                 <View style={styles.formContainer}>
                   <Form>
                     <View
@@ -597,8 +591,8 @@ export class Signup extends Component {
                               Platform.OS === 'ios'
                                 ? 0
                                 : lang === 'ar'
-                                ? normalize(8)
-                                : normalize(-8),
+                                  ? normalize(8)
+                                  : normalize(-8),
                           }}
                           onValueChange={this.handleIsNotification}
                           value={is_newsletter}
@@ -747,11 +741,8 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    registerUser,
-    clearErrors,
-    socialLoginUser,
-  },
-)(Signup);
+export default connect(mapStateToProps, {
+  registerUser,
+  clearErrors,
+  socialLoginUser,
+})(Signup);

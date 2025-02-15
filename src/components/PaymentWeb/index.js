@@ -10,9 +10,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import normalize from 'react-native-normalize';
-import {
-  Icon, Header, Left, Button, Body, Text,
-} from 'native-base';
+import {Icon, Header, Left, Button, Body, Text} from 'native-base';
 import {clearErrors} from '../../actions/errorAction';
 import {addBookingClass} from '../../actions/subscriptionActions';
 const {width, height} = Dimensions.get('window');
@@ -142,23 +140,21 @@ export class PaymentWeb extends Component {
             </Left>
             <Body />
           </Header>
-          {
-            this.props.data && (
-              <WebView
-                onLoad={() => this.hideSpinner()} 
-                // source={Platform.OS === 'android' ? {html: require("./html.js")()} : (required('./test.html'))}
-                style={{ flex: 1 }}
-                source={{html: require("./html.js")()}}
-                onNavigationStateChange={this._onNavigationStateChange.bind(this)}
-                injectedJavaScript={INJECTED_JAVASCRIPT}
-                mixedContentMode={'always'}
-                javaScriptEnabled={true}
-                onMessage={(event) => {
-                  console.log('event: ', event)
-                }}
-              />
-            )
-          }
+          {this.props.data && (
+            <WebView
+              onLoad={() => this.hideSpinner()}
+              // source={Platform.OS === 'android' ? {html: require("./html.js")()} : (required('./test.html'))}
+              style={{flex: 1}}
+              source={{html: require('./html.js')()}}
+              onNavigationStateChange={this._onNavigationStateChange.bind(this)}
+              injectedJavaScript={INJECTED_JAVASCRIPT}
+              mixedContentMode={'always'}
+              javaScriptEnabled={true}
+              onMessage={event => {
+                console.log('event: ', event);
+              }}
+            />
+          )}
           {this.state.visible && (
             <ActivityIndicator
               style={{position: 'absolute', top: height / 2, left: width / 2}}
@@ -202,10 +198,7 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    clearErrors,
-    addBookingClass,
-  },
-)(PaymentWeb);
+export default connect(mapStateToProps, {
+  clearErrors,
+  addBookingClass,
+})(PaymentWeb);

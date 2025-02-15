@@ -7,7 +7,7 @@ import {
   BackHandler,
 } from 'react-native';
 import {Container, Form, Item, Input} from 'native-base';
-import FIcon from 'react-native-vector-icons/FontAwesome';
+import FIcon from '@react-native-vector-icons/fontawesome';
 import {connect} from 'react-redux';
 import I18n from '../../utils/i18n';
 import HeaderComponent from '../../components/Header';
@@ -274,7 +274,6 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {forgotPassword, clearErrors},
-)(ForgotPassword);
+export default connect(mapStateToProps, {forgotPassword, clearErrors})(
+  ForgotPassword,
+);

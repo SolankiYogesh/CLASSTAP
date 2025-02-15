@@ -22,7 +22,7 @@ import {
   Textarea,
 } from 'native-base';
 import {Grid, Col} from 'react-native-easy-grid';
-import FIcon from 'react-native-vector-icons/FontAwesome';
+import FIcon from '@react-native-vector-icons/fontawesome';
 import {connect} from 'react-redux';
 import I18n from '../../utils/i18n';
 import HeaderComponent from '../../components/Header';
@@ -112,13 +112,16 @@ export class ContactUs extends Component {
           if (res.data.error.code) {
           } else {
             const {data} = res.data;
-            toast.show(I18n.t('sendSucessfully', {locale: this.props.setting.lang}), {
-              type: "success",
-              placement: "bottom",
-              duration: 2000,
-              offset: 30,
-              animationType: "slide-in",
-            });
+            toast.show(
+              I18n.t('sendSucessfully', {locale: this.props.setting.lang}),
+              {
+                type: 'success',
+                placement: 'bottom',
+                duration: 2000,
+                offset: 30,
+                animationType: 'slide-in',
+              },
+            );
             this.setState({
               message: '',
               errors: {},
@@ -181,11 +184,10 @@ export class ContactUs extends Component {
               </View>
               <KeyboardAwareScrollView
                 enableOnAndroid={true}
-                keyboardShouldPersistTaps={"handled"}
+                keyboardShouldPersistTaps={'handled'}
                 enableResetScrollToCoords={false}
                 scrollEnabled={isEnablrdScroll}
-                enableAutomaticScroll={isEnablrdScroll}
-                >
+                enableAutomaticScroll={isEnablrdScroll}>
                 <View style={styles.formContainer}>
                   <Form>
                     <View style={{display: 'flex'}}>
@@ -354,7 +356,7 @@ export class ContactUs extends Component {
             </View>
           </Container>
         )}
-        <Toast ref={(ref) => global['toast'] = ref} />
+        <Toast ref={ref => (global['toast'] = ref)} />
       </>
     );
   }
@@ -495,7 +497,4 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {registerUser, clearErrors},
-)(ContactUs);
+export default connect(mapStateToProps, {registerUser, clearErrors})(ContactUs);

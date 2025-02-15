@@ -142,13 +142,18 @@ class MobileOtp extends Component {
       .then(res => {
         if (res.data.error.code) {
         } else {
-          toast.show(I18n.t('resendOtpSendSuccessfully', {locale: this.props.setting.lang}), {
-            type: "normal",
-            placement: "bottom",
-            duration: 2000,
-            offset: 30,
-            animationType: "slide-in",
-          });
+          toast.show(
+            I18n.t('resendOtpSendSuccessfully', {
+              locale: this.props.setting.lang,
+            }),
+            {
+              type: 'normal',
+              placement: 'bottom',
+              duration: 2000,
+              offset: 30,
+              animationType: 'slide-in',
+            },
+          );
         }
       })
       .catch(err => {
@@ -210,7 +215,7 @@ class MobileOtp extends Component {
             </View>
           </Container>
         )}
-        <Toast ref={(ref) => global['toast'] = ref} />
+        <Toast ref={ref => (global['toast'] = ref)} />
       </>
     );
   }
@@ -274,7 +279,6 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {verifyMobileOtp, clearErrors},
-)(MobileOtp);
+export default connect(mapStateToProps, {verifyMobileOtp, clearErrors})(
+  MobileOtp,
+);

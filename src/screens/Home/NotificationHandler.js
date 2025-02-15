@@ -1,4 +1,4 @@
-import PushNotification from "react-native-push-notification";
+import PushNotification from 'react-native-push-notification';
 
 class NotificationHandler {
   async updateToken(token) {
@@ -6,20 +6,20 @@ class NotificationHandler {
   }
 
   onNotification(notification) {
-    if (typeof this._onNotification === "function") {
+    if (typeof this._onNotification === 'function') {
       this._onNotification(notification);
     }
   }
 
   onRegister(token) {
     this.updateToken(token);
-    if (typeof this._onRegister === "function") {
+    if (typeof this._onRegister === 'function') {
       this._onRegister(token);
     }
   }
 
   onAction(notification) {
-    if (notification.action === "Yes") {
+    if (notification.action === 'Yes') {
       PushNotification.invokeApp(notification);
     }
   }

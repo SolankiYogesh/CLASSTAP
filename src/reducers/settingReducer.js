@@ -9,7 +9,7 @@ const initialState = {
   longitude: '',
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case SET_CURRENT_LANGUAGE:
       return {

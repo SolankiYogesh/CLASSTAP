@@ -24,7 +24,7 @@ import axios from 'axios';
 
 import I18n from '../../utils/i18n';
 import Toast from 'react-native-toast-notifications';
-import { UtilsParserReviews } from '../../utils/regExp';
+import {UtilsParserReviews} from '../../utils/regExp';
 
 export class WriteReview extends Component {
   constructor(props) {
@@ -62,11 +62,11 @@ export class WriteReview extends Component {
           } else {
             const {data} = res.data;
             toast.show(I18n.t('reviewAddedSucessfully', {locale: lang}), {
-              type: "normal",
-              placement: "bottom",
+              type: 'normal',
+              placement: 'bottom',
               duration: 2000,
               offset: 30,
-              animationType: "slide-in",
+              animationType: 'slide-in',
             });
             this.props.getTodayClasses();
             this.props.handleReviews(data);
@@ -83,10 +83,7 @@ export class WriteReview extends Component {
     }
   };
   truncate = (str, no_words) => {
-    return str
-      .split(' ')
-      .splice(0, no_words)
-      .join(' ');
+    return str.split(' ').splice(0, no_words).join(' ');
   };
   handleChangeText = (name, value) => {
     const errors = this.state.errors;
@@ -252,7 +249,7 @@ export class WriteReview extends Component {
             </ScrollView>
           </KeyboardAvoidingView>
         </Modal>
-        <Toast ref={(ref) => global['toast'] = ref} />
+        <Toast ref={ref => (global['toast'] = ref)} />
       </>
     );
   }
@@ -309,7 +306,8 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {addReview, clearErrors, getTodayClasses},
-)(WriteReview);
+export default connect(mapStateToProps, {
+  addReview,
+  clearErrors,
+  getTodayClasses,
+})(WriteReview);

@@ -4718,16 +4718,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-native-fbsdk@npm:^3.0.6":
-  version: 3.0.6
-  resolution: "@types/react-native-fbsdk@npm:3.0.6"
-  dependencies:
-    "@types/react": "npm:*"
-    react-native: "npm:*"
-  checksum: 10c0/0b759d07684c70db766e235062a14cfec2be2bc95ced9e4f737cc77a3aa7525a15e7542cdb2c5d8edf6fa37ed84d7a312754b12088b674a52c653d0622229553
-  languageName: node
-  linkType: hard
-
 "@types/react-native-read-more-text@npm:^1.0.4":
   version: 1.0.4
   resolution: "@types/react-native-read-more-text@npm:1.0.4"
@@ -5221,7 +5211,6 @@ __metadata:
     "@types/eslint__js": "npm:^8.42.3"
     "@types/jest": "npm:^29.5.14"
     "@types/react": "npm:^18.2.6"
-    "@types/react-native-fbsdk": "npm:^3.0.6"
     "@types/react-native-read-more-text": "npm:^1.0.4"
     "@types/react-test-renderer": "npm:^18.3.1"
     "@types/validator": "npm:^13.12.2"
@@ -5259,7 +5248,7 @@ __metadata:
     react-native-android-location-enabler: "npm:^2.0.1"
     react-native-device-info: "npm:^14.0.4"
     react-native-easy-grid: "npm:^0.2.2"
-    react-native-fbsdk: "npm:^3.0.0"
+    react-native-fbsdk-next: "npm:^13.4.1"
     react-native-gesture-handler: "npm:^2.23.1"
     react-native-image-crop-picker: "npm:^0.42.0"
     react-native-keyboard-aware-scroll-view: "npm:^0.9.5"
@@ -11268,12 +11257,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-fbsdk@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "react-native-fbsdk@npm:3.0.0"
+"react-native-fbsdk-next@npm:^13.4.1":
+  version: 13.4.1
+  resolution: "react-native-fbsdk-next@npm:13.4.1"
   peerDependencies:
-    react-native: ">=0.59.0"
-  checksum: 10c0/b5732814300d381512f1300b550ce4cd1fc0d093c0db7b7faf60988b40becb39717ba2148b1cb63e23d6ba6e22f09eb0ec4fdc3f02e4acf25143c34b3ddd1147
+    expo: ">=47.0.0"
+    react-native: ">=0.63.3"
+  peerDependenciesMeta:
+    expo:
+      optional: true
+  checksum: 10c0/f38b8d360986e47dede9b5bcd6166e750f93c4f6d38b85013499ce6fa7d0a181b20cc009b6a05167930df0f56ed8dc79223f9cc4bee9969c8d928405fc750576
   languageName: node
   linkType: hard
 
@@ -11480,7 +11473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:*, react-native@npm:0.77.1":
+"react-native@npm:0.77.1":
   version: 0.77.1
   resolution: "react-native@npm:0.77.1"
   dependencies:

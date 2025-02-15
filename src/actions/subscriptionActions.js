@@ -1,6 +1,6 @@
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URI } from "../utils/config";
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API_URI} from '../utils/config';
 import {
   LOADING,
   CLEAR_LOADING,
@@ -11,10 +11,10 @@ import {
   UPCOMING_CLASS_COUNT,
   COMPLETED_CLASS_COUNT,
   GET_TODAY_CLASSES,
-} from "./types";
+} from './types';
 
-import { currentUser } from "./authActions";
-import I18n from "../utils/i18n";
+import {currentUser} from './authActions';
+import I18n from '../utils/i18n';
 
 export const setLoading = () => {
   return {
@@ -28,25 +28,25 @@ export const clearLoading = () => {
   };
 };
 
-export const getNewSubscriptionRequest = (incomingData) => {
+export const getNewSubscriptionRequest = incomingData => {
   let url = `${API_URI}/user_subscriptions`;
   dispatch(setLoading());
 
   axios
     .post(url, incomingData)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         return data;
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -58,20 +58,20 @@ export const getNewSubscriptionRequest = (incomingData) => {
 };
 
 // get Subscriptions
-export const getSubscriptions = () => (dispatch) => {
+export const getSubscriptions = () => dispatch => {
   let url = `${API_URI}/subscriptions`;
 
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_SUBSCRIPTIONS,
@@ -80,7 +80,7 @@ export const getSubscriptions = () => (dispatch) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -94,19 +94,19 @@ export const getSubscriptions = () => (dispatch) => {
 // Add user subscription
 export const addUserSubscription =
   (addData, navigation) => (dispatch, getState) => {
-    let user = { ...getState().auth.user };
+    let user = {...getState().auth.user};
     let lang = getState().setting.lang;
     dispatch(setLoading());
     axios
       .post(`${API_URI}/user_subscriptions`, addData)
-      .then((res) => {
+      .then(res => {
         if (res.data.error.code) {
           dispatch({
             type: GET_ERRORS,
             payload: res.data.error.message,
           });
         } else {
-          const { data } = res.data;
+          const {data} = res.data;
 
           dispatch(clearLoading());
           dispatch(currentUser());
@@ -119,7 +119,7 @@ export const addUserSubscription =
           //navigation.navigate('Profile');
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.response.data.error) {
           dispatch(clearLoading());
           dispatch({
@@ -136,20 +136,20 @@ export const addBookingClass =
     dispatch(setLoading());
     axios
       .post(`${API_URI}/booking_classes`, addData)
-      .then((res) => {
+      .then(res => {
         if (res.data.error.code) {
           dispatch({
             type: GET_ERRORS,
             payload: res.data.error.message,
           });
         } else {
-          const { data } = res.data;
+          const {data} = res.data;
 
           dispatch(clearLoading());
-          navigation.navigate("Home");
+          navigation.navigate('Home');
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.response.data.error) {
           dispatch(clearLoading());
           dispatch({
@@ -162,20 +162,20 @@ export const addBookingClass =
 
 // get upcoming classes
 export const getUpcomingClasses = () => (dispatch, getState) => {
-  const { id } = getState().auth.user;
+  const {id} = getState().auth.user;
   let url = `${API_URI}/booking_classes?filter={"where": {"user_id": ${id}}}`;
 
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_UPCOMING_CLASSES,
@@ -184,7 +184,7 @@ export const getUpcomingClasses = () => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -197,20 +197,20 @@ export const getUpcomingClasses = () => (dispatch, getState) => {
 
 // get completed classes
 export const getCompletedClasses = () => (dispatch, getState) => {
-  const { id } = getState().auth.user;
+  const {id} = getState().auth.user;
   let url = `${API_URI}/booking_classes?filter={"where": {"user_id": ${id}}}`;
 
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_COMPLETED_CLASSES,
@@ -219,7 +219,7 @@ export const getCompletedClasses = () => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -231,10 +231,10 @@ export const getCompletedClasses = () => (dispatch, getState) => {
 };
 
 // Get what's on today
-export const getWhatsOnToday = (user_id) => async (dispatch, getState) => {
+export const getWhatsOnToday = user_id => async (dispatch, getState) => {
   //const user_id = await AsyncStorage.getItem('user_id');
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
 
   let url = `${API_URI}/whats_on_today?filter={"where":{"user_id":${user_id},"is_cancel":false}}`;
 
@@ -245,14 +245,14 @@ export const getWhatsOnToday = (user_id) => async (dispatch, getState) => {
   //dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_TODAY_CLASSES,
@@ -278,7 +278,7 @@ export const getWhatsOnToday = (user_id) => async (dispatch, getState) => {
         // dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         //dispatch(clearLoading());
         dispatch({
@@ -290,15 +290,15 @@ export const getWhatsOnToday = (user_id) => async (dispatch, getState) => {
 };
 
 // get Subscriptions
-export const getSubscriptionsRefresh = () => (dispatch) => {
+export const getSubscriptionsRefresh = () => dispatch => {
   let url = `${API_URI}/subscriptions`;
 
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_SUBSCRIPTIONS,
@@ -306,7 +306,7 @@ export const getSubscriptionsRefresh = () => (dispatch) => {
         });
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
       }
     });

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -7,29 +7,29 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-} from "react-native";
-import { connect } from "react-redux";
-import { Container, Header, Icon, Left, Button, Body } from "native-base";
-import normalize from "react-native-normalize";
-import isEmpty from "../../validation/is-empty";
-import { clearErrors } from "../../actions/errorAction";
-import I18n from "../../utils/i18n";
-import CalendarStrip from "../../react-native-slideable-calendar-strip";
-import RangeSlider from "rn-range-slider";
-import moment from "moment-timezone";
-moment.tz.setDefault("Asia/Qatar");
+} from 'react-native';
+import {connect} from 'react-redux';
+import {Container, Header, Icon, Left, Button, Body} from 'native-base';
+import normalize from 'react-native-normalize';
+import isEmpty from '../../validation/is-empty';
+import {clearErrors} from '../../actions/errorAction';
+import I18n from '../../utils/i18n';
+import CalendarStrip from '../../react-native-slideable-calendar-strip';
+import RangeSlider from 'rn-range-slider';
+import moment from 'moment-timezone';
+moment.tz.setDefault('Asia/Qatar');
 
 //import {getCategories} from '../../actions/homeActions';
 import {
   getFilterFindClasses,
   getFilterFindClassCount,
   getCategories,
-} from "../../actions/findClassActions";
+} from '../../actions/findClassActions';
 
 const genders = [
-  { id: 1, name: "Male", name_ar: "الذكر" },
-  { id: 2, name: "Female", name_ar: "أنثى" },
-  { id: 3, name: "Mixed", name_ar: "مختلط" },
+  {id: 1, name: 'Male', name_ar: 'الذكر'},
+  {id: 2, name: 'Female', name_ar: 'أنثى'},
+  {id: 3, name: 'Mixed', name_ar: 'مختلط'},
 ];
 
 export class Membership extends Component {
@@ -39,8 +39,8 @@ export class Membership extends Component {
       selectedDate: new Date(),
       rangeLow: 18000000,
       rangeHigh: 75600000,
-      start_time: moment.utc(18000000).format("HH:mm:ss"),
-      end_time: moment.utc(75600000).format("HH:mm:ss"),
+      start_time: moment.utc(18000000).format('HH:mm:ss'),
+      end_time: moment.utc(75600000).format('HH:mm:ss'),
       creditRangeLow: 0,
       creditRangeHigh: 50,
       gender_id: [],
@@ -51,21 +51,21 @@ export class Membership extends Component {
   async componentDidMount() {
     this.handleSearchFilterCount();
     //this.props.clearErrors();
-    BackHandler.addEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     this.props.getCategories();
   }
 
-  handleBack = async (back) => {
+  handleBack = async back => {
     this.props.navigation.goBack();
     return true;
   };
 
   componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
   }
 
-  handleSelectDate = (date) => {
-    const { selectedDate } = this.state;
+  handleSelectDate = date => {
+    const {selectedDate} = this.state;
 
     //this.setState({selectedDate: date});
     this.setState(
@@ -74,20 +74,20 @@ export class Membership extends Component {
       },
       () => {
         this.handleSearchFilterCount();
-      }
+      },
     );
   };
 
-  handleSelectTime = (e) => {
+  handleSelectTime = e => {
     if (!isEmpty(e)) {
       // e.preventDefault();
-      const { lang } = this.props.setting;
-      const { selectedDate } = this.state;
+      const {lang} = this.props.setting;
+      const {selectedDate} = this.state;
       this.handleSearchFilterCount();
     }
   };
 
-  handleSelectCredit = (e) => {
+  handleSelectCredit = e => {
     if (!isEmpty(e)) {
       e.preventDefault();
       this.handleSearchFilterCount();
@@ -106,13 +106,13 @@ export class Membership extends Component {
       category_type_id,
     } = this.state;
     let filter;
-    let whereFilter = "";
-    let inClass = "";
-    let inClassCategory = "";
+    let whereFilter = '';
+    let inClass = '';
+    let inClassCategory = '';
     let date = new Date(selectedDate);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split("T")[0];
+      .split('T')[0];
 
     if (!isEmpty(gender_id)) {
       inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
@@ -144,7 +144,7 @@ export class Membership extends Component {
     this.props.getFilterFindClassCount(filter);
   };
 
-  handleSearchFilter = (e) => {
+  handleSearchFilter = e => {
     e.preventDefault();
     const {
       start_time,
@@ -159,13 +159,13 @@ export class Membership extends Component {
       rangeHigh,
     } = this.state;
     let filter;
-    let whereFilter = "";
-    let inClass = "";
-    let inClassCategory = "";
+    let whereFilter = '';
+    let inClass = '';
+    let inClassCategory = '';
     let date = new Date(selectedDate);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split("T")[0];
+      .split('T')[0];
     if (!isEmpty(gender_id)) {
       inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
     }
@@ -208,10 +208,10 @@ export class Membership extends Component {
     });
   };
 
-  handleGender = (id) => {
+  handleGender = id => {
     let gender_id = [...this.state.gender_id];
     if (gender_id.indexOf(id) > -1) {
-      gender_id = gender_id.filter((genId) => genId !== id);
+      gender_id = gender_id.filter(genId => genId !== id);
     } else {
       gender_id.push(id);
     }
@@ -221,14 +221,14 @@ export class Membership extends Component {
       },
       () => {
         this.handleSearchFilterCount();
-      }
+      },
     );
     //this.setState({gender_id: id});
   };
-  handleCategory = (id) => {
+  handleCategory = id => {
     let category_id = [...this.state.category_id];
     if (category_id.indexOf(id) > -1) {
-      category_id = category_id.filter((catId) => catId !== id);
+      category_id = category_id.filter(catId => catId !== id);
     } else {
       category_id.push(id);
     }
@@ -238,14 +238,14 @@ export class Membership extends Component {
       },
       () => {
         this.handleSearchFilterCount();
-      }
+      },
     );
     //this.setState({category_id: id});
   };
-  handleCategoryType = (id) => {
+  handleCategoryType = id => {
     let category_type_id = [...this.state.category_type_id];
     if (category_type_id.indexOf(id) > -1) {
-      category_type_id = category_type_id.filter((catId) => catId !== id);
+      category_type_id = category_type_id.filter(catId => catId !== id);
     } else {
       category_type_id.push(id);
     }
@@ -255,23 +255,23 @@ export class Membership extends Component {
       },
       () => {
         this.handleSearchFilterCount();
-      }
+      },
     );
   };
   render() {
-    const { gym_count, class_count, categories } = this.props.findClass;
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const {gym_count, class_count, categories} = this.props.findClass;
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     /// const {categories} = this.props.home;
-    const { selectedDate } = this.state;
+    const {selectedDate} = this.state;
     let date = new Date(selectedDate);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split("T")[0];
+      .split('T')[0];
     return (
-      <Container style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+      <Container style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <Header style={styles.headerContainer}>
           <Left>
             <Button transparent onPress={this.handleBack}>
@@ -282,67 +282,61 @@ export class Membership extends Component {
                   style={styles.backButtonIcon}
                 />
                 <Text style={styles.backButtonText}>
-                  {I18n.t("back", { locale: lang })}
+                  {I18n.t('back', {locale: lang})}
                 </Text>
               </View>
             </Button>
           </Left>
           <Body />
         </Header>
-        <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View
               style={{
                 marginHorizontal: normalize(16),
-              }}
-            >
+              }}>
               <Text
                 style={{
-                  color: "#231F20",
+                  color: '#231F20',
                   fontSize: normalize(40),
-                  fontWeight: "bold",
+                  fontWeight: 'bold',
                   textAlign: textAlign,
-                }}
-              >
-                {I18n.t("filter", { locale: lang })}
+                }}>
+                {I18n.t('filter', {locale: lang})}
               </Text>
             </View>
             <View
               style={{
                 marginHorizontal: normalize(16),
                 marginTop: normalize(24),
-                display: "flex",
+                display: 'flex',
                 flexDirection: flexDirection,
-                justifyContent: "space-between",
-              }}
-            >
+                justifyContent: 'space-between',
+              }}>
               <View
                 style={{
                   width: normalize(164),
                   height: normalize(32),
-                  backgroundColor: "#EBEBEB",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  backgroundColor: '#EBEBEB',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   borderRadius: normalize(14),
-                }}
-              >
-                <Text style={{ color: "#22242A", fontSize: normalize(16) }}>
-                  {I18n.t("gyms", { locale: lang })} (
-                  {gym_count ? gym_count : 0})
+                }}>
+                <Text style={{color: '#22242A', fontSize: normalize(16)}}>
+                  {I18n.t('gyms', {locale: lang})} ({gym_count ? gym_count : 0})
                 </Text>
               </View>
               <View
                 style={{
                   width: normalize(164),
                   height: normalize(32),
-                  backgroundColor: "#EBEBEB",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  backgroundColor: '#EBEBEB',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   borderRadius: normalize(14),
-                }}
-              >
-                <Text style={{ color: "#22242A", fontSize: normalize(16) }}>
-                  {I18n.t("classes", { locale: lang })} (
+                }}>
+                <Text style={{color: '#22242A', fontSize: normalize(16)}}>
+                  {I18n.t('classes', {locale: lang})} (
                   {class_count ? class_count : 0})
                 </Text>
               </View>
@@ -352,30 +346,27 @@ export class Membership extends Component {
                 marginTop: normalize(24),
                 marginHorizontal: normalize(16),
                 flexDirection: flexDirection,
-                justifyContent: "space-between",
-              }}
-            >
+                justifyContent: 'space-between',
+              }}>
               <Text
                 style={{
                   fontSize: normalize(20),
-                  fontWeight: "bold",
-                  color: "#231F20",
+                  fontWeight: 'bold',
+                  color: '#231F20',
                   textAlign: textAlign,
-                }}
-              >
-                {I18n.t("dateTime", { locale: lang })}
+                }}>
+                {I18n.t('dateTime', {locale: lang})}
               </Text>
-              <Text style={{ color: "#8A8A8F" }}>
-                {selectedDate ? dateString : ""}
+              <Text style={{color: '#8A8A8F'}}>
+                {selectedDate ? dateString : ''}
               </Text>
             </View>
             <View
               style={{
                 marginTop: normalize(16),
                 //marginHorizontal: normalize(16),
-                flexDirection: "row",
-              }}
-            >
+                flexDirection: 'row',
+              }}>
               <CalendarStrip
                 selectedDate={this.state.selectedDate}
                 onPressDate={this.handleSelectDate}
@@ -390,23 +381,21 @@ export class Membership extends Component {
             <View
               style={{
                 marginHorizontal: normalize(16),
-              }}
-            >
+              }}>
               <View
                 style={{
                   marginLeft: normalize(7),
                   marginRight: normalize(10),
                   marginBottom: normalize(15),
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={{ fontSize: normalize(16), color: "#22242A" }}>
-                  {moment.utc(this.state.rangeLow).format("hh:mm A")}
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Text style={{fontSize: normalize(16), color: '#22242A'}}>
+                  {moment.utc(this.state.rangeLow).format('hh:mm A')}
                 </Text>
-                <Text style={{ fontSize: normalize(16), color: "#22242A" }}>
-                  {moment.utc(this.state.rangeHigh).format("hh:mm A")}
+                <Text style={{fontSize: normalize(16), color: '#22242A'}}>
+                  {moment.utc(this.state.rangeHigh).format('hh:mm A')}
                 </Text>
               </View>
               <RangeSlider
@@ -416,14 +405,14 @@ export class Membership extends Component {
                   height: 70,
                   // top: normalize(-30),
                 }}
-                gravity={"center"}
+                gravity={'center'}
                 min={0}
                 max={86344000}
                 step={1800000}
                 valueType="time"
                 textFormat="hh:mm a"
                 disabled={selectedDate ? false : true}
-                selectionColor={selectedDate ? "#FE9800" : "#8A8A8F"}
+                selectionColor={selectedDate ? '#FE9800' : '#8A8A8F'}
                 blankColor="#F1F1F1"
                 renderThumb={() => {
                   return (
@@ -432,11 +421,10 @@ export class Membership extends Component {
                         width: 25,
                         height: 25,
                         borderRadius: 20,
-                        backgroundColor: "#fff",
-                        borderColor: "#FE9800",
+                        backgroundColor: '#fff',
+                        borderColor: '#FE9800',
                         borderWidth: 5,
-                      }}
-                    ></View>
+                      }}></View>
                   );
                 }}
                 renderRail={() => {
@@ -446,9 +434,8 @@ export class Membership extends Component {
                         flex: 1,
                         height: 6,
                         borderRadius: 2,
-                        backgroundColor: "#EBEBEB",
-                      }}
-                    ></View>
+                        backgroundColor: '#EBEBEB',
+                      }}></View>
                   );
                 }}
                 renderRailSelected={() => {
@@ -456,10 +443,9 @@ export class Membership extends Component {
                     <View
                       style={{
                         height: 6,
-                        backgroundColor: "#FE9800",
+                        backgroundColor: '#FE9800',
                         borderRadius: 2,
-                      }}
-                    ></View>
+                      }}></View>
                   );
                 }}
                 onValueChanged={(low, high, fromUser) => {
@@ -467,14 +453,14 @@ export class Membership extends Component {
                     this.setState({
                       rangeLow: low,
                       rangeHigh: high,
-                      start_time: moment.utc(low).format("HH:mm:ss"),
-                      end_time: moment.utc(high).format("HH:mm:ss"),
+                      start_time: moment.utc(low).format('HH:mm:ss'),
+                      end_time: moment.utc(high).format('HH:mm:ss'),
                     });
                   }
                 }}
                 low={this.state.rangeLow}
                 high={this.state.rangeHigh}
-                onTouchEnd={(e) => this.handleSelectTime(e)}
+                onTouchEnd={e => this.handleSelectTime(e)}
               />
               {/* <RangeSlider
                 disabled={selectedDate ? false : true}
@@ -518,17 +504,15 @@ export class Membership extends Component {
               style={{
                 marginHorizontal: normalize(16),
                 marginTop: normalize(-20),
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: normalize(20),
-                  fontWeight: "bold",
-                  color: "#231F20",
+                  fontWeight: 'bold',
+                  color: '#231F20',
                   textAlign: textAlign,
-                }}
-              >
-                {I18n.t("numberOfCreditsPerClass", { locale: lang })}
+                }}>
+                {I18n.t('numberOfCreditsPerClass', {locale: lang})}
               </Text>
               <View
                 style={{
@@ -536,15 +520,14 @@ export class Membership extends Component {
                   marginRight: normalize(10),
                   marginBottom: normalize(15),
                   marginTop: normalize(10),
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={{ fontSize: normalize(16), color: "#22242A" }}>
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Text style={{fontSize: normalize(16), color: '#22242A'}}>
                   {this.state.creditRangeLow}
                 </Text>
-                <Text style={{ fontSize: normalize(16), color: "#22242A" }}>
+                <Text style={{fontSize: normalize(16), color: '#22242A'}}>
                   {this.state.creditRangeHigh}
                 </Text>
               </View>
@@ -555,7 +538,7 @@ export class Membership extends Component {
                   height: 70,
                   // top: normalize(-30),
                 }}
-                gravity={"center"}
+                gravity={'center'}
                 min={0}
                 max={50}
                 step={1}
@@ -570,11 +553,10 @@ export class Membership extends Component {
                         width: 25,
                         height: 25,
                         borderRadius: 20,
-                        backgroundColor: "#fff",
-                        borderColor: "#FE9800",
+                        backgroundColor: '#fff',
+                        borderColor: '#FE9800',
                         borderWidth: 5,
-                      }}
-                    ></View>
+                      }}></View>
                   );
                 }}
                 renderRail={() => {
@@ -584,9 +566,8 @@ export class Membership extends Component {
                         flex: 1,
                         height: 6,
                         borderRadius: 2,
-                        backgroundColor: "#EBEBEB",
-                      }}
-                    ></View>
+                        backgroundColor: '#EBEBEB',
+                      }}></View>
                   );
                 }}
                 renderRailSelected={() => {
@@ -594,10 +575,9 @@ export class Membership extends Component {
                     <View
                       style={{
                         height: 6,
-                        backgroundColor: "#FE9800",
+                        backgroundColor: '#FE9800',
                         borderRadius: 2,
-                      }}
-                    ></View>
+                      }}></View>
                   );
                 }}
                 onValueChanged={(low, high, fromUser) => {
@@ -610,7 +590,7 @@ export class Membership extends Component {
                 }}
                 initialLowValue={0}
                 initialHighValue={50}
-                onTouchEnd={(e) => this.handleSelectTime(e)}
+                onTouchEnd={e => this.handleSelectTime(e)}
               />
               {/* <RangeSlider
                 style={{
@@ -667,25 +647,23 @@ export class Membership extends Component {
               style={{
                 marginHorizontal: normalize(16),
                 marginTop: normalize(16),
-              }}
-            >
-              <View style={{ marginBottom: normalize(16) }}>
+              }}>
+              <View style={{marginBottom: normalize(16)}}>
                 <Text
                   style={{
                     fontSize: normalize(20),
-                    fontWeight: "bold",
-                    color: "#231F20",
+                    fontWeight: 'bold',
+                    color: '#231F20',
                     textAlign: textAlign,
-                  }}
-                >
-                  {I18n.t("gender", { locale: lang })}
+                  }}>
+                  {I18n.t('gender', {locale: lang})}
                 </Text>
               </View>
 
-              <View style={{ flexDirection: flexDirection, flexWrap: "wrap" }}>
+              <View style={{flexDirection: flexDirection, flexWrap: 'wrap'}}>
                 {genders.map((gender, index) => (
                   <TouchableOpacity
-                    onPress={(id) => this.handleGender(gender.id)}
+                    onPress={id => this.handleGender(gender.id)}
                     key={index}
                     style={{
                       height: normalize(32),
@@ -693,22 +671,20 @@ export class Membership extends Component {
                       paddingVertical: normalize(7),
                       backgroundColor:
                         this.state.gender_id.indexOf(gender.id) > -1
-                          ? "#FE9800"
-                          : "#F9F9F9",
+                          ? '#FE9800'
+                          : '#F9F9F9',
                       borderRadius: normalize(16),
                       margin: normalize(5),
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontSize: normalize(16),
                         color:
                           this.state.gender_id.indexOf(gender.id) > -1
-                            ? "#ffffff"
-                            : "#8A8A8F",
-                      }}
-                    >
-                      {lang === "ar" ? gender.name_ar : gender.name}
+                            ? '#ffffff'
+                            : '#8A8A8F',
+                      }}>
+                      {lang === 'ar' ? gender.name_ar : gender.name}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -718,25 +694,23 @@ export class Membership extends Component {
               style={{
                 marginHorizontal: normalize(16),
                 marginTop: normalize(16),
-              }}
-            >
-              <View style={{ marginBottom: normalize(16) }}>
+              }}>
+              <View style={{marginBottom: normalize(16)}}>
                 <Text
                   style={{
                     fontSize: normalize(20),
-                    fontWeight: "bold",
-                    color: "#231F20",
+                    fontWeight: 'bold',
+                    color: '#231F20',
                     textAlign: textAlign,
-                  }}
-                >
-                  {I18n.t("classType", { locale: lang })}
+                  }}>
+                  {I18n.t('classType', {locale: lang})}
                 </Text>
               </View>
 
-              <View style={{ flexDirection: flexDirection, flexWrap: "wrap" }}>
+              <View style={{flexDirection: flexDirection, flexWrap: 'wrap'}}>
                 {categories.map((category, index) => (
                   <TouchableOpacity
-                    onPress={(id) => this.handleCategory(category.id)}
+                    onPress={id => this.handleCategory(category.id)}
                     key={index}
                     style={{
                       height: normalize(32),
@@ -744,22 +718,20 @@ export class Membership extends Component {
                       paddingVertical: normalize(7),
                       backgroundColor:
                         this.state.category_id.indexOf(category.id) > -1
-                          ? "#FE9800"
-                          : "#F9F9F9",
+                          ? '#FE9800'
+                          : '#F9F9F9',
                       borderRadius: normalize(16),
                       margin: normalize(5),
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontSize: normalize(16),
                         color:
                           this.state.category_id.indexOf(category.id) > -1
-                            ? "#ffffff"
-                            : "#8A8A8F",
-                      }}
-                    >
-                      {lang === "ar" ? category.name_ar : category.name}
+                            ? '#ffffff'
+                            : '#8A8A8F',
+                      }}>
+                      {lang === 'ar' ? category.name_ar : category.name}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -770,98 +742,90 @@ export class Membership extends Component {
               style={{
                 marginHorizontal: normalize(16),
                 marginTop: normalize(16),
-              }}
-            >
-              <View style={{ marginBottom: normalize(16) }}>
+              }}>
+              <View style={{marginBottom: normalize(16)}}>
                 <Text
                   style={{
                     fontSize: normalize(20),
-                    fontWeight: "bold",
-                    color: "#231F20",
+                    fontWeight: 'bold',
+                    color: '#231F20',
                     textAlign: textAlign,
-                  }}
-                >
-                  {I18n.t("category", { locale: lang })}
+                  }}>
+                  {I18n.t('category', {locale: lang})}
                 </Text>
               </View>
 
-              <View style={{ flexDirection: flexDirection, flexWrap: "wrap" }}>
+              <View style={{flexDirection: flexDirection, flexWrap: 'wrap'}}>
                 <TouchableOpacity
-                  onPress={(id) => this.handleCategoryType(1)}
+                  onPress={id => this.handleCategoryType(1)}
                   style={{
                     height: normalize(32),
                     paddingHorizontal: normalize(24),
                     paddingVertical: normalize(7),
                     backgroundColor:
                       this.state.category_type_id.indexOf(1) > -1
-                        ? "#FE9800"
-                        : "#F9F9F9",
+                        ? '#FE9800'
+                        : '#F9F9F9',
                     borderRadius: normalize(16),
                     margin: normalize(5),
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontSize: normalize(16),
                       color:
                         this.state.category_type_id.indexOf(1) > -1
-                          ? "#ffffff"
-                          : "#8A8A8F",
-                    }}
-                  >
-                    {I18n.t("virtual", { locale: lang })}
+                          ? '#ffffff'
+                          : '#8A8A8F',
+                    }}>
+                    {I18n.t('virtual', {locale: lang})}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={(id) => this.handleCategoryType(0)}
+                  onPress={id => this.handleCategoryType(0)}
                   style={{
                     height: normalize(32),
                     paddingHorizontal: normalize(24),
                     paddingVertical: normalize(7),
                     backgroundColor:
                       this.state.category_type_id.indexOf(0) > -1
-                        ? "#FE9800"
-                        : "#F9F9F9",
+                        ? '#FE9800'
+                        : '#F9F9F9',
                     borderRadius: normalize(16),
                     margin: normalize(5),
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontSize: normalize(16),
                       color:
                         this.state.category_type_id.indexOf(0) > -1
-                          ? "#ffffff"
-                          : "#8A8A8F",
-                    }}
-                  >
-                    {I18n.t("offline", { locale: lang })}
+                          ? '#ffffff'
+                          : '#8A8A8F',
+                    }}>
+                    {I18n.t('offline', {locale: lang})}
                   </Text>
                 </TouchableOpacity>
               </View>
             </View>
             {/* End Category */}
             <TouchableOpacity
-              onPress={(e) => this.handleSearchFilter(e)}
+              onPress={e => this.handleSearchFilter(e)}
               style={{
                 marginVertical: normalize(30),
                 marginHorizontal: normalize(32),
                 width: normalize(310),
                 height: normalize(48),
-                backgroundColor: "#FE9800",
-                justifyContent: "center",
-                alignItems: "center",
+                backgroundColor: '#FE9800',
+                justifyContent: 'center',
+                alignItems: 'center',
                 borderRadius: normalize(24),
-              }}
-            >
+              }}>
               <Text
                 style={{
-                  color: "#ffffff",
+                  color: '#ffffff',
                   fontSize: normalize(16),
-                  fontWeight: "bold",
-                }}
-              >
-                {I18n.t("showMeResults", { locale: lang })}
+                  fontWeight: 'bold',
+                }}>
+                {I18n.t('showMeResults', {locale: lang})}
               </Text>
             </TouchableOpacity>
           </ScrollView>
@@ -873,28 +837,28 @@ export class Membership extends Component {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 0,
   },
   backButtonContainer: {
-    justifyContent: "center",
-    display: "flex",
-    flexDirection: "row",
+    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'row',
   },
   backButtonIcon: {
     fontSize: normalize(18),
-    color: "#22242A",
-    fontWeight: "bold",
+    color: '#22242A',
+    fontWeight: 'bold',
   },
   backButtonText: {
     fontSize: normalize(12),
-    color: "#22242A",
+    color: '#22242A',
 
-    top: Platform.OS === "ios" ? normalize(3) : normalize(3.3),
+    top: Platform.OS === 'ios' ? normalize(3) : normalize(3.3),
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   findClass: state.findClass,
   setting: state.setting,

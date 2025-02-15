@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 //import {AsyncStorage} from 'react-native';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import setAuthToken from "../utils/setAuthToken";
-import { API_URI } from "../utils/config";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import setAuthToken from '../utils/setAuthToken';
+import {API_URI} from '../utils/config';
 
 import {
   GET_ERRORS,
@@ -24,7 +24,7 @@ import {
   CLEAR_GYM,
   CLEAR_CLASS,
   GET_WHAT_TODAY_CLASSES,
-} from "./types";
+} from './types';
 
 //  Get User User
 export const setLoading = () => {
@@ -41,8 +41,8 @@ export const clearLoading = () => {
 
 // Get Nearest gyms
 export const getGyms = () => async (dispatch, getState) => {
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
 
   // const latitude = "55.75";
   // const longitude = "37.6167";
@@ -54,14 +54,14 @@ export const getGyms = () => async (dispatch, getState) => {
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_NEAREST_GYMS,
@@ -70,7 +70,7 @@ export const getGyms = () => async (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -82,8 +82,8 @@ export const getGyms = () => async (dispatch, getState) => {
 };
 
 export const getGymsLocation = () => async (dispatch, getState) => {
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
   /* let latitude = getState().setting.latitude;
   let longitude = getState().setting.longitude; */
 
@@ -92,14 +92,14 @@ export const getGymsLocation = () => async (dispatch, getState) => {
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_NEAREST_GYMS,
           payload: data,
@@ -107,7 +107,7 @@ export const getGymsLocation = () => async (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -121,22 +121,22 @@ export const getGymsLocation = () => async (dispatch, getState) => {
 // Get Nearest gyms
 export const getRecommendedGyms = () => async (dispatch, getState) => {
   let url = `${API_URI}/recommend_gym?filter={"where": {"is_active": 1}}`;
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
   if (latitude && longitude) {
     url = `${url}&latitude=${latitude}&longitude=${longitude}`;
   }
   //dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_RECOMMENDED_GYMS,
           payload: data,
@@ -144,7 +144,7 @@ export const getRecommendedGyms = () => async (dispatch, getState) => {
         //dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         //dispatch(clearLoading());
         dispatch({
@@ -156,20 +156,20 @@ export const getRecommendedGyms = () => async (dispatch, getState) => {
 };
 
 // Get Nearest gym
-export const getGym = (id) => (dispatch, getState) => {
+export const getGym = id => (dispatch, getState) => {
   let url = `${API_URI}/gyms/${id}`;
 
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_GYM,
           payload: data,
@@ -177,7 +177,7 @@ export const getGym = (id) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -188,9 +188,9 @@ export const getGym = (id) => (dispatch, getState) => {
     });
 };
 
-export const getGymLocation = (id) => async (dispatch, getState) => {
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+export const getGymLocation = id => async (dispatch, getState) => {
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
   /* let latitude = getState().setting.latitude;
   let longitude = getState().setting.longitude; */
   let url = `${API_URI}/gyms/${id}?latitude=${latitude}&longitude=${longitude}`;
@@ -198,14 +198,14 @@ export const getGymLocation = (id) => async (dispatch, getState) => {
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_GYM,
@@ -214,7 +214,7 @@ export const getGymLocation = (id) => async (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -226,18 +226,18 @@ export const getGymLocation = (id) => async (dispatch, getState) => {
 };
 
 // Get Categories
-export const getCategories = () => (dispatch) => {
+export const getCategories = () => dispatch => {
   //dispatch(setLoading());
   axios
     .get(`${API_URI}/recommend_category?filter={"where": {"is_active": 1}}`)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_TOP_CATEGORIES,
@@ -246,7 +246,7 @@ export const getCategories = () => (dispatch) => {
         //dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         // dispatch(clearLoading());
         dispatch({
@@ -258,18 +258,18 @@ export const getCategories = () => (dispatch) => {
 };
 
 // get genders
-export const getGenders = () => (dispatch) => {
+export const getGenders = () => dispatch => {
   //dispatch(setLoading());
   axios
     .get(`${API_URI}/categories`)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_CATEGORIES,
           payload: data,
@@ -277,7 +277,7 @@ export const getGenders = () => (dispatch) => {
         //dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         // dispatch(clearLoading());
         dispatch({
@@ -288,27 +288,27 @@ export const getGenders = () => (dispatch) => {
     });
 };
 
-export const addFavorite = (addFavoriteData) => (dispatch, getState) => {
-  let gym = { ...getState().home.gym };
-  let gymClass = { ...getState().home.class };
+export const addFavorite = addFavoriteData => (dispatch, getState) => {
+  let gym = {...getState().home.gym};
+  let gymClass = {...getState().home.class};
 
   axios
     .post(`${API_URI}/favourites`, addFavoriteData)
-    .then(async (res) => {
+    .then(async res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error.message,
         });
       } else {
-        const { data } = res.data;
-        if (addFavoriteData.class === "Gym") {
+        const {data} = res.data;
+        if (addFavoriteData.class === 'Gym') {
           gym.favourite = data;
           dispatch({
             type: GET_GYM,
             payload: gym,
           });
-        } else if (addFavoriteData.class === "Class") {
+        } else if (addFavoriteData.class === 'Class') {
           gymClass.favourite = data;
           dispatch({
             type: GET_CLASS,
@@ -319,7 +319,7 @@ export const addFavorite = (addFavoriteData) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -331,38 +331,38 @@ export const addFavorite = (addFavoriteData) => (dispatch, getState) => {
 };
 
 export const removeFavorite = (id, favType) => (dispatch, getState) => {
-  let gym = { ...getState().home.gym };
-  let gymClass = { ...getState().home.class };
+  let gym = {...getState().home.gym};
+  let gymClass = {...getState().home.class};
   let favourites = [...getState().home.favourites];
   /* dispatch({
     type: LOADING,
   }); */
   axios
     .delete(`${API_URI}/favourites/${id}`)
-    .then(async (res) => {
+    .then(async res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error.message,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         if (favourites.length > 0) {
-          favourites = favourites.filter((favourite) => favourite.id !== id);
+          favourites = favourites.filter(favourite => favourite.id !== id);
           dispatch({
             type: GET_FAVOURITES,
             payload: favourites,
           });
         }
 
-        if (favType === "Gym") {
+        if (favType === 'Gym') {
           delete gym.favourite;
           dispatch({
             type: GET_GYM,
             payload: gym,
           });
-        } else if (favType === "Class") {
+        } else if (favType === 'Class') {
           delete gymClass.favourite;
           dispatch({
             type: GET_CLASS,
@@ -373,7 +373,7 @@ export const removeFavorite = (id, favType) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -384,21 +384,21 @@ export const removeFavorite = (id, favType) => (dispatch, getState) => {
     });
 };
 
-export const getFavorites = (user_id) => (dispatch, getState) => {
+export const getFavorites = user_id => (dispatch, getState) => {
   //let gym = {...getState().home.gym};
   dispatch({
     type: LOADING,
   });
   axios
     .get(`${API_URI}/favourites?filter={"where": {"user_id": ${user_id}}}`)
-    .then(async (res) => {
+    .then(async res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error.message,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_FAVOURITES,
@@ -407,7 +407,7 @@ export const getFavorites = (user_id) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -418,9 +418,9 @@ export const getFavorites = (user_id) => (dispatch, getState) => {
     });
 };
 
-export const addReview = (addReviewData) => (dispatch, getState) => {
-  let gym = { ...getState().home.gym };
-  let gymClass = { ...getState().home.class };
+export const addReview = addReviewData => (dispatch, getState) => {
+  let gym = {...getState().home.gym};
+  let gymClass = {...getState().home.class};
   let reviews = [...getState().home.reviews];
 
   dispatch({
@@ -428,15 +428,15 @@ export const addReview = (addReviewData) => (dispatch, getState) => {
   });
   axios
     .post(`${API_URI}/reviews`, addReviewData)
-    .then(async (res) => {
+    .then(async res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error.message,
         });
       } else {
-        const { data } = res.data;
-        if (addReviewData.class === "Gym") {
+        const {data} = res.data;
+        if (addReviewData.class === 'Gym') {
           if (gym.reviews.length < 2) {
             gym.reviews.push(data);
             gym.rating_count = gym.rating_count + 1;
@@ -445,7 +445,7 @@ export const addReview = (addReviewData) => (dispatch, getState) => {
               payload: gym,
             });
           }
-        } else if (addReviewData.class === "Class") {
+        } else if (addReviewData.class === 'Class') {
           if (gymClass.reviews.length < 2) {
             gymClass.reviews.push(data);
             gymClass.rating_count = gymClass.rating_count + 1;
@@ -465,7 +465,7 @@ export const addReview = (addReviewData) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -484,16 +484,16 @@ export const getReviews =
     });
     axios
       .get(
-        `${API_URI}/reviews?filter={"where": {"foreign_id": ${foreign_id}, "class": "${foreign_class}", "is_active": 1}}`
+        `${API_URI}/reviews?filter={"where": {"foreign_id": ${foreign_id}, "class": "${foreign_class}", "is_active": 1}}`,
       )
-      .then(async (res) => {
+      .then(async res => {
         if (res.data.error.code) {
           dispatch({
             type: GET_ERRORS,
             payload: res.data.error.message,
           });
         } else {
-          const { data } = res.data;
+          const {data} = res.data;
 
           dispatch({
             type: GET_REVIEWS,
@@ -502,7 +502,7 @@ export const getReviews =
           dispatch(clearLoading());
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.response.data.error) {
           dispatch(clearLoading());
           dispatch({
@@ -520,14 +520,14 @@ export const getClasses = () => (dispatch, getState) => {
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_CLASSES,
           payload: data,
@@ -535,7 +535,7 @@ export const getClasses = () => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -549,21 +549,21 @@ export const getClasses = () => (dispatch, getState) => {
 export const getClassesLocation = () => async (dispatch, getState) => {
   /* let latitude = getState().setting.latitude;
   let longitude = getState().setting.longitude; */
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
   let url = `${API_URI}/classes?filter={"inClass": {"is_active": 1}}&latitude=${latitude}&longitude=${longitude}`;
 
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_CLASSES,
           payload: data,
@@ -571,7 +571,7 @@ export const getClassesLocation = () => async (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -584,22 +584,22 @@ export const getClassesLocation = () => async (dispatch, getState) => {
 
 export const getRecommendedClasses = () => async (dispatch, getState) => {
   let url = `${API_URI}/recommend_class?filter={"where": {"is_active": 1}}`;
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
   if (latitude && longitude) {
     url = `${url}&latitude=${latitude}&longitude=${longitude}`;
   }
   //dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_RECOMMENDED_CLASSES,
           payload: data,
@@ -607,7 +607,7 @@ export const getRecommendedClasses = () => async (dispatch, getState) => {
         // dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         //dispatch(clearLoading());
         dispatch({
@@ -619,20 +619,20 @@ export const getRecommendedClasses = () => async (dispatch, getState) => {
 };
 
 // Get Category classes
-export const getCategoryClasses = (id) => (dispatch, getState) => {
+export const getCategoryClasses = id => (dispatch, getState) => {
   dispatch(setLoading());
   axios
     .get(
-      `${API_URI}/classes?filter={"inClass": {"is_active": 1},"inClassCategory": {"category_id": ${id}}}`
+      `${API_URI}/classes?filter={"inClass": {"is_active": 1},"inClassCategory": {"category_id": ${id}}}`,
     )
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_CATEGORY_CLASSES,
           payload: data,
@@ -640,7 +640,7 @@ export const getCategoryClasses = (id) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -652,20 +652,20 @@ export const getCategoryClasses = (id) => (dispatch, getState) => {
 };
 
 // Get Nearest classes
-export const getCoachClasses = (id) => (dispatch, getState) => {
+export const getCoachClasses = id => (dispatch, getState) => {
   dispatch(setLoading());
   axios
     .get(
-      `${API_URI}/classes?filter={"inClass": {"is_active": 1},"inClassSchedule": {"coach_id": ${id}}}`
+      `${API_URI}/classes?filter={"inClass": {"is_active": 1},"inClassSchedule": {"coach_id": ${id}}}`,
     )
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_COACH_CLASSES,
           payload: data,
@@ -673,7 +673,7 @@ export const getCoachClasses = (id) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -685,19 +685,19 @@ export const getCoachClasses = (id) => (dispatch, getState) => {
 };
 
 // Get  class
-export const getClass = (id) => (dispatch, getState) => {
+export const getClass = id => (dispatch, getState) => {
   let url = `${API_URI}/classes/${id}`;
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_CLASS,
           payload: data,
@@ -705,7 +705,7 @@ export const getClass = (id) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -716,9 +716,9 @@ export const getClass = (id) => (dispatch, getState) => {
     });
 };
 
-export const getClassLocation = (id) => async (dispatch, getState) => {
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+export const getClassLocation = id => async (dispatch, getState) => {
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
   /* let latitude = getState().setting.latitude;
   let longitude = getState().setting.longitude; */
   let url = `${API_URI}/classes/${id}?latitude=${latitude}&longitude=${longitude}`;
@@ -726,14 +726,14 @@ export const getClassLocation = (id) => async (dispatch, getState) => {
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_CLASS,
           payload: data,
@@ -741,7 +741,7 @@ export const getClassLocation = (id) => async (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -753,20 +753,20 @@ export const getClassLocation = (id) => async (dispatch, getState) => {
 };
 
 // Get  class
-export const getCoach = (id) => (dispatch, getState) => {
+export const getCoach = id => (dispatch, getState) => {
   let url = `${API_URI}/coaches/${id}`;
 
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_COACH,
           payload: data,
@@ -774,7 +774,7 @@ export const getCoach = (id) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -785,9 +785,9 @@ export const getCoach = (id) => (dispatch, getState) => {
     });
 };
 
-export const getCoachLocation = (id) => async (dispatch, getState) => {
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+export const getCoachLocation = id => async (dispatch, getState) => {
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
   /* let latitude = getState().setting.latitude;
   let longitude = getState().setting.longitude; */
   let url = `${API_URI}/coaches/${id}?latitude=${latitude}&longitude=${longitude}`;
@@ -795,14 +795,14 @@ export const getCoachLocation = (id) => async (dispatch, getState) => {
   dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_COACH,
           payload: data,
@@ -810,7 +810,7 @@ export const getCoachLocation = (id) => async (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -837,24 +837,24 @@ export const getTodayClasses = () => async (dispatch, getState) => {
   let date = new Date();
   let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
     .toISOString()
-    .split("T")[0];
+    .split('T')[0];
   let url = `${API_URI}/today_classes`;
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
   if (latitude && longitude) {
     url = `${url}?latitude=${latitude}&longitude=${longitude}`;
   }
   //dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_WHAT_TODAY_CLASSES,
@@ -863,7 +863,7 @@ export const getTodayClasses = () => async (dispatch, getState) => {
         // dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         //dispatch(clearLoading());
         /* dispatch({
@@ -874,20 +874,20 @@ export const getTodayClasses = () => async (dispatch, getState) => {
     });
 };
 
-export const getCoach1 = (id) => (dispatch, getState) => {
+export const getCoach1 = id => (dispatch, getState) => {
   let url = `${API_URI}/coaches/${id}`;
 
   //dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_COACH,
           payload: data,
@@ -895,7 +895,7 @@ export const getCoach1 = (id) => (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -906,9 +906,9 @@ export const getCoach1 = (id) => (dispatch, getState) => {
     });
 };
 
-export const getCoachLocation1 = (id) => async (dispatch, getState) => {
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+export const getCoachLocation1 = id => async (dispatch, getState) => {
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
   /* let latitude = getState().setting.latitude;
   let longitude = getState().setting.longitude; */
   let url = `${API_URI}/coaches/${id}?latitude=${latitude}&longitude=${longitude}`;
@@ -916,14 +916,14 @@ export const getCoachLocation1 = (id) => async (dispatch, getState) => {
   //dispatch(setLoading());
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
           payload: res.data.error,
         });
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
         dispatch({
           type: GET_COACH,
           payload: data,
@@ -931,7 +931,7 @@ export const getCoachLocation1 = (id) => async (dispatch, getState) => {
         dispatch(clearLoading());
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
         dispatch(clearLoading());
         dispatch({
@@ -944,8 +944,8 @@ export const getCoachLocation1 = (id) => async (dispatch, getState) => {
 
 // Get Nearest gyms
 export const getGymsRefresh = () => async (dispatch, getState) => {
-  const latitude = await AsyncStorage.getItem("latitude");
-  const longitude = await AsyncStorage.getItem("longitude");
+  const latitude = await AsyncStorage.getItem('latitude');
+  const longitude = await AsyncStorage.getItem('longitude');
 
   let url = `${API_URI}/gyms?filter={"where": {"is_active": 1}}`;
   if (latitude && longitude) {
@@ -954,10 +954,10 @@ export const getGymsRefresh = () => async (dispatch, getState) => {
 
   axios
     .get(url)
-    .then((res) => {
+    .then(res => {
       if (res.data.error.code) {
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_NEAREST_GYMS,
@@ -965,21 +965,21 @@ export const getGymsRefresh = () => async (dispatch, getState) => {
         });
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
       }
     });
 };
 
-export const getFavoritesRefresh = (user_id) => (dispatch, getState) => {
+export const getFavoritesRefresh = user_id => (dispatch, getState) => {
   //let gym = {...getState().home.gym};
 
   axios
     .get(`${API_URI}/favourites?filter={"where": {"user_id": ${user_id}}}`)
-    .then(async (res) => {
+    .then(async res => {
       if (res.data.error.code) {
       } else {
-        const { data } = res.data;
+        const {data} = res.data;
 
         dispatch({
           type: GET_FAVOURITES,
@@ -987,7 +987,7 @@ export const getFavoritesRefresh = (user_id) => (dispatch, getState) => {
         });
       }
     })
-    .catch((err) => {
+    .catch(err => {
       if (err.response.data.error) {
       }
     });

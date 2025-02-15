@@ -139,15 +139,19 @@ class Otp extends Component {
       .post(`${API_URI}/users/forgot_password`, userData)
       .then(res => {
         if (res.data.error.code) {
-          
         } else {
-          toast.show(I18n.t('resendOtpSendSuccessfully', {locale: this.props.setting.lang}), {
-            type: "success",
-            placement: "bottom",
-            duration: 2000,
-            offset: 30,
-            animationType: "slide-in",
-          });
+          toast.show(
+            I18n.t('resendOtpSendSuccessfully', {
+              locale: this.props.setting.lang,
+            }),
+            {
+              type: 'success',
+              placement: 'bottom',
+              duration: 2000,
+              offset: 30,
+              animationType: 'slide-in',
+            },
+          );
         }
       })
       .catch(err => {
@@ -209,7 +213,7 @@ class Otp extends Component {
             </View>
           </Container>
         )}
-        <Toast ref={(ref) => global['toast'] = ref} />
+        <Toast ref={ref => (global['toast'] = ref)} />
       </>
     );
   }
@@ -273,7 +277,4 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {verifyOtp, clearErrors},
-)(Otp);
+export default connect(mapStateToProps, {verifyOtp, clearErrors})(Otp);

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -13,24 +13,24 @@ import {
   BackHandler,
   Platform,
   Alert,
-} from "react-native";
-import { Container, Form, Item, Input, Card } from "native-base";
-import { connect } from "react-redux";
-import I18n from "../../utils/i18n";
-import normalize from "react-native-normalize";
+} from 'react-native';
+import {Container, Form, Item, Input, Card} from 'native-base';
+import {connect} from 'react-redux';
+import I18n from '../../utils/i18n';
+import normalize from 'react-native-normalize';
 import {
   getUpcomingClasses,
   getWhatsOnToday,
-} from "../../actions/subscriptionActions";
-import { currentUser } from "../../actions/authActions";
-import HeaderComponent from "../../components/Header";
-import Loading from "../Loading";
-import { IMAGE_URI, API_URI } from "../../utils/config";
-import isEmpty from "../../validation/is-empty";
-import axios from "axios";
-import moment from "moment-timezone";
-moment.tz.setDefault("Asia/Qatar");
-import FastImage from "@d11/react-native-fast-image";
+} from '../../actions/subscriptionActions';
+import {currentUser} from '../../actions/authActions';
+import HeaderComponent from '../../components/Header';
+import Loading from '../Loading';
+import {IMAGE_URI, API_URI} from '../../utils/config';
+import isEmpty from '../../validation/is-empty';
+import axios from 'axios';
+import moment from 'moment-timezone';
+moment.tz.setDefault('Asia/Qatar');
+import FastImage from '@d11/react-native-fast-image';
 
 export class Upcoming extends Component {
   constructor(props) {
@@ -52,8 +52,8 @@ export class Upcoming extends Component {
   }
 
   async componentDidMount() {
-    const { upcomingClasses } = this.props.subscription;
-    this.setState({ upcomingClasses: upcomingClasses, isLoading: false });
+    const {upcomingClasses} = this.props.subscription;
+    this.setState({upcomingClasses: upcomingClasses, isLoading: false});
     /* const {id} = await this.props.auth.user;
     let url = `${API_URI}/booking_classes?filter={"where": {"user_id": ${id}}}`;
     await axios
@@ -70,11 +70,11 @@ export class Upcoming extends Component {
         this.setState({isLoading: false});
       }); */
 
-    BackHandler.addEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
   }
 
   /* componentDidMount() {
@@ -83,33 +83,33 @@ export class Upcoming extends Component {
 
   handleCancelClass = async (e, id, item) => {
     e.preventDefault();
-    const { lang } = this.props.setting;
+    const {lang} = this.props.setting;
 
     const refundParams = {
-      refundTime: "",
-      refundPercents: "",
+      refundTime: '',
+      refundPercents: '',
     };
 
     await axios
       .get(`${API_URI}/settings`)
-      .then((data) => {
+      .then(data => {
         const percent = data.data.data.find(
-          (item) => item.type === "refund_percent"
+          item => item.type === 'refund_percent',
         );
-        const time = data.data.data.find((item) => item.type === "refund_time");
+        const time = data.data.data.find(item => item.type === 'refund_time');
 
         refundParams.refundTime = time.value;
         refundParams.refundPercents = percent.value;
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
       });
 
-    const { schedule_date } = item;
+    const {schedule_date} = item;
     let classDate = `${schedule_date.date}T${schedule_date.start_time}`;
     classDate = new Date(classDate).getTime();
 
-    console.log("classDate = ", classDate);
+    console.log('classDate = ', classDate);
     // let date = moment().utcOffset("+03:00").format("YYYY-MM-DD[T]HH:mm:ss");
 
     let currentTime = new Date().getTime();
@@ -119,26 +119,26 @@ export class Upcoming extends Component {
     let message;
 
     if (minutes <= refundParams.refundTime) {
-      message = I18n.t("cancelledClassesWithin1Hour", { locale: lang });
+      message = I18n.t('cancelledClassesWithin1Hour', {locale: lang});
     } else {
-      message = I18n.t("areYouSureWantToCancelThisClass", { locale: lang });
+      message = I18n.t('areYouSureWantToCancelThisClass', {locale: lang});
     }
 
     message = message
-      .replace("X", `${refundParams.refundTime}`)
-      .replace("Y", `${refundParams.refundPercents}`);
+      .replace('X', `${refundParams.refundTime}`)
+      .replace('Y', `${refundParams.refundPercents}`);
 
     Alert.alert(
-      I18n.t("cancel", { locale: lang }),
+      I18n.t('cancel', {locale: lang}),
       message,
       [
         {
-          text: I18n.t("no", { locale: lang }),
-          onPress: () => console.log("come"),
-          style: "cancel",
+          text: I18n.t('no', {locale: lang}),
+          onPress: () => console.log('come'),
+          style: 'cancel',
         },
         {
-          text: I18n.t("yes", { locale: lang }),
+          text: I18n.t('yes', {locale: lang}),
           onPress: async () => {
             let url = `${API_URI}/booking_classes/${id}`;
             let updateData = {
@@ -147,11 +147,11 @@ export class Upcoming extends Component {
             };
             await axios
               .put(url, updateData)
-              .then((res) => {
+              .then(res => {
                 if (res.data.error.code) {
                   console.log(res);
                 } else {
-                  const { data } = res.data;
+                  const {data} = res.data;
 
                   console.log(data);
 
@@ -159,15 +159,15 @@ export class Upcoming extends Component {
                   this.props.currentUser();
                   let upcomingClasses = [...this.state.upcomingClasses];
                   upcomingClasses = upcomingClasses.filter(
-                    (bookClass) => bookClass.id !== id
+                    bookClass => bookClass.id !== id,
                   );
 
-                  this.setState({ upcomingClasses });
+                  this.setState({upcomingClasses});
 
                   return true;
                 }
               })
-              .catch((err) => {
+              .catch(err => {
                 // this.setState({isLoading: false});
               });
           },
@@ -175,32 +175,31 @@ export class Upcoming extends Component {
       ],
       {
         cancelable: false,
-      }
+      },
     );
   };
 
   handleNavigateUpcomingClass = (e, id) => {
     e.preventDefault();
     this.props.navigation.navigate({
-      routeName: "BookClass",
+      routeName: 'BookClass',
       params: {
         id: id,
       },
       key: `UpcomingClass_${Math.random() * 10000}`,
     });
   };
-  renderItem = ({ item }) => {
-    const { id, class: gymClass, class_schedule, schedule_date } = item;
-    const { name, name_ar, gym, start_date, start_time, attachments } =
-      gymClass;
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
+  renderItem = ({item}) => {
+    const {id, class: gymClass, class_schedule, schedule_date} = item;
+    const {name, name_ar, gym, start_date, start_time, attachments} = gymClass;
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
     let image;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -213,21 +212,20 @@ export class Upcoming extends Component {
         };
       }
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
 
     console.log(image);
 
     return (
       <TouchableOpacity
-        onPress={(e) => this.handleNavigateUpcomingClass(e, id)}
+        onPress={e => this.handleNavigateUpcomingClass(e, id)}
         style={{
           flex: 1,
           flexDirection: flexDirection,
           marginBottom: normalize(16),
-        }}
-      >
-        <View style={{ display: "flex", width: normalize(60) }}>
+        }}>
+        <View style={{display: 'flex', width: normalize(60)}}>
           {image.url ? (
             <FastImage
               style={{
@@ -256,67 +254,62 @@ export class Upcoming extends Component {
 
         <View
           style={{
-            display: "flex",
+            display: 'flex',
             //flexDirection: 'row',
             width: normalize(190),
             marginHorizontal: normalize(20),
             //justifyContent: 'space-between',
-          }}
-        >
+          }}>
           <Text
             style={{
               fontSize: normalize(17),
-              fontWeight: "700",
+              fontWeight: '700',
               textAlign: textAlign,
-            }}
-          >
-            {lang === "ar" ? name_ar : name}
+            }}>
+            {lang === 'ar' ? name_ar : name}
           </Text>
           <Text
             style={{
               fontSize: normalize(12),
-              color: "#8A8A8F",
+              color: '#8A8A8F',
               textAlign: textAlign,
-            }}
-          >
-            {lang === "ar" ? gym.name_ar : gym.name}
+            }}>
+            {lang === 'ar' ? gym.name_ar : gym.name}
           </Text>
           <Text
             style={{
               fontSize: normalize(13),
-              color: "#8A8A8F",
+              color: '#8A8A8F',
               textAlign: textAlign,
-            }}
-          >
-            {`${moment(schedule_date.date, "YYYY-MM-DD").calendar(null, {
-              sameDay: "[Today]",
-              nextDay: "[Tomorrow]",
-              nextWeek: "dddd",
-              lastDay: "[Yesterday]",
+            }}>
+            {`${moment(schedule_date.date, 'YYYY-MM-DD').calendar(null, {
+              sameDay: '[Today]',
+              nextDay: '[Tomorrow]',
+              nextWeek: 'dddd',
+              lastDay: '[Yesterday]',
               //lastWeek: '[Last] dddd',
-              sameElse: "DD MMM YYYY",
-            })} ${moment(schedule_date.start_time, "h:mm:ss").format(
-              "h:mm A"
+              sameElse: 'DD MMM YYYY',
+            })} ${moment(schedule_date.start_time, 'h:mm:ss').format(
+              'h:mm A',
             )} - ${class_schedule.duration} min`}
           </Text>
         </View>
         <TouchableOpacity
-          onPress={(e) => this.handleCancelClass(e, id, item)}
+          onPress={e => this.handleCancelClass(e, id, item)}
           style={{
             flex: 1,
             //width: normalize(73),
             height: normalize(32),
             borderWidth: 1,
-            borderColor: "#CFCFCF",
+            borderColor: '#CFCFCF',
             borderRadius: normalize(4),
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: 'center',
+            alignItems: 'center',
             //marginRight: Platform.OS === 'ios' ? normalize(4) : 0,
             //marginLeft: Platform.OS === 'ios' ? normalize(4) : 0,
-          }}
-        >
-          <Text style={{ fontSize: normalize(14), color: "#8A8A8F" }}>
-            {I18n.t("cancel", {
+          }}>
+          <Text style={{fontSize: normalize(14), color: '#8A8A8F'}}>
+            {I18n.t('cancel', {
               locale: lang,
             })}
           </Text>
@@ -331,38 +324,35 @@ export class Upcoming extends Component {
   };
 
   render() {
-    const { lang } = this.props.setting;
-    const { upcomingClasses, isLoading } = this.state;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const {lang} = this.props.setting;
+    const {upcomingClasses, isLoading} = this.state;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     return (
       <>
         {isLoading ? (
           <Loading />
         ) : (
-          <Container style={{ flex: 1, backgroundColor: "#ffffff" }}>
+          <Container style={{flex: 1, backgroundColor: '#ffffff'}}>
             <HeaderComponent navigation={this.props.navigation} />
             <ScrollView
               showsVerticalScrollIndicator={false}
-              style={{ backgroundColor: "#ffffff" }}
-            >
+              style={{backgroundColor: '#ffffff'}}>
               <View
                 style={{
                   height: normalize(50),
                   marginHorizontal: normalize(16),
-                  justifyContent: "center",
+                  justifyContent: 'center',
                   //flexDirection: flexDirection,
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     fontSize: normalize(40),
-                    fontWeight: "bold",
+                    fontWeight: 'bold',
                     alignSelf: alignSelf,
-                  }}
-                >
-                  {`${upcomingClasses.length} ${I18n.t("upcoming", {
+                  }}>
+                  {`${upcomingClasses.length} ${I18n.t('upcoming', {
                     locale: lang,
                   })}`}
                 </Text>
@@ -371,25 +361,23 @@ export class Upcoming extends Component {
                 style={{
                   marginTop: normalize(24),
                   marginHorizontal: normalize(16),
-                }}
-              >
+                }}>
                 {upcomingClasses.length > 0 ? (
                   <FlatList
                     style={[styles.container]}
                     data={upcomingClasses}
                     renderItem={this.renderItem}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={item => item.id.toString()}
                   />
                 ) : (
                   <View>
                     <Text
                       style={{
-                        color: "#8f8f8f",
+                        color: '#8f8f8f',
                         fontSize: normalize(16),
                         textAlign: textAlign,
-                      }}
-                    >
-                      {I18n.t("noUpcomingClasses", { locale: lang })}
+                      }}>
+                      {I18n.t('noUpcomingClasses', {locale: lang})}
                     </Text>
                   </View>
                 )}
@@ -409,13 +397,13 @@ const styles = StyleSheet.create({
   eventContainer: {
     marginTop: normalize(12),
     marginHorizontal: normalize(16),
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   subscription: state.subscription,
   setting: state.setting,

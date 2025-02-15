@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -14,13 +14,13 @@ import {
   Alert,
   StatusBar,
   SafeAreaView,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import CarouselSlider from "../../components/CarouselSlider";
-import normalize from "react-native-normalize";
-import { Icon, Button } from "native-base";
-import { connect } from "react-redux";
-import I18n from "../../utils/i18n";
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CarouselSlider from '../../components/CarouselSlider';
+import normalize from 'react-native-normalize';
+import {Icon, Button} from 'native-base';
+import {connect} from 'react-redux';
+import I18n from '../../utils/i18n';
 import {
   getClass,
   addFavorite,
@@ -30,28 +30,28 @@ import {
   getClassLocation,
   clearClass,
   getFavorites,
-} from "../../actions/homeActions";
-import Loading from "../Loading";
-import { IMAGE_URI, API_URI } from "../../utils/config";
-import isEmpty from "../../validation/is-empty";
-import WriteReview from "../WriteReview";
-import ReviewShow from "../Review/ReviewShow";
-import moment from "moment-timezone";
-moment.tz.setDefault("Asia/Qatar");
-import ReadMore from "react-native-read-more-text";
-import ConfirmBooking from "../ConfirmBooking";
-import axios from "axios";
+} from '../../actions/homeActions';
+import Loading from '../Loading';
+import {IMAGE_URI, API_URI} from '../../utils/config';
+import isEmpty from '../../validation/is-empty';
+import WriteReview from '../WriteReview';
+import ReviewShow from '../Review/ReviewShow';
+import moment from 'moment-timezone';
+moment.tz.setDefault('Asia/Qatar');
+import ReadMore from 'react-native-read-more-text';
+import ConfirmBooking from '../ConfirmBooking';
+import axios from 'axios';
 
-import CallIcon from "../../assets/img/call.svg";
-import MapIcon from "../../assets/img/map.svg";
-import FavoriteRedIcon from "../../assets/img/favorite-red.svg";
-import FavoriteGreyIcon from "../../assets/img/favorite-grey.svg";
+import CallIcon from '../../assets/img/call.svg';
+import MapIcon from '../../assets/img/map.svg';
+import FavoriteRedIcon from '../../assets/img/favorite-red.svg';
+import FavoriteGreyIcon from '../../assets/img/favorite-grey.svg';
 
-import Toast from "react-native-toast-notifications";
+import Toast from 'react-native-toast-notifications';
 
-const { width } = Dimensions.get("window");
+const {width} = Dimensions.get('window');
 
-import WriteCoachReview from "../WriteCoachReview";
+import WriteCoachReview from '../WriteCoachReview';
 
 export class BookClass extends Component {
   constructor(props) {
@@ -75,17 +75,17 @@ export class BookClass extends Component {
   } */
 
   async componentDidMount() {
-    const id = await this.props.navigation.getParam("id");
-    const isCoachReview = await this.props.navigation.getParam("isCoachReview");
-    const latitude = await AsyncStorage.getItem("latitude");
-    const longitude = await AsyncStorage.getItem("longitude");
+    const id = await this.props.navigation.getParam('id');
+    const isCoachReview = await this.props.navigation.getParam('isCoachReview');
+    const latitude = await AsyncStorage.getItem('latitude');
+    const longitude = await AsyncStorage.getItem('longitude');
     let url = `${API_URI}/booking_classes/${id}`;
     await axios
       .get(url)
-      .then((res) => {
+      .then(res => {
         if (res.data.error.code) {
         } else {
-          const { data } = res.data;
+          const {data} = res.data;
           let isCoachReviewRate = false;
           if (isCoachReview) {
             isCoachReviewRate = true;
@@ -100,17 +100,17 @@ export class BookClass extends Component {
           return true;
         }
       })
-      .catch((err) => {
-        this.setState({ isLoading: false });
+      .catch(err => {
+        this.setState({isLoading: false});
       });
 
-    BackHandler.addEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }
 
   componentWillUnmount() {
     //this.setState({class: {}});
     //this.props.clearClass();
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
   }
 
   handleBack = async () => {
@@ -119,61 +119,61 @@ export class BookClass extends Component {
   };
 
   handleAddFavorite = async () => {
-    const { lang } = this.props.setting;
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
-        I18n.t("login", { locale: lang }),
-        I18n.t("loginToProceed", { locale: lang }),
+        I18n.t('login', {locale: lang}),
+        I18n.t('loginToProceed', {locale: lang}),
         [
           {
-            text: I18n.t("no", { locale: lang }),
-            onPress: () => console.log("cancel"),
-            style: "cancel",
+            text: I18n.t('no', {locale: lang}),
+            onPress: () => console.log('cancel'),
+            style: 'cancel',
           },
           {
-            text: I18n.t("yes", { locale: lang }),
-            onPress: () => this.props.navigation.navigate("Login"),
+            text: I18n.t('yes', {locale: lang}),
+            onPress: () => this.props.navigation.navigate('Login'),
           },
         ],
         {
           cancelable: false,
-        }
+        },
       );
     } else {
-      this.setState({ isDisable: true });
-      const { id } = this.state.bookClass.class;
+      this.setState({isDisable: true});
+      const {id} = this.state.bookClass.class;
       let addFavoriteData = {
-        class: "Class",
+        class: 'Class',
         foreign_id: id,
         user_id: this.props.auth.user.id,
       };
       await axios
         .post(`${API_URI}/favourites`, addFavoriteData)
-        .then(async (res) => {
+        .then(async res => {
           if (res.data.error.code) {
           } else {
-            const { data } = res.data;
+            const {data} = res.data;
 
-            let bookClass = { ...this.state.bookClass };
+            let bookClass = {...this.state.bookClass};
             bookClass.class.favourite = data;
-            const { id } = this.props.auth.user;
-            this.setState({ bookClass, isDisable: false });
+            const {id} = this.props.auth.user;
+            this.setState({bookClass, isDisable: false});
             this.props.getFavorites(id);
             toast.show(
-              I18n.t("favoriteAddedSucessfully", {
+              I18n.t('favoriteAddedSucessfully', {
                 locale: this.props.setting.lang,
               }),
               {
-                type: "normal",
-                placement: "bottom",
+                type: 'normal',
+                placement: 'bottom',
                 duration: 2000,
                 offset: 30,
-                animationType: "slide-in",
-              }
+                animationType: 'slide-in',
+              },
             );
           }
         })
-        .catch((err) => {
+        .catch(err => {
           /* if (err.response.data.error) {
       
       } */
@@ -183,55 +183,55 @@ export class BookClass extends Component {
   };
 
   handleRemoveFavorite = async () => {
-    const { lang } = this.props.setting;
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
-        I18n.t("login", { locale: lang }),
-        I18n.t("loginToProceed", { locale: lang }),
+        I18n.t('login', {locale: lang}),
+        I18n.t('loginToProceed', {locale: lang}),
         [
           {
-            text: I18n.t("no", { locale: lang }),
-            onPress: () => console.log("cancel"),
-            style: "cancel",
+            text: I18n.t('no', {locale: lang}),
+            onPress: () => console.log('cancel'),
+            style: 'cancel',
           },
           {
-            text: I18n.t("yes", { locale: lang }),
-            onPress: () => this.props.navigation.navigate("Login"),
+            text: I18n.t('yes', {locale: lang}),
+            onPress: () => this.props.navigation.navigate('Login'),
           },
         ],
         {
           cancelable: false,
-        }
+        },
       );
     } else {
-      this.setState({ isDisable: true });
-      const { id } = this.state.bookClass.class.favourite;
+      this.setState({isDisable: true});
+      const {id} = this.state.bookClass.class.favourite;
       await axios
         .delete(`${API_URI}/favourites/${id}`)
-        .then(async (res) => {
+        .then(async res => {
           if (res.data.error.code) {
           } else {
-            const { data } = res.data;
-            let bookClass = { ...this.state.bookClass };
+            const {data} = res.data;
+            let bookClass = {...this.state.bookClass};
             delete bookClass.class.favourite;
-            const { id } = this.props.auth.user;
-            this.setState({ bookClass, isDisable: false });
+            const {id} = this.props.auth.user;
+            this.setState({bookClass, isDisable: false});
             this.props.getFavorites(id);
             toast.show(
-              I18n.t("favoriteRemovedSucessfully", {
+              I18n.t('favoriteRemovedSucessfully', {
                 locale: this.props.setting.lang,
               }),
               {
-                type: "normal",
-                placement: "bottom",
+                type: 'normal',
+                placement: 'bottom',
                 duration: 2000,
                 offset: 30,
-                animationType: "slide-in",
-              }
+                animationType: 'slide-in',
+              },
             );
           }
         })
-        .catch((err) => {
+        .catch(err => {
           /*  if (err.response.data.error) {
           
         } */
@@ -241,51 +241,51 @@ export class BookClass extends Component {
   };
 
   handleWriteReview = () => {
-    const { lang } = this.props.setting;
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
-        I18n.t("login", { locale: lang }),
-        I18n.t("loginToProceed", { locale: lang }),
+        I18n.t('login', {locale: lang}),
+        I18n.t('loginToProceed', {locale: lang}),
         [
           {
-            text: I18n.t("no", { locale: lang }),
-            onPress: () => console.log("come"),
-            style: "cancel",
+            text: I18n.t('no', {locale: lang}),
+            onPress: () => console.log('come'),
+            style: 'cancel',
           },
           {
-            text: I18n.t("yes", { locale: lang }),
-            onPress: () => this.props.navigation.navigate("Login"),
+            text: I18n.t('yes', {locale: lang}),
+            onPress: () => this.props.navigation.navigate('Login'),
           },
         ],
         {
           cancelable: false,
-        }
+        },
       );
     } else {
-      this.setState({ isShowWriteReview: !this.state.isShowWriteReview });
+      this.setState({isShowWriteReview: !this.state.isShowWriteReview});
     }
   };
 
   handleWriteCoachReview = () => {
-    this.setState({ isCoachReviewRate: false });
+    this.setState({isCoachReviewRate: false});
   };
 
   handleConfirmBooking = () => {
-    this.setState({ isShowConfirmBooking: !this.state.isShowConfirmBooking });
+    this.setState({isShowConfirmBooking: !this.state.isShowConfirmBooking});
   };
 
-  renderItemGym = ({ item }) => {
-    const { id } = this.state.bookClass.class;
-    const { attachments, name, name_ar } = item;
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+  renderItemGym = ({item}) => {
+    const {id} = this.state.bookClass.class;
+    const {attachments, name, name_ar} = item;
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let image;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -298,16 +298,16 @@ export class BookClass extends Component {
         };
       }
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
     return (
       <TouchableOpacity
         onPress={() =>
           this.props.navigation.navigate({
-            routeName: "GymClass",
+            routeName: 'GymClass',
             params: {
               id: item.id,
-              back: "GymClass",
+              back: 'GymClass',
               back_id: id,
             },
             key: `GymClass_${Math.random() * 10000}`,
@@ -318,18 +318,16 @@ export class BookClass extends Component {
           width: normalize(142),
           marginRight: normalize(10),
           height: normalize(171),
-          transform: [{ scaleX: lang === "ar" ? -1 : 1 }],
-        }}
-      >
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
+        }}>
         <View
           style={{
             width: normalize(142),
             height: normalize(142),
             //borderRadius: 10,
-          }}
-        >
+          }}>
           <Image
-            resizeMode={"cover"}
+            resizeMode={'cover'}
             source={image}
             style={{
               width: normalize(142),
@@ -338,21 +336,21 @@ export class BookClass extends Component {
             }}
           />
         </View>
-        <View style={{ marginTop: normalize(5) }}>
-          <Text style={{ fontSize: normalize(15), textAlign: textAlign }}>
-            {lang === "ar" ? name_ar : name}
+        <View style={{marginTop: normalize(5)}}>
+          <Text style={{fontSize: normalize(15), textAlign: textAlign}}>
+            {lang === 'ar' ? name_ar : name}
           </Text>
         </View>
       </TouchableOpacity>
     );
   };
 
-  renderReviewItem = ({ item }) => {
+  renderReviewItem = ({item}) => {
     // const {attachment} = item.user;
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let image;
 
     if (!isEmpty(item.user) && !isEmpty(item.user.attachment)) {
@@ -360,7 +358,7 @@ export class BookClass extends Component {
         uri: `${IMAGE_URI}/${item.user.attachment.dir}/${item.user.attachment.file_name}`,
       };
     } else {
-      image = require("../../assets/img/NoPicture.png");
+      image = require('../../assets/img/NoPicture.png');
     }
     return (
       <>
@@ -368,15 +366,13 @@ export class BookClass extends Component {
           style={{
             marginTop: normalize(16),
             marginHorizontal: normalize(16),
-          }}
-        >
+          }}>
           <View
             style={{
-              display: "flex",
+              display: 'flex',
               flexDirection: flexDirection,
-            }}
-          >
-            <View style={{ width: normalize(44) }}>
+            }}>
+            <View style={{width: normalize(44)}}>
               <Image
                 source={image}
                 style={{
@@ -388,29 +384,26 @@ export class BookClass extends Component {
             </View>
             <View
               style={{
-                marginLeft: lang === "ar" ? 0 : normalize(16),
-                marginRight: lang === "ar" ? normalize(16) : 0,
+                marginLeft: lang === 'ar' ? 0 : normalize(16),
+                marginRight: lang === 'ar' ? normalize(16) : 0,
                 width: normalize(267),
                 //marginHorizontal: normalize(16),
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: normalize(15),
-                  fontWeight: "700",
+                  fontWeight: '700',
                   textAlign: textAlign,
-                }}
-              >
+                }}>
                 {!isEmpty(item.user)
                   ? `${item.user.first_name} ${item.user.last_name}`
-                  : ""}
+                  : ''}
               </Text>
               <View
                 style={[
                   styles.classRatingContainer,
-                  { flexDirection: flexDirection },
-                ]}
-              >
+                  {flexDirection: flexDirection},
+                ]}>
                 <ReviewShow
                   rating={item.rating}
                   style={{
@@ -424,19 +417,17 @@ export class BookClass extends Component {
                 style={{
                   fontSize: normalize(12),
                   textAlign: textAlign,
-                }}
-              >
+                }}>
                 {item.description}
               </Text>
               <Text
                 style={{
                   fontSize: normalize(12),
-                  color: "#8A8A8F",
+                  color: '#8A8A8F',
                   textAlign: textAlign,
-                }}
-              >
-                {moment(item.createdAt, "YYYY-MM-DD hh:mm:ss")
-                  .startOf("hour")
+                }}>
+                {moment(item.createdAt, 'YYYY-MM-DD hh:mm:ss')
+                  .startOf('hour')
                   .fromNow()}
               </Text>
             </View>
@@ -447,10 +438,10 @@ export class BookClass extends Component {
   };
 
   dialCall = () => {
-    const { gym_mobile } = this.state.bookClass.class.gym;
-    let phoneNumber = "";
+    const {gym_mobile} = this.state.bookClass.class.gym;
+    let phoneNumber = '';
 
-    if (Platform.OS === "android") {
+    if (Platform.OS === 'android') {
       phoneNumber = `tel:${gym_mobile}`;
     } else {
       phoneNumber = `telprompt:${gym_mobile}`;
@@ -459,36 +450,34 @@ export class BookClass extends Component {
     Linking.openURL(phoneNumber);
   };
 
-  _renderTruncatedFooter = (handlePress) => {
-    const { lang } = this.props.setting;
+  _renderTruncatedFooter = handlePress => {
+    const {lang} = this.props.setting;
     return (
       <Text
         style={{
-          color: "#0053FE",
+          color: '#0053FE',
           marginTop: 5,
           fontSize: normalize(12),
-          fontWeight: "bold",
+          fontWeight: 'bold',
         }}
-        onPress={handlePress}
-      >
-        {I18n.t("readMore", { locale: lang })}
+        onPress={handlePress}>
+        {I18n.t('readMore', {locale: lang})}
       </Text>
     );
   };
 
-  _renderRevealedFooter = (handlePress) => {
-    const { lang } = this.props.setting;
+  _renderRevealedFooter = handlePress => {
+    const {lang} = this.props.setting;
     return (
       <Text
         style={{
-          color: "#0053FE",
+          color: '#0053FE',
           marginTop: 5,
           fontSize: normalize(12),
-          fontWeight: "bold",
+          fontWeight: 'bold',
         }}
-        onPress={handlePress}
-      >
-        {I18n.t("showLess", { locale: lang })}
+        onPress={handlePress}>
+        {I18n.t('showLess', {locale: lang})}
       </Text>
     );
   };
@@ -496,7 +485,7 @@ export class BookClass extends Component {
   handleNavigateGymDetail = (e, id) => {
     e.preventDefault();
     this.props.navigation.navigate({
-      routeName: "GymDetail",
+      routeName: 'GymDetail',
       params: {
         id: id,
       },
@@ -504,20 +493,20 @@ export class BookClass extends Component {
     });
   };
 
-  handleReviews = (review) => {
-    let bookClass = { ...this.state.bookClass };
+  handleReviews = review => {
+    let bookClass = {...this.state.bookClass};
     bookClass.class.reviews.push(review);
     bookClass.class.rating_count = bookClass.class.rating_count + 1;
-    this.setState({ bookClass: bookClass });
+    this.setState({bookClass: bookClass});
   };
 
-  handleAllReviews = (reviews) => {
-    let bookClass = { ...this.state.bookClass };
+  handleAllReviews = reviews => {
+    let bookClass = {...this.state.bookClass};
     if (reviews.length < 3) {
       bookClass.class.reviews = reviews;
     }
     bookClass.class.rating_count = bookClass.class.rating_count + 1;
-    this.setState({ bookClass: bookClass });
+    this.setState({bookClass: bookClass});
   };
 
   render() {
@@ -529,19 +518,19 @@ export class BookClass extends Component {
     } = this.state;
     let gymClass = {};
     let images = [];
-    let gymImage = require("../../assets/img/no_image_found.png");
-    let coachImage = require("../../assets/img/no_image_found.png");
+    let gymImage = require('../../assets/img/no_image_found.png');
+    let coachImage = require('../../assets/img/no_image_found.png');
     let coach = {};
     if (!isEmpty(this.state.bookClass.class)) {
       gymClass = this.state.bookClass.class;
       if (!isEmpty(this.state.bookClass.class_schedule)) {
-        coach = { ...this.state.bookClass.class_schedule.coach };
+        coach = {...this.state.bookClass.class_schedule.coach};
         if (coach && coach.attachment) {
           coachImage = {
             uri: `${IMAGE_URI}/${coach.attachment.dir}/${coach.attachment.file_name}`,
           };
         } else {
-          coachImage = require("../../assets/img/no_image_found.png");
+          coachImage = require('../../assets/img/no_image_found.png');
         }
       }
 
@@ -573,7 +562,7 @@ export class BookClass extends Component {
         gymClass.gym.attachments.length > 0
       ) {
         let primaryAttachment = gymClass.gym.attachments.find(
-          (newImage) => newImage.is_primary === true
+          newImage => newImage.is_primary === true,
         );
 
         if (!isEmpty(primaryAttachment)) {
@@ -586,11 +575,11 @@ export class BookClass extends Component {
           };
         }
       } else {
-        gymImage = require("../../assets/img/no_image_found.png");
+        gymImage = require('../../assets/img/no_image_found.png');
       }
 
       if (attachments && attachments.length > 0) {
-        images = attachments.map((attachment) => {
+        images = attachments.map(attachment => {
           let image = `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`;
           return image;
         });
@@ -598,49 +587,47 @@ export class BookClass extends Component {
     }
     let classes = [...this.props.home.recommendedClasses];
 
-    classes = classes.filter((gymClas) => gymClas.id !== gymClass.id);
+    classes = classes.filter(gymClas => gymClas.id !== gymClass.id);
 
     // const {isLodaing} = this.props.errors;
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
-    const { class_schedule_id, class_schedule, schedule_dates_id } =
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    const {class_schedule_id, class_schedule, schedule_dates_id} =
       this.state.bookClass;
     return (
       <>
         {isLoading ? (
           <Loading />
         ) : !isEmpty(this.state.bookClass) && !isEmpty(gymClass) ? (
-          <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
-            <SafeAreaView style={{ flex: 0, backgroundColor: "#ffffff" }} />
+          <View style={{flex: 1, backgroundColor: '#ffffff'}}>
+            <SafeAreaView style={{flex: 0, backgroundColor: '#ffffff'}} />
             <StatusBar /* hidden={true} */ />
             <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={{ height: normalize(270) }}>
+              <View style={{height: normalize(270)}}>
                 <CarouselSlider images={images} />
                 <View
                   /* style={styles.backButtonContainer} */ style={{
-                    position: "absolute",
-                    display: "flex",
-                    flexDirection: "row",
-                    top: Platform.OS === "ios" ? normalize(30) : normalize(0),
+                    position: 'absolute',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    top: Platform.OS === 'ios' ? normalize(30) : normalize(0),
                     left: normalize(10),
-                  }}
-                >
+                  }}>
                   <Button transparent onPress={this.handleBack}>
                     <Icon
                       type="FontAwesome"
                       name="angle-left"
-                      style={{ fontSize: normalize(18), color: "#ffffff" }}
+                      style={{fontSize: normalize(18), color: '#ffffff'}}
                       //style={styles.backButtonIcon}
                     />
                     <Text
                       /* style={styles.backButtonText} */ style={{
-                        color: "#ffffff",
+                        color: '#ffffff',
                         // left: normalize(1),
-                      }}
-                    >
-                      {I18n.t("back", { locale: lang })}
+                      }}>
+                      {I18n.t('back', {locale: lang})}
                     </Text>
                   </Button>
                 </View>
@@ -648,21 +635,19 @@ export class BookClass extends Component {
               <View
                 style={[
                   styles.ratingFavContainer,
-                  { flexDirection: flexDirection },
-                ]}
-              >
+                  {flexDirection: flexDirection},
+                ]}>
                 <View
                   style={[
                     styles.ratingContainer,
-                    { flexDirection: flexDirection },
-                  ]}
-                >
+                    {flexDirection: flexDirection},
+                  ]}>
                   <ReviewShow
                     rating={!isEmpty(gymClass) ? gymClass.rating_avg : 0}
                     style={{
                       fontSize: normalize(18),
-                      paddingRight: lang === "ar" ? 0 : normalize(4),
-                      paddingLeft: lang === "ar" ? normalize(4) : 0,
+                      paddingRight: lang === 'ar' ? 0 : normalize(4),
+                      paddingLeft: lang === 'ar' ? normalize(4) : 0,
                     }}
                   />
                   <Text style={styles.ratingCountText}>
@@ -672,37 +657,34 @@ export class BookClass extends Component {
                 <View
                   style={[
                     styles.favMapContainer,
-                    { flexDirection: flexDirection },
-                  ]}
-                >
+                    {flexDirection: flexDirection},
+                  ]}>
                   <TouchableOpacity onPress={this.dialCall}>
                     <CallIcon width={normalize(24)} height={normalize(24)} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       this.props.navigation.navigate({
-                        routeName: "Map",
+                        routeName: 'Map',
                         params: {
                           latitude: this.state.bookClass.class.lattitude,
                           longitude: this.state.bookClass.class.longitute,
                           name:
-                            lang === "ar" ? gymClass.name_ar : gymClass.name,
+                            lang === 'ar' ? gymClass.name_ar : gymClass.name,
                         },
                         key: `GymClassMap_${Math.random() * 10000}`,
                       });
-                    }}
-                  >
+                    }}>
                     <MapIcon
                       width={normalize(24)}
                       height={normalize(24)}
-                      style={{ marginHorizontal: normalize(16) }}
+                      style={{marginHorizontal: normalize(16)}}
                     />
                   </TouchableOpacity>
                   {isEmpty(gymClass.favourite) ? (
                     <TouchableOpacity
                       onPress={this.handleAddFavorite}
-                      disabled={this.state.isDisable}
-                    >
+                      disabled={this.state.isDisable}>
                       <FavoriteGreyIcon
                         width={normalize(24)}
                         height={normalize(24)}
@@ -711,8 +693,7 @@ export class BookClass extends Component {
                   ) : (
                     <TouchableOpacity
                       onPress={this.handleRemoveFavorite}
-                      disabled={this.state.isDisable}
-                    >
+                      disabled={this.state.isDisable}>
                       <FavoriteRedIcon
                         width={normalize(24)}
                         height={normalize(24)}
@@ -722,57 +703,49 @@ export class BookClass extends Component {
                 </View>
               </View>
 
-              <View style={{ flexDirection: flexDirection }}>
-                <View
-                  style={[styles.genderContainer, { alignSelf: alignSelf }]}
-                >
+              <View style={{flexDirection: flexDirection}}>
+                <View style={[styles.genderContainer, {alignSelf: alignSelf}]}>
                   <Text style={styles.genderContainerText}>
                     {gymClass.gender
-                      ? lang === "ar"
+                      ? lang === 'ar'
                         ? gymClass.gender.name_ar
                         : gymClass.gender.name
-                      : ""}
+                      : ''}
                   </Text>
                 </View>
-                <View
-                  style={[styles.genderContainer, { alignSelf: alignSelf }]}
-                >
+                <View style={[styles.genderContainer, {alignSelf: alignSelf}]}>
                   <Text style={styles.genderContainerText}>
                     {!isEmpty(class_schedule) && class_schedule.is_virtual
-                      ? I18n.t("virtual", { locale: lang })
-                      : I18n.t("offline", { locale: lang })}
+                      ? I18n.t('virtual', {locale: lang})
+                      : I18n.t('offline', {locale: lang})}
                   </Text>
                 </View>
               </View>
 
-              <View style={[styles.titleContainer, { alignSelf: alignSelf }]}>
+              <View style={[styles.titleContainer, {alignSelf: alignSelf}]}>
                 <Text
-                  style={[styles.titleContainerText, { textAlign: textAlign }]}
-                >
-                  {lang === "ar" ? gymClass.name_ar : gymClass.name}
+                  style={[styles.titleContainerText, {textAlign: textAlign}]}>
+                  {lang === 'ar' ? gymClass.name_ar : gymClass.name}
                 </Text>
               </View>
-              <View style={[styles.aboutContainer, { alignSelf: alignSelf }]}>
+              <View style={[styles.aboutContainer, {alignSelf: alignSelf}]}>
                 <Text style={styles.aboutContainerText}>
-                  {I18n.t("aboutClass", { locale: lang })}
+                  {I18n.t('aboutClass', {locale: lang})}
                 </Text>
               </View>
               <View
-                style={[styles.aboutContentContainer, { alignSelf: alignSelf }]}
-              >
+                style={[styles.aboutContentContainer, {alignSelf: alignSelf}]}>
                 <ReadMore
                   numberOfLines={3}
                   renderTruncatedFooter={this._renderTruncatedFooter}
                   renderRevealedFooter={this._renderRevealedFooter}
-                  onReady={this._handleTextReady}
-                >
+                  onReady={this._handleTextReady}>
                   <Text
                     style={[
                       styles.aboutContentContainerText,
-                      { textAlign: textAlign },
-                    ]}
-                  >
-                    {lang === "ar"
+                      {textAlign: textAlign},
+                    ]}>
+                    {lang === 'ar'
                       ? gymClass.description_ar
                       : gymClass.description}
                   </Text>
@@ -790,70 +763,63 @@ export class BookClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
-              <View
-                style={[styles.dateTimeContainer, { alignSelf: alignSelf }]}
-              >
+              <View style={[styles.dateTimeContainer, {alignSelf: alignSelf}]}>
                 <Text style={styles.dateTimeContainerText}>
-                  {I18n.t("timeDate", { locale: lang })}
+                  {I18n.t('timeDate', {locale: lang})}
                 </Text>
               </View>
               <View
                 style={[
                   styles.dateTimeContentContainer,
-                  { alignSelf: alignSelf },
-                ]}
-              >
-                <View style={{ display: "flex", flexDirection: "row" }}>
+                  {alignSelf: alignSelf},
+                ]}>
+                <View style={{display: 'flex', flexDirection: 'row'}}>
                   <View
                     style={{
                       marginRight: normalize(5),
-                    }}
-                  >
+                    }}>
                     <Text
                       style={[
                         styles.dateTimeContentContainerText,
-                        { textAlign: textAlign },
-                      ]}
-                    >
+                        {textAlign: textAlign},
+                      ]}>
                       {moment(
                         this.state.bookClass.schedule_date.date,
-                        "YYYY-MM-DD"
-                      ).format("dddd, D MMM YYYY")}
+                        'YYYY-MM-DD',
+                      ).format('dddd, D MMM YYYY')}
                     </Text>
                   </View>
 
-                  <View style={{ justifyContent: "center" }}>
+                  <View style={{justifyContent: 'center'}}>
                     <Icon
                       type="FontAwesome"
                       name="circle"
                       style={{
                         fontSize: normalize(5),
-                        color: "#C8C7CC",
-                        textAlign: "center",
+                        color: '#C8C7CC',
+                        textAlign: 'center',
                       }}
                     />
                   </View>
                   <View
                     style={{
                       marginLeft: normalize(5),
-                    }}
-                  >
+                    }}>
                     <Text
                       style={[
                         styles.dateTimeContentContainerText,
-                        { textAlign: textAlign },
-                      ]}
-                    >
+                        {textAlign: textAlign},
+                      ]}>
                       {`${moment(
                         this.state.bookClass.schedule_date.start_time,
-                        "h:mm:ss"
-                      ).format("h:mm a")} - ${moment(
+                        'h:mm:ss',
+                      ).format('h:mm a')} - ${moment(
                         this.state.bookClass.schedule_date.end_time,
-                        "h:mm:ss"
-                      ).format("h:mm a")}`}
+                        'h:mm:ss',
+                      ).format('h:mm a')}`}
                     </Text>
                   </View>
                 </View>
@@ -873,34 +839,29 @@ export class BookClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
-              <View
-                style={[styles.dateTimeContainer, { alignSelf: alignSelf }]}
-              >
+              <View style={[styles.dateTimeContainer, {alignSelf: alignSelf}]}>
                 <Text style={styles.dateTimeContainerText}>
-                  {I18n.t("location", { locale: lang })}
+                  {I18n.t('location', {locale: lang})}
                 </Text>
               </View>
               <View
                 style={[
                   styles.dateTimeContentContainer,
-                  { alignSelf: alignSelf },
-                ]}
-              >
-                <View style={{ display: "flex", flexDirection: "row" }}>
+                  {alignSelf: alignSelf},
+                ]}>
+                <View style={{display: 'flex', flexDirection: 'row'}}>
                   <View
                     style={{
                       marginRight: normalize(5),
-                    }}
-                  >
+                    }}>
                     <Text
                       style={[
                         styles.dateTimeContentContainerText,
-                        { textAlign: textAlign },
-                      ]}
-                    >
+                        {textAlign: textAlign},
+                      ]}>
                       {this.state.bookClass.class.address}
                     </Text>
                   </View>
@@ -911,7 +872,7 @@ export class BookClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
 
@@ -920,19 +881,17 @@ export class BookClass extends Component {
                   height: normalize(92),
                   marginHorizontal: normalize(16),
                   marginTop: normalize(16),
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     fontSize: normalize(14),
-                    fontWeight: "700",
+                    fontWeight: '700',
                     textAlign: textAlign,
-                  }}
-                >
-                  {I18n.t("gymName", { locale: lang })}
+                  }}>
+                  {I18n.t('gymName', {locale: lang})}
                 </Text>
                 <TouchableOpacity
-                  onPress={(e) =>
+                  onPress={e =>
                     this.handleNavigateGymDetail(e, gymClass.gym_id)
                   }
                   /* onPress={() =>
@@ -947,15 +906,13 @@ export class BookClass extends Component {
                   style={{
                     marginTop: normalize(8),
                     //marginHorizontal: normalize(16),
-                  }}
-                >
+                  }}>
                   <View
                     style={{
-                      display: "flex",
+                      display: 'flex',
                       flexDirection: flexDirection,
-                    }}
-                  >
-                    <View style={{ width: normalize(60) }}>
+                    }}>
+                    <View style={{width: normalize(60)}}>
                       <Image
                         source={gymImage}
                         style={{
@@ -967,61 +924,56 @@ export class BookClass extends Component {
                     </View>
                     <View
                       style={{
-                        marginLeft: lang === "ar" ? 0 : normalize(16),
-                        marginRight: lang === "ar" ? normalize(16) : 0,
+                        marginLeft: lang === 'ar' ? 0 : normalize(16),
+                        marginRight: lang === 'ar' ? normalize(16) : 0,
                         width: normalize(267),
                         //marginHorizontal: normalize(16),
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
                           fontSize: normalize(15),
-                          fontWeight: "700",
+                          fontWeight: '700',
                           textAlign: textAlign,
-                        }}
-                      >
+                        }}>
                         {gymClass.gym
-                          ? lang === "ar"
+                          ? lang === 'ar'
                             ? gymClass.gym.name_ar
                             : gymClass.gym.name
-                          : ""}
+                          : ''}
                       </Text>
                       {gymClass.gym && gymClass.gym.distance ? (
                         <Text
                           style={{
                             fontSize: normalize(12),
-                            color: "#8A8A8F",
+                            color: '#8A8A8F',
                             textAlign: textAlign,
-                          }}
-                        >
+                          }}>
                           {gym
                             ? gymClass.gym.distance >= 1
                               ? `${gymClass.gym.distance.toFixed(2)} km`
                               : `${gymClass.gym.distance.toFixed(3) * 1000} m`
-                            : ""}
+                            : ''}
                         </Text>
                       ) : null}
 
                       <View
                         style={[
                           styles.classRatingContainer,
-                          { flexDirection: flexDirection },
-                        ]}
-                      >
+                          {flexDirection: flexDirection},
+                        ]}>
                         <ReviewShow
                           rating={gymClass.gym ? gymClass.gym.rating_avg : 0}
                           style={{
                             fontSize: normalize(11),
-                            paddingRight: lang === "ar" ? 0 : normalize(2.75),
-                            paddingLeft: lang === "ar" ? normalize(2.75) : 0,
+                            paddingRight: lang === 'ar' ? 0 : normalize(2.75),
+                            paddingLeft: lang === 'ar' ? normalize(2.75) : 0,
                           }}
                         />
                         <View
                           style={{
-                            paddingRight: lang === "ar" ? normalize(3) : 0,
-                            paddingLeft: lang === "ar" ? 0 : normalize(3),
-                          }}
-                        >
+                            paddingRight: lang === 'ar' ? normalize(3) : 0,
+                            paddingLeft: lang === 'ar' ? 0 : normalize(3),
+                          }}>
                           <Text style={[styles.gymRatingCountText, ,]}>
                             ({gymClass.gym ? gymClass.gym.rating_count : 0})
                           </Text>
@@ -1037,7 +989,7 @@ export class BookClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
               {!isEmpty(coach) ? (
@@ -1045,7 +997,7 @@ export class BookClass extends Component {
                   <TouchableOpacity
                     onPress={() =>
                       this.props.navigation.navigate({
-                        routeName: "Coach",
+                        routeName: 'Coach',
                         params: {
                           id: coach.id,
                         },
@@ -1056,30 +1008,26 @@ export class BookClass extends Component {
                       height: normalize(92),
                       marginHorizontal: normalize(16),
                       marginTop: normalize(16),
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontSize: normalize(14),
-                        fontWeight: "700",
+                        fontWeight: '700',
                         textAlign: textAlign,
-                      }}
-                    >
-                      {I18n.t("coachName", { locale: lang })}
+                      }}>
+                      {I18n.t('coachName', {locale: lang})}
                     </Text>
                     <View
                       style={{
                         marginTop: normalize(8),
                         //marginHorizontal: normalize(16),
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
-                          display: "flex",
+                          display: 'flex',
                           flexDirection: flexDirection,
-                        }}
-                      >
-                        <View style={{ width: normalize(60) }}>
+                        }}>
+                        <View style={{width: normalize(60)}}>
                           <Image
                             source={coachImage}
                             style={{
@@ -1091,22 +1039,20 @@ export class BookClass extends Component {
                         </View>
                         <View
                           style={{
-                            marginLeft: lang === "ar" ? 0 : normalize(16),
-                            marginRight: lang === "ar" ? normalize(16) : 0,
+                            marginLeft: lang === 'ar' ? 0 : normalize(16),
+                            marginRight: lang === 'ar' ? normalize(16) : 0,
                             width: normalize(267),
                             //marginHorizontal: normalize(16),
-                          }}
-                        >
+                          }}>
                           <Text
                             style={{
                               fontSize: normalize(15),
-                              fontWeight: "700",
+                              fontWeight: '700',
                               textAlign: textAlign,
-                            }}
-                          >
+                            }}>
                             {coach
-                              ? `${lang === "ar" ? coach.name_ar : coach.name}`
-                              : ""}
+                              ? `${lang === 'ar' ? coach.name_ar : coach.name}`
+                              : ''}
                           </Text>
                           {/*  <Text
                             style={{
@@ -1124,25 +1070,23 @@ export class BookClass extends Component {
                           <View
                             style={[
                               styles.classRatingContainer,
-                              { flexDirection: flexDirection },
-                            ]}
-                          >
+                              {flexDirection: flexDirection},
+                            ]}>
                             <ReviewShow
                               rating={coach ? coach.rating_avg : 0}
                               style={{
                                 fontSize: normalize(11),
                                 paddingRight:
-                                  lang === "ar" ? 0 : normalize(2.75),
+                                  lang === 'ar' ? 0 : normalize(2.75),
                                 paddingLeft:
-                                  lang === "ar" ? normalize(2.75) : 0,
+                                  lang === 'ar' ? normalize(2.75) : 0,
                               }}
                             />
                             <View
                               style={{
-                                paddingRight: lang === "ar" ? normalize(3) : 0,
-                                paddingLeft: lang === "ar" ? 0 : normalize(3),
-                              }}
-                            >
+                                paddingRight: lang === 'ar' ? normalize(3) : 0,
+                                paddingLeft: lang === 'ar' ? 0 : normalize(3),
+                              }}>
                               <Text style={styles.gymRatingCountText}>
                                 ({coach ? coach.rating_count : 0})
                               </Text>
@@ -1157,7 +1101,7 @@ export class BookClass extends Component {
                       marginHorizontal: normalize(16),
                       marginTop: normalize(8),
                       borderBottomWidth: 1,
-                      borderBottomColor: "#EFEFF4",
+                      borderBottomColor: '#EFEFF4',
                     }}
                   />
                 </>
@@ -1167,44 +1111,39 @@ export class BookClass extends Component {
                 style={{
                   marginTop: normalize(20),
                   marginHorizontal: normalize(16),
-                  display: "flex",
+                  display: 'flex',
                   flex: 1,
                   flexDirection: flexDirection,
-                  justifyContent: "space-between",
-                }}
-              >
+                  justifyContent: 'space-between',
+                }}>
                 <View>
                   <Text
                     style={{
                       fontSize: normalize(20),
-                      fontWeight: "700",
-                      color: "#22242A",
-                    }}
-                  >
-                    {gymClass.rating_count}{" "}
-                    {I18n.t("reviews", { locale: lang })}
+                      fontWeight: '700',
+                      color: '#22242A',
+                    }}>
+                    {gymClass.rating_count} {I18n.t('reviews', {locale: lang})}
                   </Text>
                 </View>
                 {gymClass.reviews && gymClass.reviews.length > 0 ? (
                   <TouchableOpacity
                     onPress={() =>
-                      this.props.navigation.navigate("Review", {
+                      this.props.navigation.navigate('Review', {
                         foreign_id: gymClass.id,
-                        class: "Class",
-                        back: "GymClass",
-                        handleReviews: (data) => this.handleAllReviews(data),
+                        class: 'Class',
+                        back: 'GymClass',
+                        handleReviews: data => this.handleAllReviews(data),
                       })
-                    }
-                  >
+                    }>
                     <Text
                       style={{
                         marginTop: normalize(7),
                         fontSize: normalize(13),
-                        color: "#8A8A8F",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {I18n.t("readAll", { locale: lang })}
+                        color: '#8A8A8F',
+                        justifyContent: 'center',
+                      }}>
+                      {I18n.t('readAll', {locale: lang})}
                     </Text>
                   </TouchableOpacity>
                 ) : (
@@ -1213,11 +1152,10 @@ export class BookClass extends Component {
                       style={{
                         marginTop: normalize(7),
                         fontSize: normalize(13),
-                        color: "#0053FE",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {I18n.t("writeReview", { locale: lang })}
+                        color: '#0053FE',
+                        justifyContent: 'center',
+                      }}>
+                      {I18n.t('writeReview', {locale: lang})}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -1227,7 +1165,7 @@ export class BookClass extends Component {
                   style={[styles.container]}
                   data={gymClass.reviews}
                   renderItem={this.renderReviewItem}
-                  keyExtractor={(item) => item.id.toString()}
+                  keyExtractor={item => item.id.toString()}
                   /* contentContainerStyle={{
                     marginBottom: normalize(10),
                   }} */
@@ -1238,7 +1176,7 @@ export class BookClass extends Component {
                   marginTop: normalize(6),
                   marginHorizontal: normalize(16),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
               <View
@@ -1246,10 +1184,9 @@ export class BookClass extends Component {
                   marginTop: normalize(20),
                   marginHorizontal: normalize(16),
                   flexDirection: flexDirection,
-                }}
-              >
-                <Text style={{ fontSize: normalize(20), fontWeight: "bold" }}>
-                  {I18n.t("recommendedClassForYou", { locale: lang })}
+                }}>
+                <Text style={{fontSize: normalize(20), fontWeight: 'bold'}}>
+                  {I18n.t('recommendedClassForYou', {locale: lang})}
                 </Text>
               </View>
               <View
@@ -1257,8 +1194,7 @@ export class BookClass extends Component {
                   marginLeft: normalize(16),
                   marginVertical: normalize(16),
                   flexDirection: flexDirection,
-                }}
-              >
+                }}>
                 <ScrollView
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
@@ -1266,17 +1202,16 @@ export class BookClass extends Component {
                     width: width,
                     height: normalize(171),
                     //scaleX: -1,
-                    transform: [{ rotateY: lang === "ar" ? "180deg" : "0deg" }],
+                    transform: [{rotateY: lang === 'ar' ? '180deg' : '0deg'}],
                     //flexDirection: flexDirection,
-                  }}
-                >
+                  }}>
                   {classes.length > 0 ? (
                     <FlatList
                       horizontal={true}
                       style={[styles.container]}
                       data={classes}
                       renderItem={this.renderItemGym}
-                      keyExtractor={(item) => item.id.toString()}
+                      keyExtractor={item => item.id.toString()}
                       contentContainerStyle={
                         {
                           /* marginRight:
@@ -1292,22 +1227,20 @@ export class BookClass extends Component {
                         marginRight: normalize(10),
                         height: normalize(171),
                         transform: [
-                          { rotateY: lang === "ar" ? "180deg" : "0deg" },
+                          {rotateY: lang === 'ar' ? '180deg' : '0deg'},
                         ],
                         borderRadius: normalize(10),
-                        backgroundColor: "#efefef",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
+                        backgroundColor: '#efefef',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
                       <Text
                         style={{
                           fontSize: normalize(16),
-                          color: "#8f8f8f",
-                          textAlign: "center",
-                        }}
-                      >
-                        {I18n.t("noRecommendedClasses", { locale: lang })}
+                          color: '#8f8f8f',
+                          textAlign: 'center',
+                        }}>
+                        {I18n.t('noRecommendedClasses', {locale: lang})}
                       </Text>
                     </View>
                   )}
@@ -1331,7 +1264,7 @@ export class BookClass extends Component {
             </ScrollView>
           </View>
         ) : null}
-        <Toast ref={(ref) => (global["toast"] = ref)} />
+        <Toast ref={ref => (global['toast'] = ref)} />
       </>
     );
   }
@@ -1342,68 +1275,68 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   ratingFavContainer: {
-    backgroundColor: "#F9F9F9",
+    backgroundColor: '#F9F9F9',
     height: normalize(56),
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
-    alignItems: "center",
+    alignItems: 'center',
     paddingHorizontal: normalize(16),
   },
   ratingContainer: {
     flex: 2,
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
   },
   starIcon: {
     fontSize: normalize(18),
-    color: "#FE9800",
+    color: '#FE9800',
     //paddingRight: normalize(4),
   },
   classRatingContainer: {
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
-    alignItems: "center",
+    alignItems: 'center',
   },
   classStarIcon: {
     fontSize: normalize(11),
-    color: "#FE9800",
+    color: '#FE9800',
     paddingRight: normalize(2.75),
   },
   ratingCountText: {
-    color: "#8A8A8F",
+    color: '#8A8A8F',
     fontSize: normalize(14),
   },
   gymRatingCountText: {
-    color: "#8A8A8F",
+    color: '#8A8A8F',
     fontSize: normalize(12),
   },
   favMapContainer: {
     flex: 1,
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   genderContainer: {
     marginTop: normalize(11),
     width: normalize(108),
     height: normalize(20),
-    backgroundColor: "#F9F9F9",
+    backgroundColor: '#F9F9F9',
     borderRadius: normalize(10),
     marginHorizontal: normalize(16),
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   genderContainerText: {
     fontSize: normalize(12),
-    color: "#8A8A8F",
+    color: '#8A8A8F',
   },
   titleContainer: {
     marginHorizontal: normalize(16),
   },
   titleContainerText: {
     fontSize: normalize(32),
-    fontWeight: "bold",
-    color: "#22242A",
+    fontWeight: 'bold',
+    color: '#22242A',
   },
   aboutContainer: {
     marginHorizontal: normalize(16),
@@ -1411,8 +1344,8 @@ const styles = StyleSheet.create({
   aboutContainerText: {
     marginTop: normalize(12),
     fontSize: normalize(14),
-    fontWeight: "700",
-    color: "#22242A",
+    fontWeight: '700',
+    color: '#22242A',
   },
   aboutContentContainer: {
     marginTop: normalize(6),
@@ -1420,7 +1353,7 @@ const styles = StyleSheet.create({
   },
   aboutContentContainerText: {
     fontSize: normalize(12),
-    color: "#8A8A8F",
+    color: '#8A8A8F',
   },
   dateTimeContainer: {
     marginTop: normalize(11),
@@ -1429,8 +1362,8 @@ const styles = StyleSheet.create({
   dateTimeContainerText: {
     marginTop: normalize(8),
     fontSize: normalize(14),
-    fontWeight: "700",
-    color: "#22242A",
+    fontWeight: '700',
+    color: '#22242A',
   },
   dateTimeContentContainer: {
     marginTop: normalize(6),
@@ -1438,7 +1371,7 @@ const styles = StyleSheet.create({
   },
   dateTimeContentContainerText: {
     fontSize: normalize(12),
-    color: "#8A8A8F",
+    color: '#8A8A8F',
   },
   classTitleContainer: {
     marginTop: normalize(12),
@@ -1446,12 +1379,12 @@ const styles = StyleSheet.create({
   },
   classTitleContainerText: {
     fontSize: normalize(20),
-    color: "#22242A",
-    fontWeight: "bold",
+    color: '#22242A',
+    fontWeight: 'bold',
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   home: state.home,
   setting: state.setting,

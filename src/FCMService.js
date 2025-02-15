@@ -141,6 +141,7 @@ class FCMService {
 
     // For Android and IOS
     return (
+      //.android.setAutoCancel(true)  // Auto cancel after receive notification
       new messaging.Notification()
         .setSound(obj.sound)
         .setNotificationId(obj.dataId)
@@ -155,7 +156,6 @@ class FCMService {
         .android.setColor(obj.colorBgIcon)
         .android.setPriority(firebase.notifications.Android.Priority.High)
         .android.setVibrate(obj.vibrate)
-      //.android.setAutoCancel(true)  // Auto cancel after receive notification
     );
   };
 

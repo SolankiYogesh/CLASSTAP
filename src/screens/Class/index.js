@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -16,13 +16,13 @@ import {
   StatusBar,
   SafeAreaView,
   Modal,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import CarouselSlider from "../../components/CarouselSlider";
-import normalize from "react-native-normalize";
-import { Icon, Button } from "native-base";
-import { connect } from "react-redux";
-import I18n from "../../utils/i18n";
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CarouselSlider from '../../components/CarouselSlider';
+import normalize from 'react-native-normalize';
+import {Icon, Button} from 'native-base';
+import {connect} from 'react-redux';
+import I18n from '../../utils/i18n';
 import {
   getClass,
   addFavorite,
@@ -32,28 +32,28 @@ import {
   getClassLocation,
   clearClass,
   getFavorites,
-} from "../../actions/homeActions";
-import Loading from "../Loading";
-import { IMAGE_URI, API_URI } from "../../utils/config";
-import isEmpty from "../../validation/is-empty";
-import WriteReview from "../WriteReview";
-import ReviewShow from "../Review/ReviewShow";
-import moment from "moment-timezone";
-moment.tz.setDefault("Asia/Qatar");
-import ReadMore from "react-native-read-more-text";
-import ConfirmBooking from "../ConfirmBooking";
-import axios from "axios";
+} from '../../actions/homeActions';
+import Loading from '../Loading';
+import {IMAGE_URI, API_URI} from '../../utils/config';
+import isEmpty from '../../validation/is-empty';
+import WriteReview from '../WriteReview';
+import ReviewShow from '../Review/ReviewShow';
+import moment from 'moment-timezone';
+moment.tz.setDefault('Asia/Qatar');
+import ReadMore from 'react-native-read-more-text';
+import ConfirmBooking from '../ConfirmBooking';
+import axios from 'axios';
 
-import CallIcon from "../../assets/img/call.svg";
-import MapIcon from "../../assets/img/map.svg";
-import FavoriteRedIcon from "../../assets/img/favorite-red.svg";
-import FavoriteGreyIcon from "../../assets/img/favorite-grey.svg";
+import CallIcon from '../../assets/img/call.svg';
+import MapIcon from '../../assets/img/map.svg';
+import FavoriteRedIcon from '../../assets/img/favorite-red.svg';
+import FavoriteGreyIcon from '../../assets/img/favorite-grey.svg';
 
-import Toast from "react-native-toast-notifications";
-import ClassSuccess from "../../components/ClassSuccess";
-import { getSubscriptions } from "../../actions/subscriptionActions";
+import Toast from 'react-native-toast-notifications';
+import ClassSuccess from '../../components/ClassSuccess';
+import {getSubscriptions} from '../../actions/subscriptionActions';
 
-const { width } = Dimensions.get("window");
+const {width} = Dimensions.get('window');
 
 export class GymClass extends Component {
   constructor(props) {
@@ -64,11 +64,11 @@ export class GymClass extends Component {
       class: {},
       isLoading: true,
       isDisable: false,
-      date: "",
-      start_time: "",
-      end_time: "",
-      class_schedule_id: "",
-      schedule_date_id: "",
+      date: '',
+      start_time: '',
+      end_time: '',
+      class_schedule_id: '',
+      schedule_date_id: '',
       credits: 0,
       coaches: [],
       isShowClassSuccess: false,
@@ -87,26 +87,23 @@ export class GymClass extends Component {
   } */
 
   async componentDidMount() {
-    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.handleRefresh();
     });
-    const id = await this.props.navigation.getParam("id");
-    const date = await this.props.navigation.getParam("date");
-    const start_time = await this.props.navigation.getParam("start_time");
-    const end_time = await this.props.navigation.getParam("end_time");
-    const category_id = await this.props.navigation.getParam("category_id");
-    const category_type_id = await this.props.navigation.getParam(
-      "category_type_id"
-    );
-    const creditRangeHigh = await this.props.navigation.getParam(
-      "creditRangeHigh"
-    );
-    const creditRangeLow = await this.props.navigation.getParam(
-      "creditRangeLow"
-    );
-    const gender_id = await this.props.navigation.getParam("gender_id");
-    const latitude = await AsyncStorage.getItem("latitude");
-    const longitude = await AsyncStorage.getItem("longitude");
+    const id = await this.props.navigation.getParam('id');
+    const date = await this.props.navigation.getParam('date');
+    const start_time = await this.props.navigation.getParam('start_time');
+    const end_time = await this.props.navigation.getParam('end_time');
+    const category_id = await this.props.navigation.getParam('category_id');
+    const category_type_id =
+      await this.props.navigation.getParam('category_type_id');
+    const creditRangeHigh =
+      await this.props.navigation.getParam('creditRangeHigh');
+    const creditRangeLow =
+      await this.props.navigation.getParam('creditRangeLow');
+    const gender_id = await this.props.navigation.getParam('gender_id');
+    const latitude = await AsyncStorage.getItem('latitude');
+    const longitude = await AsyncStorage.getItem('longitude');
     let url;
     if (latitude && longitude) {
       url = `${API_URI}/classes/${id}?latitude=${latitude}&longitude=${longitude}`;
@@ -115,9 +112,9 @@ export class GymClass extends Component {
     }
 
     let filter;
-    let whereFilter = "";
-    let inClass = "";
-    let inClassCategory = "";
+    let whereFilter = '';
+    let inClass = '';
+    let inClassCategory = '';
     if (!isEmpty(gender_id)) {
       inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
     }
@@ -171,7 +168,7 @@ export class GymClass extends Component {
       filter = `{"inClass":{"is_active": 1}}`;
     }
 
-    if (url.indexOf("?") > 0) {
+    if (url.indexOf('?') > 0) {
       url = `${url}&filter=${filter}`;
     } else {
       url = `${url}?filter=${filter}`;
@@ -179,16 +176,16 @@ export class GymClass extends Component {
 
     await axios
       .get(url)
-      .then(async (res) => {
+      .then(async res => {
         if (res.data.error.code) {
         } else {
-          const { data } = res.data;
+          const {data} = res.data;
           data.class_schedules = await data.class_schedules.sort((a, b) =>
             a.start_time < b.start_time
               ? -1
               : a.start_time > b.start_time
-              ? 1
-              : 0
+                ? 1
+                : 0,
           );
           let class_schedule_id;
           let schedule_date_id;
@@ -202,18 +199,18 @@ export class GymClass extends Component {
             class_date = date;
             class_schedule_id = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].id
-              : "";
+              : '';
             class_start_time = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].start_time
-              : "";
+              : '';
             class_end_time = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].end_time
-              : "";
+              : '';
             schedule_date_id =
               !isEmpty(data.class_schedules) &&
               !isEmpty(data.class_schedules[0].schedule_dates)
                 ? data.class_schedules[0].schedule_dates[0].id
-                : "";
+                : '';
             credits = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].credits
               : 0;
@@ -225,7 +222,7 @@ export class GymClass extends Component {
               : false;
           } else {
             let scheduleDates = [];
-            await data.class_schedules.map((schedule) => {
+            await data.class_schedules.map(schedule => {
               if (!isEmpty(schedule.schedule_dates)) {
                 schedule.schedule_dates[0].dateTime = `${schedule.schedule_dates[0].date}T${schedule.start_time}`;
                 schedule.schedule_dates[0].start_time = schedule.start_time;
@@ -243,19 +240,19 @@ export class GymClass extends Component {
               // (await new Date(a.dateTime)) - (await new Date(b.dateTime))
               return aa - bb;
             });
-            class_date = !isEmpty(scheduleDates) ? scheduleDates[0].date : "";
+            class_date = !isEmpty(scheduleDates) ? scheduleDates[0].date : '';
             class_schedule_id = !isEmpty(scheduleDates)
               ? scheduleDates[0].class_schedule_id
-              : "";
+              : '';
             class_start_time = !isEmpty(scheduleDates)
               ? scheduleDates[0].start_time
-              : "";
+              : '';
             class_end_time = !isEmpty(scheduleDates)
               ? scheduleDates[0].end_time
-              : "";
+              : '';
             schedule_date_id = !isEmpty(scheduleDates)
               ? scheduleDates[0].id
-              : "";
+              : '';
             credits = !isEmpty(scheduleDates) ? scheduleDates[0].credits : 0;
             coaches = !isEmpty(scheduleDates) ? [scheduleDates[0].coach] : [];
             is_virtual = !isEmpty(scheduleDates)
@@ -278,8 +275,8 @@ export class GymClass extends Component {
           return true;
         }
       })
-      .catch((err) => {
-        this.setState({ isLoading: false });
+      .catch(err => {
+        this.setState({isLoading: false});
       });
 
     /*      if (latitude && longitude) {
@@ -290,7 +287,7 @@ export class GymClass extends Component {
       //this.props.getClasses();
     }*/
     this.props.getSubscriptions();
-    BackHandler.addEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }
 
   /*   async componentDidMount() {
@@ -311,7 +308,7 @@ export class GymClass extends Component {
 
   componentWillUnmount() {
     this.focusListener.remove();
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
   }
 
   handleBack = async () => {
@@ -320,60 +317,60 @@ export class GymClass extends Component {
   };
 
   handleAddFavorite = async () => {
-    const { lang } = this.props.setting;
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
-        I18n.t("login", { locale: lang }),
-        I18n.t("loginToProceed", { locale: lang }),
+        I18n.t('login', {locale: lang}),
+        I18n.t('loginToProceed', {locale: lang}),
         [
           {
-            text: I18n.t("no", { locale: lang }),
-            onPress: () => console.log("cancel"),
-            style: "cancel",
+            text: I18n.t('no', {locale: lang}),
+            onPress: () => console.log('cancel'),
+            style: 'cancel',
           },
           {
-            text: I18n.t("yes", { locale: lang }),
-            onPress: () => this.props.navigation.navigate("Login"),
+            text: I18n.t('yes', {locale: lang}),
+            onPress: () => this.props.navigation.navigate('Login'),
           },
         ],
         {
           cancelable: false,
-        }
+        },
       );
     } else {
-      this.setState({ isDisable: true });
-      const { id } = this.state.class;
+      this.setState({isDisable: true});
+      const {id} = this.state.class;
       let addFavoriteData = {
-        class: "Class",
+        class: 'Class',
         foreign_id: id,
         user_id: this.props.auth.user.id,
       };
       await axios
         .post(`${API_URI}/favourites`, addFavoriteData)
-        .then(async (res) => {
+        .then(async res => {
           if (res.data.error.code) {
           } else {
-            const { data } = res.data;
-            let gymClass = { ...this.state.class };
+            const {data} = res.data;
+            let gymClass = {...this.state.class};
             gymClass.favourite = data;
-            const { id } = this.props.auth.user;
-            this.setState({ class: gymClass, isDisable: false });
+            const {id} = this.props.auth.user;
+            this.setState({class: gymClass, isDisable: false});
             this.props.getFavorites(id);
             toast.show(
-              I18n.t("favoriteAddedSucessfully", {
+              I18n.t('favoriteAddedSucessfully', {
                 locale: this.props.setting.lang,
               }),
               {
-                type: "normal",
-                placement: "bottom",
+                type: 'normal',
+                placement: 'bottom',
                 duration: 2000,
                 offset: 30,
-                animationType: "slide-in",
-              }
+                animationType: 'slide-in',
+              },
             );
           }
         })
-        .catch((err) => {
+        .catch(err => {
           /* if (err.response.data.error) {
       
       } */
@@ -383,55 +380,55 @@ export class GymClass extends Component {
   };
 
   handleRemoveFavorite = async () => {
-    const { lang } = this.props.setting;
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
-        I18n.t("login", { locale: lang }),
-        I18n.t("loginToProceed", { locale: lang }),
+        I18n.t('login', {locale: lang}),
+        I18n.t('loginToProceed', {locale: lang}),
         [
           {
-            text: I18n.t("no", { locale: lang }),
-            onPress: () => console.log("cancel"),
-            style: "cancel",
+            text: I18n.t('no', {locale: lang}),
+            onPress: () => console.log('cancel'),
+            style: 'cancel',
           },
           {
-            text: I18n.t("yes", { locale: lang }),
-            onPress: () => this.props.navigation.navigate("Login"),
+            text: I18n.t('yes', {locale: lang}),
+            onPress: () => this.props.navigation.navigate('Login'),
           },
         ],
         {
           cancelable: false,
-        }
+        },
       );
     } else {
-      this.setState({ isDisable: true });
-      const { id } = this.state.class.favourite;
+      this.setState({isDisable: true});
+      const {id} = this.state.class.favourite;
       await axios
         .delete(`${API_URI}/favourites/${id}`)
-        .then(async (res) => {
+        .then(async res => {
           if (res.data.error.code) {
           } else {
-            const { data } = res.data;
-            let gymClass = { ...this.state.class };
+            const {data} = res.data;
+            let gymClass = {...this.state.class};
             delete gymClass.favourite;
-            const { id } = this.props.auth.user;
-            this.setState({ class: gymClass, isDisable: false });
+            const {id} = this.props.auth.user;
+            this.setState({class: gymClass, isDisable: false});
             this.props.getFavorites(id);
             toast.show(
-              I18n.t("favoriteRemovedSucessfully", {
+              I18n.t('favoriteRemovedSucessfully', {
                 locale: this.props.setting.lang,
               }),
               {
-                type: "normal",
-                placement: "bottom",
+                type: 'normal',
+                placement: 'bottom',
                 duration: 2000,
                 offset: 30,
-                animationType: "slide-in",
-              }
+                animationType: 'slide-in',
+              },
             );
           }
         })
-        .catch((err) => {
+        .catch(err => {
           /*  if (err.response.data.error) {
           
         } */
@@ -441,45 +438,45 @@ export class GymClass extends Component {
   };
 
   handleWriteReview = () => {
-    const { lang } = this.props.setting;
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
-        I18n.t("login", { locale: lang }),
-        I18n.t("loginToProceed", { locale: lang }),
+        I18n.t('login', {locale: lang}),
+        I18n.t('loginToProceed', {locale: lang}),
         [
           {
-            text: I18n.t("no", { locale: lang }),
-            onPress: () => console.log("come"),
-            style: "cancel",
+            text: I18n.t('no', {locale: lang}),
+            onPress: () => console.log('come'),
+            style: 'cancel',
           },
           {
-            text: I18n.t("yes", { locale: lang }),
-            onPress: () => this.props.navigation.navigate("Login"),
+            text: I18n.t('yes', {locale: lang}),
+            onPress: () => this.props.navigation.navigate('Login'),
           },
         ],
         {
           cancelable: false,
-        }
+        },
       );
     } else {
-      this.setState({ isShowWriteReview: !this.state.isShowWriteReview });
+      this.setState({isShowWriteReview: !this.state.isShowWriteReview});
     }
   };
 
   handleConfirmBooking = () => {
-    this.setState({ isShowConfirmBooking: !this.state.isShowConfirmBooking });
+    this.setState({isShowConfirmBooking: !this.state.isShowConfirmBooking});
   };
 
-  renderItemGym = ({ item }) => {
-    const { id } = this.state.class;
-    const { attachments, name, name_ar } = item;
-    const { lang } = this.props.setting;
-    const textAlign = lang === "ar" ? "right" : "left";
+  renderItemGym = ({item}) => {
+    const {id} = this.state.class;
+    const {attachments, name, name_ar} = item;
+    const {lang} = this.props.setting;
+    const textAlign = lang === 'ar' ? 'right' : 'left';
     let image;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -492,16 +489,16 @@ export class GymClass extends Component {
         };
       }
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
     return (
       <TouchableOpacity
         onPress={() =>
           this.props.navigation.navigate({
-            routeName: "GymClass",
+            routeName: 'GymClass',
             params: {
               id: item.id,
-              back: "GymClass",
+              back: 'GymClass',
               back_id: id,
             },
             key: `GymClass_${Math.random() * 10000}`,
@@ -512,18 +509,16 @@ export class GymClass extends Component {
           width: normalize(142),
           marginRight: normalize(10),
           height: normalize(171),
-          transform: [{ scaleX: lang === "ar" ? -1 : 1 }],
-        }}
-      >
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
+        }}>
         <View
           style={{
             width: normalize(142),
             height: normalize(142),
             //borderRadius: 10,
-          }}
-        >
+          }}>
           <Image
-            resizeMode={"cover"}
+            resizeMode={'cover'}
             source={image}
             style={{
               width: normalize(142),
@@ -532,29 +527,29 @@ export class GymClass extends Component {
             }}
           />
         </View>
-        <View style={{ marginTop: normalize(5) }}>
-          <Text style={{ fontSize: normalize(15), textAlign: textAlign }}>
-            {lang === "ar" ? name_ar : name}
+        <View style={{marginTop: normalize(5)}}>
+          <Text style={{fontSize: normalize(15), textAlign: textAlign}}>
+            {lang === 'ar' ? name_ar : name}
           </Text>
         </View>
       </TouchableOpacity>
     );
   };
 
-  renderReviewItem = ({ item }) => {
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+  renderReviewItem = ({item}) => {
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let image;
 
     if (!isEmpty(item.user) && !isEmpty(item.user.attachment)) {
-      const { attachment } = item.user;
+      const {attachment} = item.user;
       image = {
         uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
       };
     } else {
-      image = require("../../assets/img/NoPicture.png");
+      image = require('../../assets/img/NoPicture.png');
     }
     return (
       <>
@@ -562,15 +557,13 @@ export class GymClass extends Component {
           style={{
             marginTop: normalize(16),
             marginHorizontal: normalize(16),
-          }}
-        >
+          }}>
           <View
             style={{
-              display: "flex",
+              display: 'flex',
               flexDirection: flexDirection,
-            }}
-          >
-            <View style={{ width: normalize(44) }}>
+            }}>
+            <View style={{width: normalize(44)}}>
               <Image
                 source={image}
                 style={{
@@ -582,29 +575,26 @@ export class GymClass extends Component {
             </View>
             <View
               style={{
-                marginLeft: lang === "ar" ? 0 : normalize(16),
-                marginRight: lang === "ar" ? normalize(16) : 0,
+                marginLeft: lang === 'ar' ? 0 : normalize(16),
+                marginRight: lang === 'ar' ? normalize(16) : 0,
                 width: normalize(267),
                 //marginHorizontal: normalize(16),
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: normalize(15),
-                  fontWeight: "700",
+                  fontWeight: '700',
                   textAlign: textAlign,
-                }}
-              >
+                }}>
                 {!isEmpty(item.user)
                   ? `${item.user.first_name} ${item.user.last_name}`
-                  : ""}
+                  : ''}
               </Text>
               <View
                 style={[
                   styles.classRatingContainer,
-                  { flexDirection: flexDirection },
-                ]}
-              >
+                  {flexDirection: flexDirection},
+                ]}>
                 <ReviewShow
                   rating={item.rating}
                   style={{
@@ -618,19 +608,17 @@ export class GymClass extends Component {
                 style={{
                   fontSize: normalize(12),
                   textAlign: textAlign,
-                }}
-              >
+                }}>
                 {item.description}
               </Text>
               <Text
                 style={{
                   fontSize: normalize(12),
-                  color: "#8A8A8F",
+                  color: '#8A8A8F',
                   textAlign: textAlign,
-                }}
-              >
-                {moment(item.createdAt, "YYYY-MM-DD hh:mm:ss")
-                  .startOf("hour")
+                }}>
+                {moment(item.createdAt, 'YYYY-MM-DD hh:mm:ss')
+                  .startOf('hour')
                   .fromNow()}
               </Text>
             </View>
@@ -641,10 +629,10 @@ export class GymClass extends Component {
   };
 
   dialCall = () => {
-    const { gym_mobile } = this.state.class.gym;
-    let phoneNumber = "";
+    const {gym_mobile} = this.state.class.gym;
+    let phoneNumber = '';
 
-    if (Platform.OS === "android") {
+    if (Platform.OS === 'android') {
       phoneNumber = `tel:${gym_mobile}`;
     } else {
       phoneNumber = `telprompt:${gym_mobile}`;
@@ -653,36 +641,34 @@ export class GymClass extends Component {
     Linking.openURL(phoneNumber);
   };
 
-  _renderTruncatedFooter = (handlePress) => {
-    const { lang } = this.props.setting;
+  _renderTruncatedFooter = handlePress => {
+    const {lang} = this.props.setting;
     return (
       <Text
         style={{
-          color: "#0053FE",
+          color: '#0053FE',
           marginTop: 5,
           fontSize: normalize(12),
-          fontWeight: "bold",
+          fontWeight: 'bold',
         }}
-        onPress={handlePress}
-      >
-        {I18n.t("readMore", { locale: lang })}
+        onPress={handlePress}>
+        {I18n.t('readMore', {locale: lang})}
       </Text>
     );
   };
 
-  _renderRevealedFooter = (handlePress) => {
-    const { lang } = this.props.setting;
+  _renderRevealedFooter = handlePress => {
+    const {lang} = this.props.setting;
     return (
       <Text
         style={{
-          color: "#0053FE",
+          color: '#0053FE',
           marginTop: 5,
           fontSize: normalize(12),
-          fontWeight: "bold",
+          fontWeight: 'bold',
         }}
-        onPress={handlePress}
-      >
-        {I18n.t("showLess", { locale: lang })}
+        onPress={handlePress}>
+        {I18n.t('showLess', {locale: lang})}
       </Text>
     );
   };
@@ -690,7 +676,7 @@ export class GymClass extends Component {
   handleNavigateGymDetail = (e, id) => {
     e.preventDefault();
     this.props.navigation.navigate({
-      routeName: "GymDetail",
+      routeName: 'GymDetail',
       params: {
         id: id,
       },
@@ -698,51 +684,44 @@ export class GymClass extends Component {
     });
   };
 
-  handleReviews = (review) => {
-    let gymClass = { ...this.state.class };
+  handleReviews = review => {
+    let gymClass = {...this.state.class};
     gymClass.reviews.push(review);
     gymClass.rating_count = gymClass.rating_count + 1;
-    this.setState({ class: gymClass });
+    this.setState({class: gymClass});
   };
 
-  handleAllReviews = (reviews) => {
-    let gymClass = { ...this.state.class };
+  handleAllReviews = reviews => {
+    let gymClass = {...this.state.class};
     if (reviews.length < 3) {
       gymClass.reviews = reviews;
     }
     gymClass.rating_count = gymClass.rating_count + 1;
-    this.setState({ class: gymClass });
+    this.setState({class: gymClass});
   };
 
-  renderCoach = (class_coach) => {
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
-    const {
-      id,
-      attachment,
-      name,
-      name_ar,
-      category,
-      rating_avg,
-      rating_count,
-    } = class_coach;
+  renderCoach = class_coach => {
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    const {id, attachment, name, name_ar, category, rating_avg, rating_count} =
+      class_coach;
     let coachImage;
     if (attachment) {
       coachImage = {
         uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
       };
     } else {
-      coachImage = require("../../assets/img/no_image_found.png");
+      coachImage = require('../../assets/img/no_image_found.png');
     }
     return (
       <TouchableOpacity
         key={id}
-        onPress={(e) => {
+        onPress={e => {
           e.preventDefault();
           this.props.navigation.navigate({
-            routeName: "Coach",
+            routeName: 'Coach',
             params: {
               id: id,
             },
@@ -752,15 +731,13 @@ export class GymClass extends Component {
         style={{
           marginTop: normalize(8),
           //marginHorizontal: normalize(16),
-        }}
-      >
+        }}>
         <View
           style={{
-            display: "flex",
+            display: 'flex',
             flexDirection: flexDirection,
-          }}
-        >
-          <View style={{ width: normalize(60) }}>
+          }}>
+          <View style={{width: normalize(60)}}>
             <Image
               source={coachImage}
               style={{
@@ -772,41 +749,37 @@ export class GymClass extends Component {
           </View>
           <View
             style={{
-              marginLeft: lang === "ar" ? 0 : normalize(16),
-              marginRight: lang === "ar" ? normalize(16) : 0,
+              marginLeft: lang === 'ar' ? 0 : normalize(16),
+              marginRight: lang === 'ar' ? normalize(16) : 0,
               width: normalize(267),
               //marginHorizontal: normalize(16),
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontSize: normalize(15),
-                fontWeight: "700",
+                fontWeight: '700',
                 textAlign: textAlign,
-              }}
-            >
-              {`${lang === "ar" ? name_ar : name}`}
+              }}>
+              {`${lang === 'ar' ? name_ar : name}`}
             </Text>
             <View
               style={[
                 styles.classRatingContainer,
-                { flexDirection: flexDirection },
-              ]}
-            >
+                {flexDirection: flexDirection},
+              ]}>
               <ReviewShow
                 rating={rating_avg}
                 style={{
                   fontSize: normalize(11),
-                  paddingRight: lang === "ar" ? 0 : normalize(2.75),
-                  paddingLeft: lang === "ar" ? normalize(2.75) : 0,
+                  paddingRight: lang === 'ar' ? 0 : normalize(2.75),
+                  paddingLeft: lang === 'ar' ? normalize(2.75) : 0,
                 }}
               />
               <View
                 style={{
-                  paddingRight: lang === "ar" ? normalize(3) : 0,
-                  paddingLeft: lang === "ar" ? 0 : normalize(3),
-                }}
-              >
+                  paddingRight: lang === 'ar' ? normalize(3) : 0,
+                  paddingLeft: lang === 'ar' ? 0 : normalize(3),
+                }}>
                 <Text style={styles.gymRatingCountText}>({rating_count})</Text>
               </View>
             </View>
@@ -817,32 +790,29 @@ export class GymClass extends Component {
   };
 
   handleClassSuccess = () => {
-    this.setState({ isShowClassSuccess: !this.state.isShowClassSuccess });
+    this.setState({isShowClassSuccess: !this.state.isShowClassSuccess});
   };
 
   handleClassSuccessConfirm = () => {
-    this.setState({ isShowClassSuccess: true });
+    this.setState({isShowClassSuccess: true});
   };
 
   handleRefresh = async () => {
-    this.setState({ refreshing: true });
-    const id = await this.props.navigation.getParam("id");
-    const date = await this.props.navigation.getParam("date");
-    const start_time = await this.props.navigation.getParam("start_time");
-    const end_time = await this.props.navigation.getParam("end_time");
-    const category_id = await this.props.navigation.getParam("category_id");
-    const category_type_id = await this.props.navigation.getParam(
-      "category_type_id"
-    );
-    const creditRangeHigh = await this.props.navigation.getParam(
-      "creditRangeHigh"
-    );
-    const creditRangeLow = await this.props.navigation.getParam(
-      "creditRangeLow"
-    );
-    const gender_id = await this.props.navigation.getParam("gender_id");
-    const latitude = await AsyncStorage.getItem("latitude");
-    const longitude = await AsyncStorage.getItem("longitude");
+    this.setState({refreshing: true});
+    const id = await this.props.navigation.getParam('id');
+    const date = await this.props.navigation.getParam('date');
+    const start_time = await this.props.navigation.getParam('start_time');
+    const end_time = await this.props.navigation.getParam('end_time');
+    const category_id = await this.props.navigation.getParam('category_id');
+    const category_type_id =
+      await this.props.navigation.getParam('category_type_id');
+    const creditRangeHigh =
+      await this.props.navigation.getParam('creditRangeHigh');
+    const creditRangeLow =
+      await this.props.navigation.getParam('creditRangeLow');
+    const gender_id = await this.props.navigation.getParam('gender_id');
+    const latitude = await AsyncStorage.getItem('latitude');
+    const longitude = await AsyncStorage.getItem('longitude');
     let url;
     if (latitude && longitude) {
       url = `${API_URI}/classes/${id}?latitude=${latitude}&longitude=${longitude}`;
@@ -851,9 +821,9 @@ export class GymClass extends Component {
     }
 
     let filter;
-    let whereFilter = "";
-    let inClass = "";
-    let inClassCategory = "";
+    let whereFilter = '';
+    let inClass = '';
+    let inClassCategory = '';
     if (!isEmpty(gender_id)) {
       inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
     }
@@ -907,23 +877,23 @@ export class GymClass extends Component {
       filter = `{"inClass":{"is_active": 1}}`;
     }
 
-    if (url.indexOf("?") > 0) {
+    if (url.indexOf('?') > 0) {
       url = `${url}&filter=${filter}`;
     } else {
       url = `${url}?filter=${filter}`;
     }
     await axios
       .get(url)
-      .then(async (res) => {
+      .then(async res => {
         if (res.data.error.code) {
         } else {
-          const { data } = res.data;
+          const {data} = res.data;
           data.class_schedules = await data.class_schedules.sort((a, b) =>
             a.start_time < b.start_time
               ? -1
               : a.start_time > b.start_time
-              ? 1
-              : 0
+                ? 1
+                : 0,
           );
           let class_schedule_id;
           let schedule_date_id;
@@ -937,18 +907,18 @@ export class GymClass extends Component {
             class_date = date;
             class_schedule_id = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].id
-              : "";
+              : '';
             class_start_time = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].start_time
-              : "";
+              : '';
             class_end_time = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].end_time
-              : "";
+              : '';
             schedule_date_id =
               !isEmpty(data.class_schedules) &&
               !isEmpty(data.class_schedules[0].schedule_dates)
                 ? data.class_schedules[0].schedule_dates[0].id
-                : "";
+                : '';
             credits = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].credits
               : 0;
@@ -960,7 +930,7 @@ export class GymClass extends Component {
               : false;
           } else {
             let scheduleDates = [];
-            await data.class_schedules.map((schedule) => {
+            await data.class_schedules.map(schedule => {
               if (!isEmpty(schedule.schedule_dates)) {
                 schedule.schedule_dates[0].dateTime = `${schedule.schedule_dates[0].date}T${schedule.start_time}`;
                 schedule.schedule_dates[0].start_time = schedule.start_time;
@@ -978,19 +948,19 @@ export class GymClass extends Component {
               // (await new Date(a.dateTime)) - (await new Date(b.dateTime))
               return aa - bb;
             });
-            class_date = !isEmpty(scheduleDates) ? scheduleDates[0].date : "";
+            class_date = !isEmpty(scheduleDates) ? scheduleDates[0].date : '';
             class_schedule_id = !isEmpty(scheduleDates)
               ? scheduleDates[0].class_schedule_id
-              : "";
+              : '';
             class_start_time = !isEmpty(scheduleDates)
               ? scheduleDates[0].start_time
-              : "";
+              : '';
             class_end_time = !isEmpty(scheduleDates)
               ? scheduleDates[0].end_time
-              : "";
+              : '';
             schedule_date_id = !isEmpty(scheduleDates)
               ? scheduleDates[0].id
-              : "";
+              : '';
             credits = !isEmpty(scheduleDates) ? scheduleDates[0].credits : 0;
             coaches = !isEmpty(scheduleDates) ? [scheduleDates[0].coach] : [];
             is_virtual = !isEmpty(scheduleDates)
@@ -1012,13 +982,13 @@ export class GymClass extends Component {
           return true;
         }
       })
-      .catch((err) => {
-        console.warn("err = ", err);
+      .catch(err => {
+        console.warn('err = ', err);
       });
 
     this.props.getSubscriptions();
     setTimeout(() => {
-      this.setState({ refreshing: false });
+      this.setState({refreshing: false});
     }, 2000);
   };
 
@@ -1062,7 +1032,7 @@ export class GymClass extends Component {
 
     let filteredClassSchedules = [];
     if (!isEmpty(class_schedules)) {
-      class_coaches = class_schedules.map((schedule) => {
+      class_coaches = class_schedules.map(schedule => {
         return schedule.coach;
       });
       jsonObject = class_coaches.map(JSON.stringify);
@@ -1071,11 +1041,11 @@ export class GymClass extends Component {
       uniqueArray = Array.from(uniqueSet).map(JSON.parse);
       class_coaches = uniqueArray;
       class_schedules = class_schedules.sort((a, b) =>
-        a.start_time < b.start_time ? -1 : a.start_time > b.start_time ? 1 : 0
+        a.start_time < b.start_time ? -1 : a.start_time > b.start_time ? 1 : 0,
       );
-      filteredClassSchedules = class_schedules.filter((scheduleItem) => {
+      filteredClassSchedules = class_schedules.filter(scheduleItem => {
         let tmpRes = false;
-        scheduleItem.schedule_dates.map((scheduleDateItem) => {
+        scheduleItem.schedule_dates.map(scheduleDateItem => {
           if (scheduleDateItem.date === this.state.date) {
             tmpRes = true;
           }
@@ -1086,7 +1056,7 @@ export class GymClass extends Component {
     let gymImage;
     if (gym && gym.attachments && gym.attachments.length > 0) {
       let primaryAttachment = gym.attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -1099,33 +1069,33 @@ export class GymClass extends Component {
         };
       }
     } else {
-      gymImage = require("../../assets/img/no_image_found.png");
+      gymImage = require('../../assets/img/no_image_found.png');
     }
 
     let classes = [...this.props.home.recommendedClasses];
-    classes = classes.filter((gymClass) => gymClass.id !== id);
+    classes = classes.filter(gymClass => gymClass.id !== id);
 
     // const {isLodaing} = this.props.errors;
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
 
     let images = [];
     if (attachments && attachments.length > 0) {
-      images = attachments.map((attachment) => {
+      images = attachments.map(attachment => {
         let image = `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`;
         return image;
       });
     }
-    let title = lang === "ar" ? name_ar : name;
+    let title = lang === 'ar' ? name_ar : name;
     return (
       <>
         {isLoading ? (
           <Loading />
         ) : (
-          <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
-            <SafeAreaView style={{ flex: 0, backgroundColor: "#ffffff" }} />
+          <View style={{flex: 1, backgroundColor: '#ffffff'}}>
+            <SafeAreaView style={{flex: 0, backgroundColor: '#ffffff'}} />
             <StatusBar /* hidden={true} */ />
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -1134,33 +1104,30 @@ export class GymClass extends Component {
                   refreshing={refreshing}
                   onRefresh={this.handleRefresh}
                 />
-              }
-            >
-              <View style={{ height: normalize(270) }}>
+              }>
+              <View style={{height: normalize(270)}}>
                 <CarouselSlider images={images} />
                 <View
                   /* style={styles.backButtonContainer} */ style={{
-                    position: "absolute",
-                    display: "flex",
-                    flexDirection: "row",
-                    top: Platform.OS === "ios" ? normalize(0) : normalize(0),
+                    position: 'absolute',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    top: Platform.OS === 'ios' ? normalize(0) : normalize(0),
                     left: normalize(10),
-                  }}
-                >
+                  }}>
                   <Button transparent onPress={this.handleBack}>
                     <Icon
                       type="FontAwesome"
                       name="angle-left"
-                      style={{ fontSize: normalize(18), color: "#ffffff" }}
+                      style={{fontSize: normalize(18), color: '#ffffff'}}
                       //style={styles.backButtonIcon}
                     />
                     <Text
                       /* style={styles.backButtonText} */ style={{
-                        color: "#ffffff",
+                        color: '#ffffff',
                         // left: normalize(1),
-                      }}
-                    >
-                      {I18n.t("back", { locale: lang })}
+                      }}>
+                      {I18n.t('back', {locale: lang})}
                     </Text>
                   </Button>
                 </View>
@@ -1168,21 +1135,19 @@ export class GymClass extends Component {
               <View
                 style={[
                   styles.ratingFavContainer,
-                  { flexDirection: flexDirection },
-                ]}
-              >
+                  {flexDirection: flexDirection},
+                ]}>
                 <View
                   style={[
                     styles.ratingContainer,
-                    { flexDirection: flexDirection },
-                  ]}
-                >
+                    {flexDirection: flexDirection},
+                  ]}>
                   <ReviewShow
                     rating={rating_avg}
                     style={{
                       fontSize: normalize(18),
-                      paddingRight: lang === "ar" ? 0 : normalize(4),
-                      paddingLeft: lang === "ar" ? normalize(4) : 0,
+                      paddingRight: lang === 'ar' ? 0 : normalize(4),
+                      paddingLeft: lang === 'ar' ? normalize(4) : 0,
                     }}
                   />
                   <Text style={styles.ratingCountText}>({rating_count})</Text>
@@ -1190,36 +1155,33 @@ export class GymClass extends Component {
                 <View
                   style={[
                     styles.favMapContainer,
-                    { flexDirection: flexDirection },
-                  ]}
-                >
+                    {flexDirection: flexDirection},
+                  ]}>
                   <TouchableOpacity onPress={this.dialCall}>
                     <CallIcon width={normalize(24)} height={normalize(24)} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       this.props.navigation.navigate({
-                        routeName: "Map",
+                        routeName: 'Map',
                         params: {
                           latitude: lattitude,
                           longitude: longitute,
-                          name: lang === "ar" ? name_ar : name,
+                          name: lang === 'ar' ? name_ar : name,
                         },
                         key: `GymClassMap_${Math.random() * 10000}`,
                       });
-                    }}
-                  >
+                    }}>
                     <MapIcon
                       width={normalize(24)}
                       height={normalize(24)}
-                      style={{ marginHorizontal: normalize(16) }}
+                      style={{marginHorizontal: normalize(16)}}
                     />
                   </TouchableOpacity>
                   {isEmpty(favourite) ? (
                     <TouchableOpacity
                       onPress={this.handleAddFavorite}
-                      disabled={this.state.isDisable}
-                    >
+                      disabled={this.state.isDisable}>
                       <FavoriteGreyIcon
                         width={normalize(24)}
                         height={normalize(24)}
@@ -1228,8 +1190,7 @@ export class GymClass extends Component {
                   ) : (
                     <TouchableOpacity
                       onPress={this.handleRemoveFavorite}
-                      disabled={this.state.isDisable}
-                    >
+                      disabled={this.state.isDisable}>
                       <FavoriteRedIcon
                         width={normalize(24)}
                         height={normalize(24)}
@@ -1238,57 +1199,49 @@ export class GymClass extends Component {
                   )}
                 </View>
               </View>
-              <View style={{ flexDirection: flexDirection }}>
-                <View
-                  style={[styles.genderContainer, { alignSelf: alignSelf }]}
-                >
+              <View style={{flexDirection: flexDirection}}>
+                <View style={[styles.genderContainer, {alignSelf: alignSelf}]}>
                   <Text style={styles.genderContainerText}>
                     {gender
-                      ? lang === "ar"
+                      ? lang === 'ar'
                         ? gender.name_ar
                         : gender.name
-                      : ""}
+                      : ''}
                   </Text>
                 </View>
-                <View
-                  style={[styles.genderContainer, { alignSelf: alignSelf }]}
-                >
+                <View style={[styles.genderContainer, {alignSelf: alignSelf}]}>
                   <Text style={styles.genderContainerText}>
                     {is_virtual
-                      ? I18n.t("virtual", { locale: lang })
-                      : I18n.t("offline", { locale: lang })}
+                      ? I18n.t('virtual', {locale: lang})
+                      : I18n.t('offline', {locale: lang})}
                   </Text>
                 </View>
               </View>
 
-              <View style={[styles.titleContainer, { alignSelf: alignSelf }]}>
+              <View style={[styles.titleContainer, {alignSelf: alignSelf}]}>
                 <Text
-                  style={[styles.titleContainerText, { textAlign: textAlign }]}
-                >
-                  {lang === "ar" ? name_ar : name}
+                  style={[styles.titleContainerText, {textAlign: textAlign}]}>
+                  {lang === 'ar' ? name_ar : name}
                 </Text>
               </View>
-              <View style={[styles.aboutContainer, { alignSelf: alignSelf }]}>
+              <View style={[styles.aboutContainer, {alignSelf: alignSelf}]}>
                 <Text style={styles.aboutContainerText}>
-                  {I18n.t("aboutClass", { locale: lang })}
+                  {I18n.t('aboutClass', {locale: lang})}
                 </Text>
               </View>
               <View
-                style={[styles.aboutContentContainer, { alignSelf: alignSelf }]}
-              >
+                style={[styles.aboutContentContainer, {alignSelf: alignSelf}]}>
                 <ReadMore
                   numberOfLines={3}
                   renderTruncatedFooter={this._renderTruncatedFooter}
                   renderRevealedFooter={this._renderRevealedFooter}
-                  onReady={this._handleTextReady}
-                >
+                  onReady={this._handleTextReady}>
                   <Text
                     style={[
                       styles.aboutContentContainerText,
-                      { textAlign: textAlign },
-                    ]}
-                  >
-                    {lang === "ar" ? description_ar : description}
+                      {textAlign: textAlign},
+                    ]}>
+                    {lang === 'ar' ? description_ar : description}
                   </Text>
                 </ReadMore>
                 {/*  <Text
@@ -1304,85 +1257,77 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
-              <View
-                style={[styles.dateTimeContainer, { alignSelf: alignSelf }]}
-              >
+              <View style={[styles.dateTimeContainer, {alignSelf: alignSelf}]}>
                 <Text style={styles.dateTimeContainerText}>
-                  {I18n.t("timeDate", { locale: lang })}
+                  {I18n.t('timeDate', {locale: lang})}
                 </Text>
               </View>
 
               <View
                 style={[
                   styles.dateTimeContentContainer,
-                  { alignSelf: alignSelf },
-                ]}
-              >
+                  {alignSelf: alignSelf},
+                ]}>
                 <View
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <View style={{ marginRight: normalize(6) }}>
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <View style={{marginRight: normalize(6)}}>
                     <Text
                       style={[
                         styles.dateTimeContentContainerText,
-                        { textAlign: textAlign },
-                      ]}
-                    >
+                        {textAlign: textAlign},
+                      ]}>
                       {`${
                         !isEmpty(this.state.date)
-                          ? moment(this.state.date, "YYYY-MM-DD").format(
-                              "dddd, D MMM YYYY"
+                          ? moment(this.state.date, 'YYYY-MM-DD').format(
+                              'dddd, D MMM YYYY',
                             )
-                          : I18n.t("noDateAvailable", { locale: lang })
+                          : I18n.t('noDateAvailable', {locale: lang})
                       }`}
                     </Text>
                   </View>
                   {!isEmpty(this.state.date) ? (
                     <View
                       style={{
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                         height: 25,
-                      }}
-                    >
-                      <View style={{ justifyContent: "center" }}>
+                      }}>
+                      <View style={{justifyContent: 'center'}}>
                         <Icon
                           type="FontAwesome"
                           name="circle"
                           style={{
                             fontSize: normalize(6),
-                            color: "#C8C7CC",
-                            textAlign: "center",
+                            color: '#C8C7CC',
+                            textAlign: 'center',
                           }}
                         />
                       </View>
                       <View
                         style={{
                           marginLeft: normalize(6),
-                        }}
-                      >
+                        }}>
                         <Text
                           style={[
                             styles.dateTimeContentContainerText,
-                            { textAlign: textAlign },
-                          ]}
-                        >
+                            {textAlign: textAlign},
+                          ]}>
                           {!isEmpty(this.state.start_time)
                             ? `${moment(
                                 this.state.start_time,
-                                "h:mm:ss"
-                              ).format("h:mm a")} - ${moment(
+                                'h:mm:ss',
+                              ).format('h:mm a')} - ${moment(
                                 this.state.end_time,
-                                "h:mm:ss"
-                              ).format("h:mm a")}`
+                                'h:mm:ss',
+                              ).format('h:mm a')}`
                             : null}
                         </Text>
                       </View>
@@ -1394,19 +1339,18 @@ export class GymClass extends Component {
                   <TouchableOpacity
                     style={{
                       marginTop: 10,
-                      backgroundColor: "#FE9800",
+                      backgroundColor: '#FE9800',
                       width: normalize(110),
                       height: normalize(30),
-                      backgroundColor: "#FE9800",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      backgroundColor: '#FE9800',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                       borderRadius: normalize(24),
                     }}
                     onPress={() => {
-                      this.setState({ showModal: true });
-                    }}
-                  >
-                    <Text style={{ color: "white" }}>More sessions</Text>
+                      this.setState({showModal: true});
+                    }}>
+                    <Text style={{color: 'white'}}>More sessions</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -1416,35 +1360,30 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
 
-              <View
-                style={[styles.dateTimeContainer, { alignSelf: alignSelf }]}
-              >
+              <View style={[styles.dateTimeContainer, {alignSelf: alignSelf}]}>
                 <Text style={styles.dateTimeContainerText}>
-                  {I18n.t("location", { locale: lang })}
+                  {I18n.t('location', {locale: lang})}
                 </Text>
               </View>
               <View
                 style={[
                   styles.dateTimeContentContainer,
-                  { alignSelf: alignSelf },
-                ]}
-              >
-                <View style={{ display: "flex", flexDirection: "row" }}>
+                  {alignSelf: alignSelf},
+                ]}>
+                <View style={{display: 'flex', flexDirection: 'row'}}>
                   <View
                     style={{
                       marginRight: normalize(5),
-                    }}
-                  >
+                    }}>
                     <Text
                       style={[
                         styles.dateTimeContentContainerText,
-                        { textAlign: textAlign },
-                      ]}
-                    >
+                        {textAlign: textAlign},
+                      ]}>
                       {address}
                     </Text>
                   </View>
@@ -1455,7 +1394,7 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
 
@@ -1464,30 +1403,26 @@ export class GymClass extends Component {
                   height: normalize(92),
                   marginHorizontal: normalize(16),
                   marginTop: normalize(16),
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     fontSize: normalize(14),
-                    fontWeight: "700",
+                    fontWeight: '700',
                     textAlign: textAlign,
-                  }}
-                >
-                  {I18n.t("gymName", { locale: lang })}
+                  }}>
+                  {I18n.t('gymName', {locale: lang})}
                 </Text>
                 <TouchableOpacity
-                  onPress={(e) => this.handleNavigateGymDetail(e, gym_id)}
+                  onPress={e => this.handleNavigateGymDetail(e, gym_id)}
                   style={{
                     marginTop: normalize(8),
-                  }}
-                >
+                  }}>
                   <View
                     style={{
-                      display: "flex",
+                      display: 'flex',
                       flexDirection: flexDirection,
-                    }}
-                  >
-                    <View style={{ width: normalize(60) }}>
+                    }}>
+                    <View style={{width: normalize(60)}}>
                       <Image
                         source={gymImage}
                         style={{
@@ -1499,57 +1434,52 @@ export class GymClass extends Component {
                     </View>
                     <View
                       style={{
-                        marginLeft: lang === "ar" ? 0 : normalize(16),
-                        marginRight: lang === "ar" ? normalize(16) : 0,
+                        marginLeft: lang === 'ar' ? 0 : normalize(16),
+                        marginRight: lang === 'ar' ? normalize(16) : 0,
                         width: normalize(267),
                         //marginHorizontal: normalize(16),
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
                           fontSize: normalize(15),
-                          fontWeight: "700",
+                          fontWeight: '700',
                           textAlign: textAlign,
-                        }}
-                      >
-                        {gym ? (lang === "ar" ? gym.name_ar : gym.name) : ""}
+                        }}>
+                        {gym ? (lang === 'ar' ? gym.name_ar : gym.name) : ''}
                       </Text>
                       {gym && gym.distance ? (
                         <Text
                           style={{
                             fontSize: normalize(12),
-                            color: "#8A8A8F",
+                            color: '#8A8A8F',
                             textAlign: textAlign,
-                          }}
-                        >
+                          }}>
                           {gym
                             ? gym.distance >= 1
                               ? `${gym.distance.toFixed(2)} km`
                               : `${gym.distance.toFixed(3) * 1000} m`
-                            : ""}
+                            : ''}
                         </Text>
                       ) : null}
 
                       <View
                         style={[
                           styles.classRatingContainer,
-                          { flexDirection: flexDirection },
-                        ]}
-                      >
+                          {flexDirection: flexDirection},
+                        ]}>
                         <ReviewShow
                           rating={gym ? gym.rating_avg : 0}
                           style={{
                             fontSize: normalize(11),
-                            paddingRight: lang === "ar" ? 0 : normalize(2.75),
-                            paddingLeft: lang === "ar" ? normalize(2.75) : 0,
+                            paddingRight: lang === 'ar' ? 0 : normalize(2.75),
+                            paddingLeft: lang === 'ar' ? normalize(2.75) : 0,
                           }}
                         />
                         <View
                           style={{
-                            paddingRight: lang === "ar" ? normalize(3) : 0,
-                            paddingLeft: lang === "ar" ? 0 : normalize(3),
-                          }}
-                        >
+                            paddingRight: lang === 'ar' ? normalize(3) : 0,
+                            paddingLeft: lang === 'ar' ? 0 : normalize(3),
+                          }}>
                           <Text style={[styles.gymRatingCountText, ,]}>
                             ({gym ? gym.rating_count : 0})
                           </Text>
@@ -1565,7 +1495,7 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
               <View
@@ -1573,20 +1503,18 @@ export class GymClass extends Component {
                   // height: normalize(92),
                   marginHorizontal: normalize(16),
                   marginTop: normalize(16),
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     fontSize: normalize(14),
-                    fontWeight: "700",
+                    fontWeight: '700',
                     textAlign: textAlign,
-                  }}
-                >
-                  {I18n.t("coachName", { locale: lang })}
+                  }}>
+                  {I18n.t('coachName', {locale: lang})}
                 </Text>
                 {!isEmpty(this.state.coaches)
                   ? this.state.coaches.map((class_coach, index) =>
-                      this.renderCoach(class_coach)
+                      this.renderCoach(class_coach),
                     )
                   : null}
               </View>
@@ -1596,7 +1524,7 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
 
@@ -1604,43 +1532,39 @@ export class GymClass extends Component {
                 style={{
                   marginTop: normalize(20),
                   marginHorizontal: normalize(16),
-                  display: "flex",
+                  display: 'flex',
                   flex: 1,
                   flexDirection: flexDirection,
-                  justifyContent: "space-between",
-                }}
-              >
+                  justifyContent: 'space-between',
+                }}>
                 <View>
                   <Text
                     style={{
                       fontSize: normalize(20),
-                      fontWeight: "700",
-                      color: "#22242A",
-                    }}
-                  >
-                    {rating_count} {I18n.t("reviews", { locale: lang })}
+                      fontWeight: '700',
+                      color: '#22242A',
+                    }}>
+                    {rating_count} {I18n.t('reviews', {locale: lang})}
                   </Text>
                 </View>
                 {reviews && reviews.length > 0 ? (
                   <TouchableOpacity
                     onPress={() =>
-                      this.props.navigation.navigate("Review", {
+                      this.props.navigation.navigate('Review', {
                         foreign_id: id,
-                        class: "Class",
-                        back: "GymClass",
-                        handleReviews: (data) => this.handleAllReviews(data),
+                        class: 'Class',
+                        back: 'GymClass',
+                        handleReviews: data => this.handleAllReviews(data),
                       })
-                    }
-                  >
+                    }>
                     <Text
                       style={{
                         marginTop: normalize(7),
                         fontSize: normalize(13),
-                        color: "#8A8A8F",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {I18n.t("readAll", { locale: lang })}
+                        color: '#8A8A8F',
+                        justifyContent: 'center',
+                      }}>
+                      {I18n.t('readAll', {locale: lang})}
                     </Text>
                   </TouchableOpacity>
                 ) : (
@@ -1649,19 +1573,18 @@ export class GymClass extends Component {
                       style={{
                         marginTop: normalize(7),
                         fontSize: normalize(13),
-                        color: "#0053FE",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {I18n.t("writeReview", { locale: lang })}
+                        color: '#0053FE',
+                        justifyContent: 'center',
+                      }}>
+                      {I18n.t('writeReview', {locale: lang})}
                     </Text>
                   </TouchableOpacity>
                 )}
               </View>
               {reviews && reviews.length > 0 ? (
-                <View style={{ marginBottom: normalize(10) }}>
-                  {reviews.map((item) => {
-                    return this.renderReviewItem({ item });
+                <View style={{marginBottom: normalize(10)}}>
+                  {reviews.map(item => {
+                    return this.renderReviewItem({item});
                   })}
                 </View>
               ) : null}
@@ -1670,7 +1593,7 @@ export class GymClass extends Component {
                   marginTop: normalize(6),
                   marginHorizontal: normalize(16),
                   borderBottomWidth: 1,
-                  borderBottomColor: "#EFEFF4",
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
               <View
@@ -1678,10 +1601,9 @@ export class GymClass extends Component {
                   marginTop: normalize(20),
                   marginHorizontal: normalize(16),
                   flexDirection: flexDirection,
-                }}
-              >
-                <Text style={{ fontSize: normalize(20), fontWeight: "bold" }}>
-                  {I18n.t("recommendedClassForYou", { locale: lang })}
+                }}>
+                <Text style={{fontSize: normalize(20), fontWeight: 'bold'}}>
+                  {I18n.t('recommendedClassForYou', {locale: lang})}
                 </Text>
               </View>
               <View
@@ -1689,18 +1611,17 @@ export class GymClass extends Component {
                   marginVertical: normalize(16),
                   width: width,
                   height: normalize(171),
-                  transform: [{ rotateY: lang === "ar" ? "180deg" : "0deg" }],
+                  transform: [{rotateY: lang === 'ar' ? '180deg' : '0deg'}],
                   paddingLeft: normalize(16),
                   flexDirection: flexDirection,
-                }}
-              >
+                }}>
                 {classes.length > 0 ? (
                   <FlatList
                     horizontal={true}
                     style={[styles.container]}
                     data={classes}
                     renderItem={this.renderItemGym}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={item => item.id.toString()}
                   />
                 ) : (
                   <View
@@ -1708,23 +1629,19 @@ export class GymClass extends Component {
                       width: normalize(142),
                       marginRight: normalize(10),
                       height: normalize(171),
-                      transform: [
-                        { rotateY: lang === "ar" ? "180deg" : "0deg" },
-                      ],
+                      transform: [{rotateY: lang === 'ar' ? '180deg' : '0deg'}],
                       borderRadius: normalize(10),
-                      backgroundColor: "#efefef",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
+                      backgroundColor: '#efefef',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
                     <Text
                       style={{
                         fontSize: normalize(16),
-                        color: "#8f8f8f",
-                        textAlign: "center",
-                      }}
-                    >
-                      {I18n.t("noRecommendedClasses", { locale: lang })}
+                        color: '#8f8f8f',
+                        textAlign: 'center',
+                      }}>
+                      {I18n.t('noRecommendedClasses', {locale: lang})}
                     </Text>
                   </View>
                 )}
@@ -1737,40 +1654,38 @@ export class GymClass extends Component {
                 reviews={reviews}
                 handleReviews={this.handleReviews}
               />
-              <View style={{ marginTop: normalize(50) }} />
+              <View style={{marginTop: normalize(50)}} />
             </ScrollView>
             {!isEmpty(this.state.class) && !isEmpty(this.state.date) ? (
               <>
                 <TouchableOpacity
                   onPress={this.handleConfirmBooking}
                   style={{
-                    position: "absolute",
+                    position: 'absolute',
                     bottom: normalize(15),
                     marginHorizontal: normalize(32),
                     width: normalize(310),
                     height: normalize(48),
-                    backgroundColor: "#FE9800",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    backgroundColor: '#FE9800',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     borderRadius: normalize(24),
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
-                      color: "#ffffff",
+                      color: '#ffffff',
                       fontSize: normalize(16),
-                      fontWeight: "bold",
-                    }}
-                  >
+                      fontWeight: 'bold',
+                    }}>
                     {this.state.credits > 0
-                      ? `${I18n.t("bookClass", {
+                      ? `${I18n.t('bookClass', {
                           locale: lang,
-                        })} (${this.state.credits} ${I18n.t("credits", {
+                        })} (${this.state.credits} ${I18n.t('credits', {
                           locale: lang,
                         })})`
-                      : `${I18n.t("bookClass", {
+                      : `${I18n.t('bookClass', {
                           locale: lang,
-                        })} (${I18n.t("free", {
+                        })} (${I18n.t('free', {
                           locale: lang,
                         })})`}
                   </Text>
@@ -1792,12 +1707,12 @@ export class GymClass extends Component {
                 <ClassSuccess
                   isShowClassSuccess={isShowClassSuccess}
                   handleClassSuccess={this.handleClassSuccess}
-                  text={I18n.t("successful", { locale: lang })}
-                  shortText={`${I18n.t("youHaveSuccessfullyBooked", {
+                  text={I18n.t('successful', {locale: lang})}
+                  shortText={`${I18n.t('youHaveSuccessfullyBooked', {
                     locale: lang,
                   })} ${title}`}
-                  buttonText={I18n.t("continue", { locale: lang })}
-                  MoveScreenName={"Home"}
+                  buttonText={I18n.t('continue', {locale: lang})}
+                  MoveScreenName={'Home'}
                   navigation={this.props.navigation}
                 />
               </>
@@ -1810,28 +1725,25 @@ export class GymClass extends Component {
                 transparent={true}
                 onRequestClose={() => {
                   // this.props.handleConfirmBooking();
-                }}
-              >
-                <View style={{ flex: 1, backgroundColor: "white" }}>
-                  <Text
-                    style={{ paddingLeft: 20, paddingTop: 50, fontSize: 20 }}
-                  >
+                }}>
+                <View style={{flex: 1, backgroundColor: 'white'}}>
+                  <Text style={{paddingLeft: 20, paddingTop: 50, fontSize: 20}}>
                     Select session time
                   </Text>
                   <FlatList
-                    style={{ paddingTop: 20 }}
+                    style={{paddingTop: 20}}
                     scrollEnabled={false}
                     data={filteredClassSchedules}
-                    renderItem={(item) => {
+                    renderItem={item => {
                       return (
                         <TouchableOpacity
                           onPress={() => {
                             let val;
-                            item.item.schedule_dates.forEach((value) => {
+                            item.item.schedule_dates.forEach(value => {
                               const date = moment(value.date).format(
-                                "YYYY-MM-DD"
+                                'YYYY-MM-DD',
                               );
-                              const today = moment().format("YYYY-MM-DD");
+                              const today = moment().format('YYYY-MM-DD');
 
                               if (this.state.date === value.date) {
                                 val = value;
@@ -1851,30 +1763,27 @@ export class GymClass extends Component {
                           }}
                           style={[
                             styles.dateTimeContentContainer,
-                            { alignSelf: alignSelf },
-                          ]}
-                        >
+                            {alignSelf: alignSelf},
+                          ]}>
                           <View
                             style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              alignItems: "center",
-                            }}
-                          >
-                            <View style={{ marginRight: normalize(6) }}>
+                              display: 'flex',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}>
+                            <View style={{marginRight: normalize(6)}}>
                               <Text
                                 style={[
                                   styles.dateTimeContentContainerText,
-                                  { textAlign: textAlign },
-                                ]}
-                              >
+                                  {textAlign: textAlign},
+                                ]}>
                                 {`${
                                   !isEmpty(this.state.date)
                                     ? moment(
                                         this.state.date,
-                                        "YYYY-MM-DD"
-                                      ).format("dddd, D MMM YYYY")
-                                    : I18n.t("noDateAvailable", {
+                                        'YYYY-MM-DD',
+                                      ).format('dddd, D MMM YYYY')
+                                    : I18n.t('noDateAvailable', {
                                         locale: lang,
                                       })
                                 }`}
@@ -1883,42 +1792,39 @@ export class GymClass extends Component {
                             {!isEmpty(this.state.date) ? (
                               <View
                                 style={{
-                                  flexDirection: "row",
-                                  justifyContent: "center",
-                                  alignItems: "center",
+                                  flexDirection: 'row',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
                                   height: 25,
-                                }}
-                              >
-                                <View style={{ justifyContent: "center" }}>
+                                }}>
+                                <View style={{justifyContent: 'center'}}>
                                   <Icon
                                     type="FontAwesome"
                                     name="circle"
                                     style={{
                                       fontSize: normalize(6),
-                                      color: "#C8C7CC",
-                                      textAlign: "center",
+                                      color: '#C8C7CC',
+                                      textAlign: 'center',
                                     }}
                                   />
                                 </View>
                                 <View
                                   style={{
                                     marginLeft: normalize(6),
-                                  }}
-                                >
+                                  }}>
                                   <Text
                                     style={[
                                       styles.dateTimeContentContainerText,
-                                      { textAlign: textAlign },
-                                    ]}
-                                  >
+                                      {textAlign: textAlign},
+                                    ]}>
                                     {!isEmpty(item.item.start_time)
                                       ? `${moment(
                                           item.item.start_time,
-                                          "h:mm:ss"
-                                        ).format("h:mm a")} - ${moment(
+                                          'h:mm:ss',
+                                        ).format('h:mm a')} - ${moment(
                                           item.item.end_time,
-                                          "h:mm:ss"
-                                        ).format("h:mm a")}`
+                                          'h:mm:ss',
+                                        ).format('h:mm a')}`
                                       : null}
                                   </Text>
                                 </View>
@@ -1934,7 +1840,7 @@ export class GymClass extends Component {
             )}
           </View>
         )}
-        <Toast ref={(ref) => (global["toast"] = ref)} />
+        <Toast ref={ref => (global['toast'] = ref)} />
       </>
     );
   }
@@ -1945,68 +1851,68 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   ratingFavContainer: {
-    backgroundColor: "#F9F9F9",
+    backgroundColor: '#F9F9F9',
     height: normalize(56),
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
-    alignItems: "center",
+    alignItems: 'center',
     paddingHorizontal: normalize(16),
   },
   ratingContainer: {
     flex: 2,
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
   },
   starIcon: {
     fontSize: normalize(18),
-    color: "#FE9800",
+    color: '#FE9800',
     //paddingRight: normalize(4),
   },
   classRatingContainer: {
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
-    alignItems: "center",
+    alignItems: 'center',
   },
   classStarIcon: {
     fontSize: normalize(11),
-    color: "#FE9800",
+    color: '#FE9800',
     paddingRight: normalize(2.75),
   },
   ratingCountText: {
-    color: "#8A8A8F",
+    color: '#8A8A8F',
     fontSize: normalize(14),
   },
   gymRatingCountText: {
-    color: "#8A8A8F",
+    color: '#8A8A8F',
     fontSize: normalize(12),
   },
   favMapContainer: {
     flex: 1,
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   genderContainer: {
     marginTop: normalize(11),
     width: normalize(108),
     height: normalize(20),
-    backgroundColor: "#F9F9F9",
+    backgroundColor: '#F9F9F9',
     borderRadius: normalize(10),
     marginHorizontal: normalize(16),
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   genderContainerText: {
     fontSize: normalize(12),
-    color: "#8A8A8F",
+    color: '#8A8A8F',
   },
   titleContainer: {
     marginHorizontal: normalize(16),
   },
   titleContainerText: {
     fontSize: normalize(32),
-    fontWeight: "bold",
-    color: "#22242A",
+    fontWeight: 'bold',
+    color: '#22242A',
   },
   aboutContainer: {
     marginHorizontal: normalize(16),
@@ -2014,8 +1920,8 @@ const styles = StyleSheet.create({
   aboutContainerText: {
     marginTop: normalize(12),
     fontSize: normalize(14),
-    fontWeight: "700",
-    color: "#22242A",
+    fontWeight: '700',
+    color: '#22242A',
   },
   aboutContentContainer: {
     marginTop: normalize(6),
@@ -2023,7 +1929,7 @@ const styles = StyleSheet.create({
   },
   aboutContentContainerText: {
     fontSize: normalize(12),
-    color: "#8A8A8F",
+    color: '#8A8A8F',
   },
   dateTimeContainer: {
     marginTop: normalize(11),
@@ -2032,8 +1938,8 @@ const styles = StyleSheet.create({
   dateTimeContainerText: {
     marginTop: normalize(8),
     fontSize: normalize(14),
-    fontWeight: "700",
-    color: "#22242A",
+    fontWeight: '700',
+    color: '#22242A',
   },
   dateTimeContentContainer: {
     marginTop: normalize(6),
@@ -2041,7 +1947,7 @@ const styles = StyleSheet.create({
   },
   dateTimeContentContainerText: {
     fontSize: normalize(12),
-    color: "#8A8A8F",
+    color: '#8A8A8F',
   },
   classTitleContainer: {
     marginTop: normalize(12),
@@ -2049,12 +1955,12 @@ const styles = StyleSheet.create({
   },
   classTitleContainerText: {
     fontSize: normalize(20),
-    color: "#22242A",
-    fontWeight: "bold",
+    color: '#22242A',
+    fontWeight: 'bold',
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   home: state.home,
   setting: state.setting,

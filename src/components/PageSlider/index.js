@@ -16,34 +16,32 @@ import I18n from '../../utils/i18n';
 import CircleCheckIcon from '../../assets/img/check_circle.svg';
 import CircleCheckActiveIcon from '../../assets/img/check_circle_active.svg';
 import CircleCheckSelectIcon from '../../assets/img/check_circle_select.svg';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
 
 import styles from './styles';
 const width = Dimensions.get('window').width;
 
-const PageSlider = (props) => {
+const PageSlider = props => {
   const [selectedIndex, setIndex] = useState(0);
   const [selectPackage, setPackage] = useState();
   const [showList, setShowList] = useState(false);
 
   useEffect(() => {
     setIndex(props.selectIndex);
-    setPackage(props.selectPackage)
+    setPackage(props.selectPackage);
 
     setShowList(true);
-  }, [props])
+  }, [props]);
 
-  const setSelectedIndex = (selectedIndex) => {
+  const setSelectedIndex = selectedIndex => {
     setIndex(selectedIndex);
-    props.handleSelectIndex(
-      selectedIndex,
-    );
+    props.handleSelectIndex(selectedIndex);
     handlePackage(selectedIndex);
   };
 
-  const handlePackage = (index) => {
+  const handlePackage = index => {
     props.handleSelectPackage(props.data[index].id);
-    setPackage(props.data[index].id)
+    setPackage(props.data[index].id);
   };
 
   const pagination = () => {
@@ -56,13 +54,13 @@ const PageSlider = (props) => {
           height: 10,
           borderRadius: 5,
           marginHorizontal: 8,
-          backgroundColor: 'black'
+          backgroundColor: 'black',
         }}
         inactiveDotOpacity={0.4}
         inactiveDotScale={0.6}
       />
     );
-  }
+  };
 
   const renderItem = ({item, index}) => {
     const {lang} = props.setting;
@@ -108,7 +106,9 @@ const PageSlider = (props) => {
               right: normalize(8),
               top: normalize(8),
             }}>
-            {props.subscription_id === id && !props.isLastPackage && props.type !== 'new' ? (
+            {props.subscription_id === id &&
+            !props.isLastPackage &&
+            props.type !== 'new' ? (
               <CircleCheckActiveIcon
                 width={normalize(24)}
                 height={normalize(24)}
@@ -119,10 +119,7 @@ const PageSlider = (props) => {
                 height={normalize(24)}
               />
             ) : (
-              <CircleCheckIcon
-                width={normalize(24)}
-                height={normalize(24)}
-              />
+              <CircleCheckIcon width={normalize(24)} height={normalize(24)} />
             )}
           </TouchableOpacity>
         </View>
@@ -183,30 +180,27 @@ const PageSlider = (props) => {
   };
 
   return (
-    <View 
-      style={styles.pageWrapper}>
+    <View style={styles.pageWrapper}>
       <View style={{flex: 6}}>
-        {
-          props.data && showList && (
-            <Carousel
-              data={props.data}
-              renderItem={renderItem}
-              sliderWidth={width}
-              itemWidth={width - 20}
-              layout={'default'}
-              onSnapToItem={setSelectedIndex}
-              firstItem={selectedIndex}
-              initialNumToRender={100}
-              useScrollView
-            />
-          )
-        }
+        {props.data && showList && (
+          <Carousel
+            data={props.data}
+            renderItem={renderItem}
+            sliderWidth={width}
+            itemWidth={width - 20}
+            layout={'default'}
+            onSnapToItem={setSelectedIndex}
+            firstItem={selectedIndex}
+            initialNumToRender={100}
+            useScrollView
+          />
+        )}
       </View>
 
-      { pagination() }
+      {pagination()}
     </View>
   );
-}
+};
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -215,7 +209,4 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {},
-)(PageSlider);
+export default connect(mapStateToProps, {})(PageSlider);

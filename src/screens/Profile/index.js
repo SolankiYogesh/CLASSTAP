@@ -13,13 +13,7 @@ import {
   RefreshControl,
   StatusBar,
 } from 'react-native';
-import {
-  Card,
-  CardItem,
-  Body,
-  Text,
-  Icon,
-} from 'native-base';
+import {Card, CardItem, Body, Text, Icon} from 'native-base';
 import normalize from 'react-native-normalize';
 import I18n from '../../utils/i18n';
 import {connect} from 'react-redux';
@@ -217,11 +211,11 @@ export class Profile extends Component {
       });
     } else if (status === 'failed') {
       toast.show(I18n.t('paymentFailed', {locale: lang}), {
-        type: "danger",
-        placement: "bottom",
+        type: 'danger',
+        placement: 'bottom',
         duration: 2000,
         offset: 30,
-        animationType: "slide-in",
+        animationType: 'slide-in',
       });
       this.setState({
         isShowPaymentWeb: false,
@@ -574,9 +568,9 @@ export class Profile extends Component {
                   </CardItem>
                 </Card>
               </View>
-              <View
-                style={{ marginHorizontal: '5%' }}>
-                <Card style={[styles.cardContainer, {marginTop: normalize(20)}]}>
+              <View style={{marginHorizontal: '5%'}}>
+                <Card
+                  style={[styles.cardContainer, {marginTop: normalize(20)}]}>
                   <CardItem
                     bordered
                     style={[styles.cardItemContainer, styles.cardItemStart]}>
@@ -750,9 +744,9 @@ export class Profile extends Component {
               </View>
             </ScrollView>
 
-
-            {
-              this.state.data && this.state.data.access_code && isShowPaymentWeb && (
+            {this.state.data &&
+              this.state.data.access_code &&
+              isShowPaymentWeb && (
                 <PaymentWeb
                   isShowPaymentWeb={isShowPaymentWeb}
                   handlePaymentWeb={this.handlePaymentWeb}
@@ -761,9 +755,7 @@ export class Profile extends Component {
                   data={data}
                   language={lang}
                 />
-              )
-            }
-
+              )}
 
             <PaymentSuccess
               isShowPaymentSuccess={isShowPaymentSuccess}
@@ -778,7 +770,7 @@ export class Profile extends Component {
             />
           </View>
         )}
-        <Toast ref={(ref) => global['toast'] = ref} />
+        <Toast ref={ref => (global['toast'] = ref)} />
       </>
     );
   }
@@ -872,14 +864,11 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    logoutUser,
-    getSubscriptions,
-    addUserSubscription,
-    currentUser,
-    getSubscriptionsRefresh,
-    updateUser,
-  },
-)(Profile);
+export default connect(mapStateToProps, {
+  logoutUser,
+  getSubscriptions,
+  addUserSubscription,
+  currentUser,
+  getSubscriptionsRefresh,
+  updateUser,
+})(Profile);

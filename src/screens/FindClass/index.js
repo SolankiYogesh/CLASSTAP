@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -13,69 +13,69 @@ import {
   BackHandler,
   Alert,
   RefreshControl,
-} from "react-native";
-import FastImage from "@d11/react-native-fast-image";
+} from 'react-native';
+import FastImage from '@d11/react-native-fast-image';
 
-import { connect } from "react-redux";
-import normalize from "react-native-normalize";
-import { Item, Input, Icon } from "native-base";
-import { clearErrors } from "../../actions/errorAction";
+import {connect} from 'react-redux';
+import normalize from 'react-native-normalize';
+import {Item, Input, Icon} from 'native-base';
+import {clearErrors} from '../../actions/errorAction';
 import {
   getPopularGyms,
   getFindClasses,
   getSearchFindClasses,
   getFilterFindClassesNew,
-} from "../../actions/findClassActions";
+} from '../../actions/findClassActions';
 
-import FilterIcon from "../../assets/img/filter.svg";
-import FilterSearchIcon from "../../assets/img/filter_search.svg";
-import MapIcon from "../../assets/img/map.svg";
+import FilterIcon from '../../assets/img/filter.svg';
+import FilterSearchIcon from '../../assets/img/filter_search.svg';
+import MapIcon from '../../assets/img/map.svg';
 
-import CalendarStrip from "../../react-native-slideable-calendar-strip";
-import ReviewShow from "../Review/ReviewShow";
-import { IMAGE_URI } from "../../utils/config";
-import isEmpty from "../../validation/is-empty";
-import I18n from "../../utils/i18n";
-import RangeSlider from "rn-range-slider";
-import moment from "moment-timezone";
-moment.tz.setDefault("Asia/Qatar");
-import ConfirmBooking from "../ConfirmBooking";
+import CalendarStrip from '../../react-native-slideable-calendar-strip';
+import ReviewShow from '../Review/ReviewShow';
+import {IMAGE_URI} from '../../utils/config';
+import isEmpty from '../../validation/is-empty';
+import I18n from '../../utils/i18n';
+import RangeSlider from 'rn-range-slider';
+import moment from 'moment-timezone';
+moment.tz.setDefault('Asia/Qatar');
+import ConfirmBooking from '../ConfirmBooking';
 
-const { width } = Dimensions.get("window");
+const {width} = Dimensions.get('window');
 
 export class FindClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: "",
+      search: '',
       selectedDate: new Date(),
       rangeLow: 18000000,
       rangeHigh: 75600000,
-      start_time: moment.utc(18000000).format("HH:mm:ss"),
-      end_time: moment.utc(75600000).format("HH:mm:ss"),
+      start_time: moment.utc(18000000).format('HH:mm:ss'),
+      end_time: moment.utc(75600000).format('HH:mm:ss'),
       class: {},
       isShowConfirmBooking: false,
       category_id: [],
       category_type_id: [],
-      creditRangeHigh: "",
-      creditRangeLow: "",
+      creditRangeHigh: '',
+      creditRangeLow: '',
       gender_id: [],
       refreshing: false,
     };
   }
   async componentDidMount() {
-    let { selectedDate, start_time, end_time, search } = this.state;
+    let {selectedDate, start_time, end_time, search} = this.state;
     let date = selectedDate;
 
     date = new Date(date);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split("T")[0];
+      .split('T')[0];
     this.props.getFindClasses(dateString, start_time, end_time, search);
     this.props.getPopularGyms();
     //this.props.getFindClasses();
-    BackHandler.addEventListener("hardwareBackPress", this.handleBack);
-    this.focusListener2 = this.props.navigation.addListener("didFocus", () => {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener2 = this.props.navigation.addListener('didFocus', () => {
       this.props.getPopularGyms();
       const {
         selectedDate,
@@ -90,11 +90,11 @@ export class FindClass extends Component {
       let date1 = new Date(selectedDate);
       let date = new Date(date1.getTime() - date1.getTimezoneOffset() * 60000)
         .toISOString()
-        .split("T")[0];
+        .split('T')[0];
       let filter;
-      let whereFilter = "";
-      let inClass = "";
-      let inClassCategory = "";
+      let whereFilter = '';
+      let inClass = '';
+      let inClassCategory = '';
       if (!isEmpty(gender_id)) {
         inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
       }
@@ -160,7 +160,7 @@ export class FindClass extends Component {
       this.props.getFindClasses(dateString, start_time, end_time, search); */
     });
   }
-  onGoBack = (data) => {
+  onGoBack = data => {
     const {
       category_id,
       category_type_id,
@@ -187,23 +187,23 @@ export class FindClass extends Component {
     });
   };
 
-  handleBack = async (back) => {
+  handleBack = async back => {
     //BackHandler.exitApp();
-    this.props.navigation.navigate("Home");
+    this.props.navigation.navigate('Home');
     return true;
   };
 
   componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
     this.focusListener2.remove();
   }
-  searchSubmit = (e) => {
+  searchSubmit = e => {
     e.preventDefault();
-    const { search, start_time, end_time, selectedDate } = this.state;
+    const {search, start_time, end_time, selectedDate} = this.state;
     let date = new Date(selectedDate);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split("T")[0];
+      .split('T')[0];
     if (selectedDate) {
       this.props.getSearchFindClasses(search, dateString, start_time, end_time);
     } else {
@@ -212,20 +212,20 @@ export class FindClass extends Component {
   };
   handleChangeText = (name, value) => {
     this.props.clearErrors();
-    this.setState({ [name]: value });
+    this.setState({[name]: value});
   };
 
-  renderItemGym = ({ item }) => {
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
-    const { id, name, name_ar, attachments, distance } = item;
+  renderItemGym = ({item}) => {
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    const {id, name, name_ar, attachments, distance} = item;
     let image;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -238,27 +238,25 @@ export class FindClass extends Component {
         };
       }
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
     return (
       <TouchableOpacity
         onPress={() =>
-          this.props.navigation.navigate("Gym", { id, back: "Favorities" })
+          this.props.navigation.navigate('Gym', {id, back: 'Favorities'})
         }
         style={{
           width: normalize(120),
           marginRight: normalize(10),
           height: normalize(163),
-          transform: [{ scaleX: lang === "ar" ? -1 : 1 }],
-        }}
-      >
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
+        }}>
         <View
           style={{
             width: normalize(120),
             height: normalize(118),
             //borderRadius: 10,
-          }}
-        >
+          }}>
           {image.url ? (
             <FastImage
               style={{
@@ -274,7 +272,7 @@ export class FindClass extends Component {
             />
           ) : (
             <Image
-              resizeMode={"cover"}
+              resizeMode={'cover'}
               source={image}
               style={{
                 width: normalize(120),
@@ -284,22 +282,21 @@ export class FindClass extends Component {
             />
           )}
         </View>
-        <View style={{ marginTop: normalize(8) }}>
-          <Text style={{ fontSize: normalize(13), textAlign: textAlign }}>
-            {lang === "ar"
+        <View style={{marginTop: normalize(8)}}>
+          <Text style={{fontSize: normalize(13), textAlign: textAlign}}>
+            {lang === 'ar'
               ? name_ar.length > 18
                 ? `${name.substring(0, 18)}...`
                 : name_ar
               : name.length > 18
-              ? `${name.substring(0, 18)}...`
-              : name}
+                ? `${name.substring(0, 18)}...`
+                : name}
           </Text>
           <View
             style={[
               styles.classRatingContainer,
-              { flexDirection: flexDirection, marginTop: normalize(5) },
-            ]}
-          >
+              {flexDirection: flexDirection, marginTop: normalize(5)},
+            ]}>
             <ReviewShow
               rating={item.rating_avg}
               style={{
@@ -338,7 +335,7 @@ export class FindClass extends Component {
     let date = new Date(selectedDate);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split("T")[0];
+      .split('T')[0];
     if (selectedDate) {
       paramsData.date = dateString;
       paramsData.start_time = start_time;
@@ -350,13 +347,13 @@ export class FindClass extends Component {
       paramsData.gender_id = gender_id;
     }
     this.props.navigation.navigate({
-      routeName: "GymClass",
+      routeName: 'GymClass',
       params: paramsData,
       key: `GymClassesSearch_${Math.random() * 10000}`,
     });
   };
 
-  renderItem = ({ item }) => {
+  renderItem = ({item}) => {
     const {
       id,
       name,
@@ -370,15 +367,15 @@ export class FindClass extends Component {
     } = item;
     //const {distance} = this.props.home.gym;
 
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let image;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -391,11 +388,11 @@ export class FindClass extends Component {
         };
       }
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
 
     let scheduleDates = [];
-    class_schedules.map((schedule) => {
+    class_schedules.map(schedule => {
       if (!isEmpty(schedule.schedule_dates)) {
         schedule.schedule_dates[0].dateTime = `${schedule.schedule_dates[0].date}T${schedule.start_time}`;
         schedule.schedule_dates[0].start_time = schedule.start_time;
@@ -411,15 +408,14 @@ export class FindClass extends Component {
 
     return (
       <TouchableOpacity
-        onPress={(e) => this.handleNavigateFindClassDetails(e, id)}
+        onPress={e => this.handleNavigateFindClassDetails(e, id)}
         style={{
-          display: "flex",
+          display: 'flex',
           flexDirection: flexDirection,
           marginTop: normalize(16),
           marginHorizontal: normalize(16),
-        }}
-      >
-        <View style={{ display: "flex", width: normalize(60) }}>
+        }}>
+        <View style={{display: 'flex', width: normalize(60)}}>
           {image.url ? (
             <FastImage
               style={{
@@ -435,7 +431,7 @@ export class FindClass extends Component {
             />
           ) : (
             <Image
-              resizeMode={"cover"}
+              resizeMode={'cover'}
               source={image}
               style={{
                 width: normalize(60),
@@ -447,13 +443,12 @@ export class FindClass extends Component {
         </View>
         <View
           style={{
-            display: "flex",
+            display: 'flex',
             flexDirection: flexDirection,
             width: normalize(267),
             marginLeft: normalize(20),
-            justifyContent: "space-between",
-          }}
-        >
+            justifyContent: 'space-between',
+          }}>
           <View
             style={
               {
@@ -461,57 +456,53 @@ export class FindClass extends Component {
                 //marginLeft: lang === 'ar' ? 0 : normalize(18),
                 //marginRight: lang === 'ar' ? normalize(18) : 0,
               }
-            }
-          >
+            }>
             <View
               style={{
-                display: "flex",
+                display: 'flex',
                 flexDirection: flexDirection,
-              }}
-            >
+              }}>
               <View>
                 <Text
                   style={{
                     fontSize: normalize(17),
-                    fontWeight: "700",
+                    fontWeight: '700',
                     textAlign: textAlign,
-                  }}
-                >
-                  {lang === "ar" ? name_ar : name}
+                  }}>
+                  {lang === 'ar' ? name_ar : name}
                 </Text>
-                <View style={{ display: "flex", flexDirection: flexDirection }}>
-                  <Text style={{ fontSize: normalize(12), color: "#8A8A8F" }}>
+                <View style={{display: 'flex', flexDirection: flexDirection}}>
+                  <Text style={{fontSize: normalize(12), color: '#8A8A8F'}}>
                     {`${
                       !isEmpty(scheduleDates) ? scheduleDates[0].duration : 0
-                    } ${I18n.t("min", {
+                    } ${I18n.t('min', {
                       locale: lang,
                     })}`}
                   </Text>
                   {distance ? (
                     <View
                       style={{
-                        justifyContent: "center",
+                        justifyContent: 'center',
                         marginHorizontal: normalize(8),
-                      }}
-                    >
+                      }}>
                       <Icon
                         type="FontAwesome"
                         name="circle"
                         style={{
                           fontSize: normalize(5),
-                          color: "#C8C7CC",
-                          textAlign: "center",
+                          color: '#C8C7CC',
+                          textAlign: 'center',
                         }}
                       />
                     </View>
                   ) : null}
 
-                  <Text style={{ fontSize: normalize(12), color: "#8A8A8F" }}>
+                  <Text style={{fontSize: normalize(12), color: '#8A8A8F'}}>
                     {distance
                       ? distance >= 1
                         ? `${distance.toFixed(2)} km`
                         : `${distance.toFixed(3) * 1000} m`
-                      : ""}
+                      : ''}
                   </Text>
                 </View>
               </View>
@@ -519,9 +510,8 @@ export class FindClass extends Component {
             <View
               style={[
                 styles.classRatingContainer,
-                { marginTop: normalize(6), flexDirection: flexDirection },
-              ]}
-            >
+                {marginTop: normalize(6), flexDirection: flexDirection},
+              ]}>
               <ReviewShow
                 rating={item.rating_avg}
                 style={{
@@ -529,7 +519,7 @@ export class FindClass extends Component {
                   paddingRight: normalize(2.75),
                 }}
               />
-              <View style={{ marginLeft: normalize(2) }}>
+              <View style={{marginLeft: normalize(2)}}>
                 <Text style={styles.gymRatingCountText}>
                   ({item.rating_count})
                 </Text>
@@ -538,45 +528,42 @@ export class FindClass extends Component {
           </View>
           <View
             style={{
-              display: "flex",
-              justifyContent: "flex-end",
+              display: 'flex',
+              justifyContent: 'flex-end',
               //width: normalize(65)
-            }}
-          >
+            }}>
             <View
               style={{
-                width: "100%",
-                alignItems: "flex-end",
-              }}
-            >
+                width: '100%',
+                alignItems: 'flex-end',
+              }}>
               <Text
                 style={{
                   fontSize: normalize(14),
-                  color: "#8A8A8F",
-                  textAlign: "center",
-                  width: "100%",
-                }}
-              >
+                  color: '#8A8A8F',
+                  textAlign: 'center',
+                  width: '100%',
+                }}>
                 {!isEmpty(scheduleDates) && scheduleDates[0].credits > 0
                   ? `${
                       !isEmpty(scheduleDates) ? scheduleDates[0].credits : 0
                     } ${
                       !isEmpty(scheduleDates) && scheduleDates[0].credits > 1
-                        ? I18n.t("credits", {
+                        ? I18n.t('credits', {
                             locale: lang,
                           })
-                        : I18n.t("credit", {
+                        : I18n.t('credit', {
                             locale: lang,
                           })
                     }`
-                  : I18n.t("free", {
+                  : I18n.t('free', {
                       locale: lang,
                     })}
               </Text>
             </View>
 
             <TouchableOpacity
-              onPress={(e) => this.handleNavigateFindClassDetails(e, id)}
+              onPress={e => this.handleNavigateFindClassDetails(e, id)}
               /* onPress={() =>
                 this.props.navigation.navigate({
                   routeName: 'GymClass',
@@ -588,24 +575,22 @@ export class FindClass extends Component {
               } */
               //onPress={() => this.handleConfirmBooking(item)}
               style={{
-                alignSelf: "flex-end",
-                justifyContent: "center",
+                alignSelf: 'flex-end',
+                justifyContent: 'center',
                 width: normalize(62),
                 height: normalize(27),
-                backgroundColor: "#FE9800",
+                backgroundColor: '#FE9800',
                 borderRadius: normalize(14),
                 marginTop: normalize(10),
-              }}
-            >
+              }}>
               <Text
                 style={{
-                  alignSelf: "center",
-                  textAlign: "center",
+                  alignSelf: 'center',
+                  textAlign: 'center',
                   fontSize: normalize(12),
-                  color: "#FFFFFF",
-                }}
-              >
-                {I18n.t("book", { locale: lang })}
+                  color: '#FFFFFF',
+                }}>
+                {I18n.t('book', {locale: lang})}
               </Text>
             </TouchableOpacity>
           </View>
@@ -615,8 +600,8 @@ export class FindClass extends Component {
   };
 
   diff = (start, end) => {
-    start = start.split(":");
-    end = end.split(":");
+    start = start.split(':');
+    end = end.split(':');
     var startDate = new Date(0, 0, 0, start[0], start[1], start[2], 0);
     var endDate = new Date(0, 0, 0, end[0], end[1], end[2], 0);
     var diff = endDate.getTime() - startDate.getTime();
@@ -630,23 +615,23 @@ export class FindClass extends Component {
     }
   };
 
-  handleSelectDate = (date) => {
-    const { start_time, end_time, search, selectedDate } = this.state;
+  handleSelectDate = date => {
+    const {start_time, end_time, search, selectedDate} = this.state;
     if (selectedDate !== date) {
       this.setState({
         selectedDate: date,
         category_id: [],
         category_type_id: [],
-        creditRangeHigh: "",
-        creditRangeLow: "",
+        creditRangeHigh: '',
+        creditRangeLow: '',
         gender_id: [],
       });
       date = new Date(date);
       let dateString = new Date(
-        date.getTime() - date.getTimezoneOffset() * 60000
+        date.getTime() - date.getTimezoneOffset() * 60000,
       )
         .toISOString()
-        .split("T")[0];
+        .split('T')[0];
 
       this.props.getFindClasses(dateString, start_time, end_time, search);
     } else {
@@ -654,23 +639,23 @@ export class FindClass extends Component {
         selectedDate: 0,
         category_id: [],
         category_type_id: [],
-        creditRangeHigh: "",
-        creditRangeLow: "",
+        creditRangeHigh: '',
+        creditRangeLow: '',
         gender_id: [],
       });
       this.props.getFindClasses();
     }
   };
-  handleSelectTime = (e) => {
-    const { lang } = this.props.setting;
+  handleSelectTime = e => {
+    const {lang} = this.props.setting;
     if (!isEmpty(e)) {
-      const { start_time, end_time, selectedDate, search } = this.state;
+      const {start_time, end_time, selectedDate, search} = this.state;
       let date = new Date(selectedDate);
       let dateString = new Date(
-        date.getTime() - date.getTimezoneOffset() * 60000
+        date.getTime() - date.getTimezoneOffset() * 60000,
       )
         .toISOString()
-        .split("T")[0];
+        .split('T')[0];
       if (selectedDate) {
         this.props.getFindClasses(dateString, start_time, end_time, search);
       } else {
@@ -680,7 +665,7 @@ export class FindClass extends Component {
   };
   handleRefresh = async () => {
     this.props.getPopularGyms();
-    this.setState({ refreshing: true });
+    this.setState({refreshing: true});
 
     const {
       selectedDate,
@@ -695,11 +680,11 @@ export class FindClass extends Component {
     let date1 = new Date(selectedDate);
     let date = new Date(date1.getTime() - date1.getTimezoneOffset() * 60000)
       .toISOString()
-      .split("T")[0];
+      .split('T')[0];
     let filter;
-    let whereFilter = "";
-    let inClass = "";
-    let inClassCategory = "";
+    let whereFilter = '';
+    let inClass = '';
+    let inClassCategory = '';
     if (!isEmpty(gender_id)) {
       inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
     }
@@ -755,23 +740,23 @@ export class FindClass extends Component {
     this.props.getFilterFindClassesNew(filter);
 
     setTimeout(() => {
-      this.setState({ refreshing: false });
+      this.setState({refreshing: false});
     }, 2000);
   };
   render() {
-    const { search, selectedDate, refreshing } = this.state;
+    const {search, selectedDate, refreshing} = this.state;
     let date = new Date(selectedDate);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split("T")[0];
-    const { popularGyms, findClasses } = this.props.findClass;
-    const { lang } = this.props.setting;
-    const { isLodaing } = this.props.errors;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+      .split('T')[0];
+    const {popularGyms, findClasses} = this.props.findClass;
+    const {lang} = this.props.setting;
+    const {isLodaing} = this.props.errors;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#ffffff'}}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={
@@ -779,24 +764,21 @@ export class FindClass extends Component {
               refreshing={refreshing}
               onRefresh={this.handleRefresh}
             />
-          }
-        >
+          }>
           <View
             style={{
               marginTop: normalize(20),
               marginHorizontal: normalize(16),
               flexDirection: flexDirection,
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontSize: normalize(40),
-                fontWeight: "bold",
-                color: "#231F20",
+                fontWeight: 'bold',
+                color: '#231F20',
                 textAlign: textAlign,
-              }}
-            >
-              {I18n.t("findClass", { locale: lang })}
+              }}>
+              {I18n.t('findClass', {locale: lang})}
             </Text>
           </View>
           <View
@@ -804,62 +786,57 @@ export class FindClass extends Component {
               marginTop: normalize(16),
               marginHorizontal: normalize(16),
               flexDirection: flexDirection,
-            }}
-          >
+            }}>
             <Item
               style={{
-                backgroundColor: "#EFEFF4",
+                backgroundColor: '#EFEFF4',
                 width: normalize(263),
                 height: normalize(36),
                 borderRadius: normalize(10),
                 paddingLeft: normalize(10),
                 borderBottomWidth: 0,
                 flexDirection: flexDirection,
-              }}
-            >
+              }}>
               <FilterSearchIcon width={normalize(20)} height={normalize(20)} />
               <Input
-                placeholder={I18n.t("search", { locale: lang })}
+                placeholder={I18n.t('search', {locale: lang})}
                 placeholderTextColor="#8A8A8F"
                 style={{
                   fontSize: normalize(14),
                   textAlign: textAlign,
-                  flexDirection: "row",
+                  flexDirection: 'row',
                 }}
                 returnKeyLabel="Search"
                 returnKeyType="search"
                 onSubmitEditing={this.searchSubmit}
                 value={search}
-                onChangeText={(val) => this.handleChangeText("search", val)}
+                onChangeText={val => this.handleChangeText('search', val)}
               />
             </Item>
             <View
               style={{
                 // marginLeft: normalize(16),
                 flexDirection: flexDirection,
-                justifyContent: "space-evenly",
-                alignItems: "center",
-              }}
-            >
+                justifyContent: 'space-evenly',
+                alignItems: 'center',
+              }}>
               <TouchableOpacity
-                style={{ display: "flex" }}
-                onPress={() => this.props.navigation.navigate("FindClassMap")}
-              >
+                style={{display: 'flex'}}
+                onPress={() => this.props.navigation.navigate('FindClassMap')}>
                 <MapIcon
                   width={normalize(24)}
                   height={normalize(24)}
-                  style={{ marginHorizontal: normalize(16) }}
+                  style={{marginHorizontal: normalize(16)}}
                 />
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={{ display: "flex" }}
+                style={{display: 'flex'}}
                 onPress={() =>
-                  this.props.navigation.navigate("Filter", {
+                  this.props.navigation.navigate('Filter', {
                     onGoBack: this.onGoBack,
                   })
-                }
-              >
+                }>
                 <FilterIcon width={normalize(24)} height={normalize(24)} />
               </TouchableOpacity>
             </View>
@@ -869,29 +846,26 @@ export class FindClass extends Component {
               marginTop: normalize(24),
               marginHorizontal: normalize(16),
               flexDirection: flexDirection,
-              justifyContent: "space-between",
-            }}
-          >
+              justifyContent: 'space-between',
+            }}>
             <Text
               style={{
                 fontSize: normalize(20),
-                fontWeight: "bold",
-                color: "#231F20",
+                fontWeight: 'bold',
+                color: '#231F20',
                 textAlign: textAlign,
-              }}
-            >
-              {I18n.t("dateTime", { locale: lang })}
+              }}>
+              {I18n.t('dateTime', {locale: lang})}
             </Text>
-            <Text style={{ color: "#8A8A8F" }}>
-              {selectedDate ? dateString : ""}
+            <Text style={{color: '#8A8A8F'}}>
+              {selectedDate ? dateString : ''}
             </Text>
           </View>
           <View
             style={{
               marginTop: normalize(16),
               flexDirection: flexDirection,
-            }}
-          >
+            }}>
             <CalendarStrip
               selectedDate={this.state.selectedDate}
               onPressDate={this.handleSelectDate}
@@ -906,23 +880,21 @@ export class FindClass extends Component {
           <View
             style={{
               marginHorizontal: normalize(16),
-            }}
-          >
+            }}>
             <View
               style={{
                 marginLeft: normalize(7),
                 marginRight: normalize(10),
                 marginBottom: normalize(15),
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={{ fontSize: normalize(16), color: "#22242A" }}>
-                {moment.utc(this.state.rangeLow).format("hh:mm A")}
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <Text style={{fontSize: normalize(16), color: '#22242A'}}>
+                {moment.utc(this.state.rangeLow).format('hh:mm A')}
               </Text>
-              <Text style={{ fontSize: normalize(16), color: "#22242A" }}>
-                {moment.utc(this.state.rangeHigh).format("hh:mm A")}
+              <Text style={{fontSize: normalize(16), color: '#22242A'}}>
+                {moment.utc(this.state.rangeHigh).format('hh:mm A')}
               </Text>
             </View>
 
@@ -931,14 +903,14 @@ export class FindClass extends Component {
                 flex: 1,
                 height: 70,
               }}
-              gravity={"center"}
+              gravity={'center'}
               min={0}
               max={86344000}
               step={1800000}
               valueType="time"
               textFormat="hh:mm a"
               disabled={selectedDate ? false : true}
-              selectionColor={selectedDate ? "#FE9800" : "#8A8A8F"}
+              selectionColor={selectedDate ? '#FE9800' : '#8A8A8F'}
               blankColor="#F1F1F1"
               renderThumb={() => (
                 <View
@@ -946,8 +918,8 @@ export class FindClass extends Component {
                     width: 25,
                     height: 25,
                     borderRadius: 20,
-                    backgroundColor: "#fff",
-                    borderColor: "#FE9800",
+                    backgroundColor: '#fff',
+                    borderColor: '#FE9800',
                     borderWidth: 5,
                   }}
                 />
@@ -958,7 +930,7 @@ export class FindClass extends Component {
                     flex: 1,
                     height: 6,
                     borderRadius: 2,
-                    backgroundColor: "#EBEBEB",
+                    backgroundColor: '#EBEBEB',
                   }}
                 />
               )}
@@ -966,7 +938,7 @@ export class FindClass extends Component {
                 <View
                   style={{
                     height: 6,
-                    backgroundColor: "#FE9800",
+                    backgroundColor: '#FE9800',
                     borderRadius: 2,
                   }}
                 />
@@ -976,14 +948,14 @@ export class FindClass extends Component {
                   this.setState({
                     rangeLow: low,
                     rangeHigh: high,
-                    start_time: moment.utc(low).format("HH:mm:ss"),
-                    end_time: moment.utc(high).format("HH:mm:ss"),
+                    start_time: moment.utc(low).format('HH:mm:ss'),
+                    end_time: moment.utc(high).format('HH:mm:ss'),
                   });
                 }
               }}
               low={this.state.rangeLow}
               high={this.state.rangeHigh}
-              onTouchEnd={(e) => this.handleSelectTime(e)}
+              onTouchEnd={e => this.handleSelectTime(e)}
             />
           </View>
           <View>
@@ -992,16 +964,14 @@ export class FindClass extends Component {
                 marginTop: normalize(24),
                 marginHorizontal: normalize(16),
                 flexDirection: flexDirection,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: normalize(20),
-                  fontWeight: "bold",
-                  color: "#22242A",
-                }}
-              >
-                {I18n.t("upcomingClassesNearYou", { locale: lang })}
+                  fontWeight: 'bold',
+                  color: '#22242A',
+                }}>
+                {I18n.t('upcomingClassesNearYou', {locale: lang})}
               </Text>
             </View>
             {findClasses.length > 0 ? (
@@ -1009,7 +979,7 @@ export class FindClass extends Component {
                 style={[styles.container]}
                 data={findClasses}
                 renderItem={this.renderItem}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={item => item.id.toString()}
                 contentContainerStyle={{
                   marginBottom: normalize(10),
                 }}
@@ -1019,10 +989,9 @@ export class FindClass extends Component {
                 style={{
                   marginHorizontal: normalize(16),
                   marginVertical: normalize(16),
-                }}
-              >
-                <Text style={{ color: "#8f8f8f", fontSize: normalize(16) }}>
-                  {I18n.t("noUpcomingClasses", { locale: lang })}
+                }}>
+                <Text style={{color: '#8f8f8f', fontSize: normalize(16)}}>
+                  {I18n.t('noUpcomingClasses', {locale: lang})}
                 </Text>
               </View>
             )}
@@ -1048,16 +1017,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   classRatingContainer: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
   },
   classStarIcon: {
     fontSize: normalize(11),
-    color: "#FE9800",
+    color: '#FE9800',
     paddingRight: normalize(2.75),
   },
   gymRatingCountText: {
-    color: "#8A8A8F",
+    color: '#8A8A8F',
     fontSize: normalize(12),
   },
   moveRight: {
@@ -1068,7 +1037,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   findClass: state.findClass,
   home: state.home,

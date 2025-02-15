@@ -14,12 +14,8 @@ const handleMoveScreen = (screen, navigation) => {
   navigation.navigate(screen);
 };
 const Success = props => {
-  const {
-    text,
-    shortText,
-    buttonText,
-    MoveScreenName,
-  } = props.navigation.state.params;
+  const {text, shortText, buttonText, MoveScreenName} =
+    props.navigation.state.params;
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#ffffff'}}>
       <View style={{flex: 3, alignItems: 'center', marginTop: normalize(20)}}>

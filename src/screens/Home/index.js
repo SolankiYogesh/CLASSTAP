@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -12,12 +12,12 @@ import {
   BackHandler,
   Alert,
   RefreshControl,
-} from "react-native";
-import FastImage from "@d11/react-native-fast-image";
+} from 'react-native';
+import FastImage from '@d11/react-native-fast-image';
 
-import { connect } from "react-redux";
-import I18n from "../../utils/i18n";
-import normalize from "react-native-normalize";
+import {connect} from 'react-redux';
+import I18n from '../../utils/i18n';
+import normalize from 'react-native-normalize';
 import {
   getGyms,
   getCategories,
@@ -26,38 +26,38 @@ import {
   getRecommendedClasses,
   getTodayClasses,
   getGymsRefresh,
-} from "../../actions/homeActions";
-import { getWhatsOnToday } from "../../actions/subscriptionActions";
+} from '../../actions/homeActions';
+import {getWhatsOnToday} from '../../actions/subscriptionActions';
 
-import ClockIcon from "../../assets/img/clock.svg";
-import CheckCircleIcon from "../../assets/img/check_circle_active.svg";
+import ClockIcon from '../../assets/img/clock.svg';
+import CheckCircleIcon from '../../assets/img/check_circle_active.svg';
 
-import { IMAGE_URI } from "../../utils/config";
-import Loading from "../Loading";
-import isEmpty from "../../validation/is-empty";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from "moment-timezone";
-moment.tz.setDefault("Asia/Qatar");
+import {IMAGE_URI} from '../../utils/config';
+import Loading from '../Loading';
+import isEmpty from '../../validation/is-empty';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment-timezone';
+moment.tz.setDefault('Asia/Qatar');
 
-import { fcmService } from "../../FCMService";
-import { updateUserDeviceToken } from "../../actions/authActions";
-import { API_URI } from "../../utils/config";
-import axios from "axios";
-import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
-import Geolocation from "@react-native-community/geolocation";
+import {fcmService} from '../../FCMService';
+import {updateUserDeviceToken} from '../../actions/authActions';
+import {API_URI} from '../../utils/config';
+import axios from 'axios';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import Geolocation from '@react-native-community/geolocation';
 
-import NavigationService from "../../../NavigationService";
-import NotificationService from "./NotificationService";
-import messaging from "@react-native-firebase/messaging";
+import NavigationService from '../../../NavigationService';
+import NotificationService from './NotificationService';
+import messaging from '@react-native-firebase/messaging';
 
-import PushNotification from "react-native-push-notification";
+import PushNotification from 'react-native-push-notification';
 
 export class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      latitude: "",
-      longitude: "",
+      latitude: '',
+      longitude: '',
       isLoading: false,
       refreshing: false,
     };
@@ -95,25 +95,25 @@ export class Home extends Component {
     //   longitude,
     // ); /////// 1
     Geolocation.getCurrentPosition(
-      async (position) => {
-        await AsyncStorage.setItem("latitude", latitude);
-        await AsyncStorage.setItem("longitude", longitude);
+      async position => {
+        await AsyncStorage.setItem('latitude', latitude);
+        await AsyncStorage.setItem('longitude', longitude);
 
         await this.props.setLatLong(
           position.coords.latitude,
-          position.coords.longitude
+          position.coords.longitude,
         );
         return true;
         //this.setState({position: {longitude: position.longitude, latitude: position.latitude}});
       },
-      (error) => {
+      error => {
         //Alert.alert(JSON.stringify(error));
       },
       {
         enableHighAccuracy: /* Platform.OS === 'ios' ? true : */ false,
         timeout: 20000,
         maximumAge: 1000,
-      }
+      },
     );
   };
 
@@ -125,14 +125,14 @@ export class Home extends Component {
 
     PushNotification.cancelAllLocalNotifications();
 
-    messaging().onMessage(async (foregroundNotification) => {
+    messaging().onMessage(async foregroundNotification => {
       if (this.lastNotificationId !== foregroundNotification.messageId) {
         this.lastNotificationId = foregroundNotification.messageId;
 
         PushNotification.localNotification({
-          id: "localNotificationHandler",
-          channelId: "default-channel-id",
-          smallIcon: "ic_launcher",
+          id: 'localNotificationHandler',
+          channelId: 'default-channel-id',
+          smallIcon: 'ic_launcher',
           title: foregroundNotification.notification.title,
           message: foregroundNotification.notification.body,
         });
@@ -146,10 +146,10 @@ export class Home extends Component {
     // if (!checkingFirebaseConnection) {
     messaging()
       .getToken()
-      .then(async (token) => {
+      .then(async token => {
         // console.log(token, "token");
-        const user_id = await AsyncStorage.getItem("user_id");
-        AsyncStorage.setItem("push_token", token);
+        const user_id = await AsyncStorage.getItem('user_id');
+        AsyncStorage.setItem('push_token', token);
         const userData = {
           device_token: token,
           device_type: Platform.OS,
@@ -157,14 +157,14 @@ export class Home extends Component {
         if (user_id) {
           axios
             .put(`${API_URI}/users/${user_id}`, userData)
-            .then((res) => {
+            .then(res => {
               if (res.data.error.code) {
               } else {
-                const { data } = res.data;
+                const {data} = res.data;
                 console.log(data);
               }
             })
-            .catch((err) => {
+            .catch(err => {
               if (err.response.data.error) {
               }
             });
@@ -172,49 +172,49 @@ export class Home extends Component {
       });
     // }
 
-    messaging().onNotificationOpenedApp((notification) => {
+    messaging().onNotificationOpenedApp(notification => {
       console.log(notification);
     });
 
     messaging()
       .getInitialNotification()
-      .then((notification) => {
+      .then(notification => {
         console.log(notification);
       });
 
-    if (Platform.OS === "ios") {
+    if (Platform.OS === 'ios') {
       await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
-        .then(async (result) => {
-          if (result === "granted") {
+        .then(async result => {
+          if (result === 'granted') {
             await this.handleLocation();
           } else {
-            await AsyncStorage.removeItem("latitude");
-            await AsyncStorage.removeItem("longitude");
+            await AsyncStorage.removeItem('latitude');
+            await AsyncStorage.removeItem('longitude');
           }
         })
-        .catch((error) => {
+        .catch(error => {
           // …
         });
     } else {
       await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-        .then(async (result) => {
-          if (result === "granted") {
+        .then(async result => {
+          if (result === 'granted') {
             await this.handleLocation();
           } else {
-            await AsyncStorage.removeItem("latitude");
-            await AsyncStorage.removeItem("longitude");
+            await AsyncStorage.removeItem('latitude');
+            await AsyncStorage.removeItem('longitude');
           }
         })
-        .catch((error) => {
+        .catch(error => {
           // …
         });
     }
-    const latitude = await AsyncStorage.getItem("latitude");
-    const longitude = await AsyncStorage.getItem("longitude");
-    let user_id = await AsyncStorage.getItem("user_id");
+    const latitude = await AsyncStorage.getItem('latitude');
+    const longitude = await AsyncStorage.getItem('longitude');
+    let user_id = await AsyncStorage.getItem('user_id');
 
     if (latitude && longitude) {
-      this.setState({ latitude, longitude });
+      this.setState({latitude, longitude});
     } else {
       this.props.getGyms();
     }
@@ -234,18 +234,18 @@ export class Home extends Component {
       this.props.getWhatsOnToday(parseInt(user_id));
     }
 
-    this.focusListener = this.props.navigation.addListener("willFocus", () => {
-      BackHandler.addEventListener("hardwareBackPress", this.handleBack);
+    this.focusListener = this.props.navigation.addListener('willFocus', () => {
+      BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     });
 
-    this.focusListener1 = this.props.navigation.addListener("willBlur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", this.handleBack);
+    this.focusListener1 = this.props.navigation.addListener('willBlur', () => {
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
     });
 
     this.focusListener2 = this.props.navigation.addListener(
-      "didFocus",
+      'didFocus',
       async () => {
-        let user_id = await AsyncStorage.getItem("user_id");
+        let user_id = await AsyncStorage.getItem('user_id');
         this.props.getGymsRefresh();
         this.props.getTodayClasses();
         this.props.getRecommendedGyms();
@@ -255,20 +255,20 @@ export class Home extends Component {
         if (user_id) {
           this.props.getWhatsOnToday(parseInt(user_id));
         }
-      }
+      },
     );
   }
 
   async onNotification() {
-    NavigationService.navigate("Home");
+    NavigationService.navigate('Home');
   }
 
   async onRegister(token) {
-    console.log(token, "onRegister token");
+    console.log(token, 'onRegister token');
   }
 
   async onOpenNotification() {
-    NavigationService.navigate("Home");
+    NavigationService.navigate('Home');
   }
 
   componentWillUnmount() {
@@ -278,25 +278,25 @@ export class Home extends Component {
     // this.focusListener2.remove();
   }
   handleBack = () => {
-    const { lang } = this.props.setting;
+    const {lang} = this.props.setting;
     //this.props.navigation.goBack();
     Alert.alert(
-      I18n.t("exit", { locale: lang }),
-      I18n.t("areYouExitApp", { locale: lang }),
+      I18n.t('exit', {locale: lang}),
+      I18n.t('areYouExitApp', {locale: lang}),
       [
         {
-          text: I18n.t("no", { locale: lang }),
-          onPress: () => console.log("come"),
-          style: "cancel",
+          text: I18n.t('no', {locale: lang}),
+          onPress: () => console.log('come'),
+          style: 'cancel',
         },
         {
-          text: I18n.t("yes", { locale: lang }),
+          text: I18n.t('yes', {locale: lang}),
           onPress: () => BackHandler.exitApp(),
         },
       ],
       {
         cancelable: false,
-      }
+      },
     );
 
     return true;
@@ -307,9 +307,9 @@ export class Home extends Component {
     let date = new Date();
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split("T")[0];
+      .split('T')[0];
     this.props.navigation.navigate({
-      routeName: "GymClass",
+      routeName: 'GymClass',
       params: {
         id: id,
         date: dateString,
@@ -317,28 +317,28 @@ export class Home extends Component {
       key: `TodayClass_${Math.random() * 10000}`,
     });
   };
-  renderItem = ({ item }) => {
-    const { class_schedules, attachments, name_ar, name, id, distance } = item;
+  renderItem = ({item}) => {
+    const {class_schedules, attachments, name_ar, name, id, distance} = item;
 
     let upcoming = [];
-    class_schedules.forEach((schedule) => {
-      upcoming.push({ id: schedule.id, start_time: schedule.start_time });
+    class_schedules.forEach(schedule => {
+      upcoming.push({id: schedule.id, start_time: schedule.start_time});
     });
     upcoming.sort(function (a, b) {
       return (
-        new Date("1970/01/01 " + a.start_time) -
-        new Date("1970/01/01 " + b.start_time)
+        new Date('1970/01/01 ' + a.start_time) -
+        new Date('1970/01/01 ' + b.start_time)
       );
     });
     let image;
 
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    let className = lang === "ar" ? name_ar : name;
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    let className = lang === 'ar' ? name_ar : name;
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -351,19 +351,18 @@ export class Home extends Component {
         };
       }
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
 
     return (
       <TouchableOpacity
-        onPress={(e) => this.handleNavigateTodayClass(e, id)}
+        onPress={e => this.handleNavigateTodayClass(e, id)}
         style={{
           width: normalize(342),
           height: normalize(170),
           marginRight: normalize(10),
-          transform: [{ scaleX: lang === "ar" ? -1 : 1 }],
-        }}
-      >
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
+        }}>
         {image.url ? (
           <FastImage
             style={{
@@ -379,7 +378,7 @@ export class Home extends Component {
           />
         ) : (
           <Image
-            resizeMode={"cover"}
+            resizeMode={'cover'}
             source={image}
             style={{
               width: normalize(342),
@@ -390,43 +389,38 @@ export class Home extends Component {
         )}
         <View
           style={[
-            { position: "absolute", bottom: 10 },
-            lang === "ar" ? styles.moveRight : styles.moveLeft,
-          ]}
-        >
+            {position: 'absolute', bottom: 10},
+            lang === 'ar' ? styles.moveRight : styles.moveLeft,
+          ]}>
           <View
             style={{
-              display: "flex",
+              display: 'flex',
               flexDirection: flexDirection,
               bottom: normalize(5),
-            }}
-          >
+            }}>
             <Text
               style={{
-                color: "#ffffff",
+                color: '#ffffff',
                 fontSize: normalize(24),
                 textAlign: textAlign,
-              }}
-            >
+              }}>
               {className}
             </Text>
           </View>
           <View
             style={{
-              display: "flex",
+              display: 'flex',
               flexDirection: flexDirection,
               // bottom: normalize(10),
-            }}
-          >
+            }}>
             <View
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: '#ffffff',
                 borderRadius: normalize(14),
                 fontSize: normalize(10),
                 paddingHorizontal: normalize(7),
                 paddingVertical: normalize(2),
-              }}
-            >
+              }}>
               <Text>
                 {/* {class_schedules
                   ? moment(class_schedules[0].start_time, 'h:mm:ss').format(
@@ -434,20 +428,19 @@ export class Home extends Component {
                     )
                   : ''} */}
 
-                {moment(upcoming[0].start_time, "h:mm:ss").format("h:mm A")}
+                {moment(upcoming[0].start_time, 'h:mm:ss').format('h:mm A')}
               </Text>
             </View>
             {distance ? (
               <View
                 style={{
-                  backgroundColor: "#ffffff",
+                  backgroundColor: '#ffffff',
                   left: normalize(10),
                   borderRadius: normalize(14),
                   fontSize: normalize(10),
                   paddingHorizontal: normalize(7),
                   paddingVertical: normalize(2),
-                }}
-              >
+                }}>
                 <Text>
                   {distance >= 1
                     ? `${distance.toFixed(2)} km`
@@ -464,7 +457,7 @@ export class Home extends Component {
   handleNavigateNearestGym = (e, id) => {
     e.preventDefault();
     this.props.navigation.navigate({
-      routeName: "Gym",
+      routeName: 'Gym',
       params: {
         id: id,
       },
@@ -472,15 +465,15 @@ export class Home extends Component {
     });
   };
 
-  renderItemGym = ({ item }) => {
-    const { lang } = this.props.setting;
-    const textAlign = lang === "ar" ? "right" : "left";
-    const { id, name, name_ar, attachments, distance } = item;
+  renderItemGym = ({item}) => {
+    const {lang} = this.props.setting;
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const {id, name, name_ar, attachments, distance} = item;
     let image;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -493,28 +486,26 @@ export class Home extends Component {
         };
       }
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
 
     return (
       <TouchableOpacity
-        onPress={(e) => this.handleNavigateNearestGym(e, id)}
+        onPress={e => this.handleNavigateNearestGym(e, id)}
         /*  onPress={() => this.props.navigation.push('Gym', {id})} */
         style={{
           width: normalize(234),
           marginRight: normalize(10),
-          transform: [{ scaleX: lang === "ar" ? -1 : 1 }],
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
           height: normalize(155),
-        }}
-      >
+        }}>
         <View
           style={{
             width: normalize(234),
             height: normalize(128),
-            display: "flex",
+            display: 'flex',
             //borderRadius: 10,
-          }}
-        >
+          }}>
           {image.url ? (
             <FastImage
               style={{
@@ -530,7 +521,7 @@ export class Home extends Component {
             />
           ) : (
             <Image
-              resizeMode={"cover"}
+              resizeMode={'cover'}
               source={image}
               style={{
                 width: normalize(234),
@@ -542,20 +533,18 @@ export class Home extends Component {
           {distance ? (
             <View
               style={[
-                { position: "absolute", bottom: normalize(10) },
-                lang === "ar" ? styles.moveRight : styles.moveLeft,
-              ]}
-            >
+                {position: 'absolute', bottom: normalize(10)},
+                lang === 'ar' ? styles.moveRight : styles.moveLeft,
+              ]}>
               <View
                 style={{
-                  backgroundColor: "#ffffff",
+                  backgroundColor: '#ffffff',
 
                   borderRadius: normalize(14),
                   fontSize: normalize(10),
                   paddingHorizontal: normalize(7),
                   paddingVertical: normalize(2),
-                }}
-              >
+                }}>
                 <Text>
                   {distance >= 1
                     ? `${distance.toFixed(2)} km`
@@ -565,9 +554,9 @@ export class Home extends Component {
             </View>
           ) : null}
         </View>
-        <View style={{ marginTop: normalize(5) }}>
-          <Text style={{ fontSize: normalize(15), textAlign: textAlign }}>
-            {lang === "ar" ? name_ar : name}
+        <View style={{marginTop: normalize(5)}}>
+          <Text style={{fontSize: normalize(15), textAlign: textAlign}}>
+            {lang === 'ar' ? name_ar : name}
           </Text>
         </View>
       </TouchableOpacity>
@@ -577,7 +566,7 @@ export class Home extends Component {
   handleNavigateCategoryClass = (e, id, categoryName) => {
     e.preventDefault();
     this.props.navigation.navigate({
-      routeName: "CategoryClass",
+      routeName: 'CategoryClass',
       params: {
         id: id,
         categoryName,
@@ -585,31 +574,30 @@ export class Home extends Component {
       key: `CategoryClass_${Math.random() * 10000}`,
     });
   };
-  renderItemCategory = ({ item }) => {
-    const { name, name_ar, attachment, id } = item;
-    const { lang } = this.props.setting;
-    const textAlign = lang === "ar" ? "right" : "left";
+  renderItemCategory = ({item}) => {
+    const {name, name_ar, attachment, id} = item;
+    const {lang} = this.props.setting;
+    const textAlign = lang === 'ar' ? 'right' : 'left';
     let image;
     if (attachment) {
       image = {
         uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
       };
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
 
-    let categoryName = lang === "ar" ? name_ar : name;
+    let categoryName = lang === 'ar' ? name_ar : name;
 
     return (
       <TouchableOpacity
-        onPress={(e) => this.handleNavigateCategoryClass(e, id, categoryName)}
+        onPress={e => this.handleNavigateCategoryClass(e, id, categoryName)}
         style={{
           width: normalize(118),
           marginRight: normalize(10),
-          transform: [{ scaleX: lang === "ar" ? -1 : 1 }],
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
           height: normalize(186),
-        }}
-      >
+        }}>
         {image.url ? (
           <FastImage
             style={{
@@ -625,7 +613,7 @@ export class Home extends Component {
           />
         ) : (
           <Image
-            resizeMode={"cover"}
+            resizeMode={'cover'}
             source={image}
             style={{
               width: normalize(117),
@@ -634,24 +622,23 @@ export class Home extends Component {
             }}
           />
         )}
-        <View style={{ marginTop: normalize(5) }}>
+        <View style={{marginTop: normalize(5)}}>
           <Text
             style={{
               fontSize: normalize(15),
               textAlign: textAlign,
-            }}
-          >
-            {lang === "ar" ? name_ar : name}
+            }}>
+            {lang === 'ar' ? name_ar : name}
           </Text>
         </View>
       </TouchableOpacity>
     );
   };
   handleRefresh = async () => {
-    this.setState({ refreshing: true });
-    const latitude = await AsyncStorage.getItem("latitude");
-    const longitude = await AsyncStorage.getItem("longitude");
-    let user_id = await AsyncStorage.getItem("user_id");
+    this.setState({refreshing: true});
+    const latitude = await AsyncStorage.getItem('latitude');
+    const longitude = await AsyncStorage.getItem('longitude');
+    let user_id = await AsyncStorage.getItem('user_id');
 
     this.props.getTodayClasses();
     this.props.getGymsRefresh();
@@ -663,25 +650,25 @@ export class Home extends Component {
     }
 
     setTimeout(() => {
-      this.setState({ refreshing: false });
+      this.setState({refreshing: false});
     }, 2000);
   };
   render() {
-    const { isLoading, refreshing } = this.state;
-    const { lang } = this.props.setting;
-    const { categories, nearestGyms, todayClasses } = this.props.home;
-    const { upcomingClassCount, completedClassCount } = this.props.subscription;
+    const {isLoading, refreshing} = this.state;
+    const {lang} = this.props.setting;
+    const {categories, nearestGyms, todayClasses} = this.props.home;
+    const {upcomingClassCount, completedClassCount} = this.props.subscription;
     let newGyms = nearestGyms;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
 
     return (
       <>
         {isLoading ? (
           <Loading />
         ) : (
-          <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
+          <SafeAreaView style={{flex: 1, backgroundColor: '#ffffff'}}>
             <ScrollView
               showsVerticalScrollIndicator={false}
               refreshControl={
@@ -689,61 +676,54 @@ export class Home extends Component {
                   refreshing={refreshing}
                   onRefresh={this.handleRefresh}
                 />
-              }
-            >
+              }>
               <View
                 style={{
                   height: normalize(40),
                   marginHorizontal: normalize(16),
-                  justifyContent: "center",
+                  justifyContent: 'center',
                   marginTop: normalize(16),
                   //flexDirection: flexDirection,
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     fontSize: normalize(30),
-                    fontWeight: "bold",
+                    fontWeight: 'bold',
                     alignSelf: alignSelf,
-                  }}
-                >
-                  {I18n.t("welcomeToClasstap", { locale: lang })}
+                  }}>
+                  {I18n.t('welcomeToClasstap', {locale: lang})}
                 </Text>
               </View>
               {!isEmpty(this.props.auth.user) ? (
                 <View
                   style={[
                     styles.eventContainer,
-                    { flexDirection: flexDirection },
-                  ]}
-                >
+                    {flexDirection: flexDirection},
+                  ]}>
                   <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate("Upcoming")}
+                    onPress={() => this.props.navigation.navigate('Upcoming')}
                     style={[
                       styles.eventButtonContainer,
-                      { flexDirection: flexDirection },
-                    ]}
-                  >
+                      {flexDirection: flexDirection},
+                    ]}>
                     <ClockIcon width={normalize(18)} height={normalize(18)} />
                     <Text style={styles.eventButtonText}>
-                      {upcomingClassCount}{" "}
-                      {I18n.t("upcoming", { locale: lang })}
+                      {upcomingClassCount} {I18n.t('upcoming', {locale: lang})}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate("Completed")}
+                    onPress={() => this.props.navigation.navigate('Completed')}
                     style={[
                       styles.eventButtonContainer,
-                      { flexDirection: flexDirection },
-                    ]}
-                  >
+                      {flexDirection: flexDirection},
+                    ]}>
                     <CheckCircleIcon
                       width={normalize(18)}
                       height={normalize(18)}
                     />
                     <Text style={styles.eventButtonText}>
-                      {completedClassCount}{" "}
-                      {I18n.t("completed", { locale: lang })}
+                      {completedClassCount}{' '}
+                      {I18n.t('completed', {locale: lang})}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -754,23 +734,20 @@ export class Home extends Component {
                 style={{
                   marginTop: normalize(15),
                   height: normalize(195),
-                }}
-              >
+                }}>
                 <View
                   style={{
                     marginHorizontal: normalize(16),
                     marginBottom: normalize(12),
                     height: normalize(24),
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontSize: normalize(20),
-                      fontWeight: "bold",
+                      fontWeight: 'bold',
                       textAlign: textAlign,
-                    }}
-                  >
-                    {I18n.t("whatOnToday", { locale: lang })}
+                    }}>
+                    {I18n.t('whatOnToday', {locale: lang})}
                   </Text>
                 </View>
 
@@ -778,15 +755,14 @@ export class Home extends Component {
                   style={{
                     flexDirection: flexDirection,
                     marginLeft: normalize(16),
-                  }}
-                >
+                  }}>
                   {todayClasses.length > 0 ? (
                     <FlatList
                       horizontal={true}
                       style={[styles.container]}
                       data={todayClasses}
                       renderItem={this.renderItem}
-                      keyExtractor={(item) => item.id.toString()}
+                      keyExtractor={item => item.id.toString()}
                       contentContainerStyle={
                         {
                           //marginRight: lang === 'ar' ? 0 : normalize(16),
@@ -801,18 +777,15 @@ export class Home extends Component {
                         height: normalize(170),
                         marginRight: normalize(10),
                         transform: [
-                          { rotateY: lang === "ar" ? "180deg" : "0deg" },
+                          {rotateY: lang === 'ar' ? '180deg' : '0deg'},
                         ],
                         borderRadius: normalize(10),
-                        backgroundColor: "#efefef",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text
-                        style={{ fontSize: normalize(20), color: "#8f8f8f" }}
-                      >
-                        {I18n.t("noClassesOnToday", { locale: lang })}
+                        backgroundColor: '#efefef',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text style={{fontSize: normalize(20), color: '#8f8f8f'}}>
+                        {I18n.t('noClassesOnToday', {locale: lang})}
                       </Text>
                     </View>
                   )}
@@ -826,23 +799,20 @@ export class Home extends Component {
                 style={{
                   marginTop: normalize(15),
                   height: normalize(186),
-                }}
-              >
+                }}>
                 <View
                   style={{
                     marginHorizontal: normalize(16),
                     marginBottom: normalize(12),
                     height: normalize(24),
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontSize: normalize(20),
-                      fontWeight: "bold",
+                      fontWeight: 'bold',
                       textAlign: textAlign,
-                    }}
-                  >
-                    {I18n.t("WhereNearestGym", { locale: lang })}
+                    }}>
+                    {I18n.t('WhereNearestGym', {locale: lang})}
                   </Text>
                 </View>
 
@@ -850,8 +820,7 @@ export class Home extends Component {
                   style={{
                     flexDirection: flexDirection,
                     marginLeft: normalize(16),
-                  }}
-                >
+                  }}>
                   {newGyms.length > 0 ? (
                     <FlatList
                       showsHorizontalScrollIndicator={false}
@@ -859,7 +828,7 @@ export class Home extends Component {
                       style={[styles.container]}
                       data={newGyms}
                       renderItem={this.renderItemGym}
-                      keyExtractor={(item) => item.id.toString()}
+                      keyExtractor={item => item.id.toString()}
                     />
                   ) : (
                     <View
@@ -867,19 +836,16 @@ export class Home extends Component {
                         width: normalize(234),
                         marginRight: normalize(10),
                         transform: [
-                          { rotateY: lang === "ar" ? "180deg" : "0deg" },
+                          {rotateY: lang === 'ar' ? '180deg' : '0deg'},
                         ],
                         height: normalize(150),
                         borderRadius: normalize(10),
-                        backgroundColor: "#efefef",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text
-                        style={{ fontSize: normalize(20), color: "#8f8f8f" }}
-                      >
-                        {I18n.t("noNearestGyms", { locale: lang })}
+                        backgroundColor: '#efefef',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text style={{fontSize: normalize(20), color: '#8f8f8f'}}>
+                        {I18n.t('noNearestGyms', {locale: lang})}
                       </Text>
                     </View>
                   )}
@@ -895,23 +861,20 @@ export class Home extends Component {
                   marginTop: normalize(15),
                   height: normalize(186),
                   marginBottom: normalize(15),
-                }}
-              >
+                }}>
                 <View
                   style={{
                     marginBottom: normalize(12),
                     height: normalize(24),
                     marginHorizontal: normalize(16),
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontSize: normalize(20),
-                      fontWeight: "bold",
+                      fontWeight: 'bold',
                       textAlign: textAlign,
-                    }}
-                  >
-                    {I18n.t("topCategory", { locale: lang })}
+                    }}>
+                    {I18n.t('topCategory', {locale: lang})}
                   </Text>
                 </View>
 
@@ -919,8 +882,7 @@ export class Home extends Component {
                   style={{
                     flexDirection: flexDirection,
                     marginLeft: normalize(16),
-                  }}
-                >
+                  }}>
                   {categories.length > 0 ? (
                     <FlatList
                       showsHorizontalScrollIndicator={false}
@@ -928,7 +890,7 @@ export class Home extends Component {
                       style={[styles.container]}
                       data={categories}
                       renderItem={this.renderItemCategory}
-                      keyExtractor={(item) => item.id.toString()}
+                      keyExtractor={item => item.id.toString()}
                     />
                   ) : (
                     <View
@@ -936,19 +898,16 @@ export class Home extends Component {
                         width: normalize(118),
                         marginRight: normalize(10),
                         transform: [
-                          { rotateY: lang === "ar" ? "180deg" : "0deg" },
+                          {rotateY: lang === 'ar' ? '180deg' : '0deg'},
                         ],
                         height: normalize(186),
                         borderRadius: normalize(10),
-                        backgroundColor: "#efefef",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text
-                        style={{ fontSize: normalize(15), color: "#8f8f8f" }}
-                      >
-                        {I18n.t("noCategories", { locale: lang })}
+                        backgroundColor: '#efefef',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text style={{fontSize: normalize(15), color: '#8f8f8f'}}>
+                        {I18n.t('noCategories', {locale: lang})}
                       </Text>
                     </View>
                   )}
@@ -975,24 +934,24 @@ const styles = StyleSheet.create({
   eventContainer: {
     marginTop: normalize(12),
     marginHorizontal: normalize(16),
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   eventButtonContainer: {
-    backgroundColor: "#F9F9F9",
+    backgroundColor: '#F9F9F9',
     width: normalize(164),
     height: normalize(27),
     borderRadius: normalize(14),
-    justifyContent: "center",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   eventButtonText: {
     fontSize: normalize(13),
     marginHorizontal: normalize(6),
-    color: "#22242A",
+    color: '#22242A',
   },
   moveRight: {
     right: normalize(10),
@@ -1002,7 +961,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   home: state.home,
   setting: state.setting,

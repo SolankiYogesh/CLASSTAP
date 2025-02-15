@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -12,21 +12,21 @@ import {
   BackHandler,
   Linking,
   Platform,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import normalize from "react-native-normalize";
-import { Header, Icon, Left, Button, Body } from "native-base";
-import { connect } from "react-redux";
-import I18n from "../../utils/i18n";
-import { getCoachClasses } from "../../actions/homeActions";
-import Loading from "../Loading";
-import { IMAGE_URI } from "../../utils/config";
-import isEmpty from "../../validation/is-empty";
-import ReviewShow from "../Review/ReviewShow";
-import moment from "moment";
-import HeaderComponent from "../../components/Header";
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import normalize from 'react-native-normalize';
+import {Header, Icon, Left, Button, Body} from 'native-base';
+import {connect} from 'react-redux';
+import I18n from '../../utils/i18n';
+import {getCoachClasses} from '../../actions/homeActions';
+import Loading from '../Loading';
+import {IMAGE_URI} from '../../utils/config';
+import isEmpty from '../../validation/is-empty';
+import ReviewShow from '../Review/ReviewShow';
+import moment from 'moment';
+import HeaderComponent from '../../components/Header';
 
-const { width } = Dimensions.get("window");
+const {width} = Dimensions.get('window');
 
 export class CoachClass extends Component {
   constructor(props) {
@@ -38,16 +38,16 @@ export class CoachClass extends Component {
   }
 
   async componentDidMount() {
-    const id = await this.props.navigation.getParam("id");
+    const id = await this.props.navigation.getParam('id');
     this.props.getCoachClasses(id);
-    BackHandler.addEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
   }
 
-  renderItem = ({ item }) => {
+  renderItem = ({item}) => {
     const {
       id,
       name,
@@ -62,15 +62,15 @@ export class CoachClass extends Component {
 
     // const {distance} = this.props.home.gym;
 
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let image;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
-        (newImage) => newImage.is_primary === true
+        newImage => newImage.is_primary === true,
       );
 
       if (!isEmpty(primaryAttachment)) {
@@ -83,10 +83,10 @@ export class CoachClass extends Component {
         };
       }
     } else {
-      image = require("../../assets/img/no_image_found.png");
+      image = require('../../assets/img/no_image_found.png');
     }
     let scheduleDates = [];
-    class_schedules.map((schedule) => {
+    class_schedules.map(schedule => {
       if (!isEmpty(schedule.schedule_dates)) {
         schedule.schedule_dates[0].dateTime = `${schedule.schedule_dates[0].date} ${schedule.start_time}`;
         schedule.schedule_dates[0].start_time = schedule.start_time;
@@ -106,23 +106,22 @@ export class CoachClass extends Component {
       <TouchableOpacity
         onPress={() =>
           this.props.navigation.navigate({
-            routeName: "GymClass",
+            routeName: 'GymClass',
             params: {
               id: item.id,
-              back: "CoachClass",
+              back: 'CoachClass',
               back_id: item.coach_id,
             },
             key: `GymCoachClass_${item.id}`,
           })
         }
         style={{
-          display: "flex",
+          display: 'flex',
           flexDirection: flexDirection,
           marginTop: normalize(16),
           marginHorizontal: normalize(16),
-        }}
-      >
-        <View style={{ display: "flex", width: normalize(60) }}>
+        }}>
+        <View style={{display: 'flex', width: normalize(60)}}>
           <Image
             source={image}
             style={{
@@ -135,31 +134,28 @@ export class CoachClass extends Component {
 
         <View
           style={{
-            display: "flex",
+            display: 'flex',
             flexDirection: flexDirection,
             width: normalize(267),
             marginLeft: normalize(20),
-            justifyContent: "space-between",
-          }}
-        >
+            justifyContent: 'space-between',
+          }}>
           <View>
             <View
               style={{
-                display: "flex",
+                display: 'flex',
                 flexDirection: flexDirection,
-              }}
-            >
+              }}>
               <View>
                 <Text
                   style={{
                     fontSize: normalize(17),
-                    fontWeight: "700",
+                    fontWeight: '700',
                     textAlign: textAlign,
-                  }}
-                >
-                  {lang === "ar" ? name_ar : name}
+                  }}>
+                  {lang === 'ar' ? name_ar : name}
                 </Text>
-                <Text style={{ fontSize: normalize(12), color: "#8A8A8F" }}>
+                <Text style={{fontSize: normalize(12), color: '#8A8A8F'}}>
                   {/* this.diff(start_time, end_time) */}
                   {/* distance >= 1
                   ? `${distance.toFixed(2)} km`
@@ -175,7 +171,7 @@ export class CoachClass extends Component {
                   }`} */}
                   {`${
                     !isEmpty(scheduleDates) ? scheduleDates[0].duration : 0
-                  } ${I18n.t("min", {
+                  } ${I18n.t('min', {
                     locale: lang,
                   })}`}
                 </Text>
@@ -184,9 +180,8 @@ export class CoachClass extends Component {
             <View
               style={[
                 styles.classRatingContainer,
-                { marginTop: normalize(6), flexDirection: flexDirection },
-              ]}
-            >
+                {marginTop: normalize(6), flexDirection: flexDirection},
+              ]}>
               <ReviewShow
                 rating={item.rating_avg}
                 style={{
@@ -198,15 +193,14 @@ export class CoachClass extends Component {
           </View>
           <View
             style={{
-              display: "flex",
-              justifyContent: "flex-end",
+              display: 'flex',
+              justifyContent: 'flex-end',
               //width: normalize(65)
-            }}
-          >
+            }}>
             <View>
-              <Text style={{ fontSize: normalize(12), color: "#8A8A8F" }}>
-                {moment(scheduleDates[0].date, "YYYY-MM-DD").format(
-                  "D MMM YYYY"
+              <Text style={{fontSize: normalize(12), color: '#8A8A8F'}}>
+                {moment(scheduleDates[0].date, 'YYYY-MM-DD').format(
+                  'D MMM YYYY',
                 )}
               </Text>
             </View>
@@ -217,7 +211,7 @@ export class CoachClass extends Component {
   };
 
   handleBack = async () => {
-    const id = await this.props.navigation.getParam("id");
+    const id = await this.props.navigation.getParam('id');
     this.props.navigation.goBack();
     //this.props.navigation.navigate('Coach', {id, back: 'GymClass'});
 
@@ -244,8 +238,8 @@ export class CoachClass extends Component {
   };
 
   diff = (start, end) => {
-    start = start.split(":");
-    end = end.split(":");
+    start = start.split(':');
+    end = end.split(':');
     var startDate = new Date(0, 0, 0, start[0], start[1], start[2], 0);
     var endDate = new Date(0, 0, 0, end[0], end[1], end[2], 0);
     var diff = endDate.getTime() - startDate.getTime();
@@ -260,20 +254,20 @@ export class CoachClass extends Component {
   };
 
   render() {
-    const { lang } = this.props.setting;
-    const { isLodaing } = this.props.errors;
-    const { coachClasses } = this.props.home;
+    const {lang} = this.props.setting;
+    const {isLodaing} = this.props.errors;
+    const {coachClasses} = this.props.home;
 
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
 
     return (
       <>
         {isLodaing ? (
           <Loading />
         ) : (
-          <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
+          <View style={{flex: 1, backgroundColor: '#ffffff'}}>
             <Header style={styles.headerContainer}>
               {/* <Left> */}
 
@@ -285,7 +279,7 @@ export class CoachClass extends Component {
                     style={styles.backButtonIcon}
                   />
                   <Text style={styles.backButtonText}>
-                    {I18n.t("BackToCoachProfile", { locale: lang })}
+                    {I18n.t('BackToCoachProfile', {locale: lang})}
                   </Text>
                 </View>
               </Button>
@@ -297,21 +291,19 @@ export class CoachClass extends Component {
             {/* <StatusBar hidden={true} /> */}
             <ScrollView
               showsVerticalScrollIndicator={false}
-              style={{ backgroundColor: "#ffffff" }}
-            >
+              style={{backgroundColor: '#ffffff'}}>
               <View>
                 <View
                   style={
                     {
                       //marginHorizontal: normalize(16),
                     }
-                  }
-                >
+                  }>
                   <FlatList
                     style={[styles.container]}
                     data={coachClasses}
                     renderItem={this.renderItem}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={item => item.id.toString()}
                     contentContainerStyle={{
                       marginBottom: normalize(10),
                     }}
@@ -331,63 +323,63 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   ratingFavContainer: {
-    backgroundColor: "#F9F9F9",
+    backgroundColor: '#F9F9F9',
     height: normalize(56),
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
-    alignItems: "center",
+    alignItems: 'center',
     paddingHorizontal: normalize(16),
   },
   ratingContainer: {
     flex: 2,
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
   },
   starIcon: {
     fontSize: normalize(18),
-    color: "#FE9800",
+    color: '#FE9800',
     //paddingRight: normalize(4),
   },
   classRatingContainer: {
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
   },
   classStarIcon: {
     fontSize: normalize(11),
-    color: "#FE9800",
+    color: '#FE9800',
     paddingRight: normalize(2.75),
   },
   ratingCountText: {
-    color: "#8A8A8F",
+    color: '#8A8A8F',
     fontSize: normalize(14),
   },
   favMapContainer: {
     flex: 1,
-    display: "flex",
+    display: 'flex',
     //flexDirection: 'row',
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   genderContainer: {
     marginTop: normalize(11),
     width: normalize(108),
     height: normalize(20),
-    backgroundColor: "#F9F9F9",
+    backgroundColor: '#F9F9F9',
     borderRadius: normalize(10),
     marginHorizontal: normalize(16),
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   genderContainerText: {
     fontSize: normalize(12),
-    color: "#8A8A8F",
+    color: '#8A8A8F',
   },
   titleContainer: {
     marginHorizontal: normalize(16),
   },
   titleContainerText: {
     fontSize: normalize(32),
-    fontWeight: "bold",
-    color: "#22242A",
+    fontWeight: 'bold',
+    color: '#22242A',
   },
   aboutContainer: {
     marginHorizontal: normalize(16),
@@ -395,8 +387,8 @@ const styles = StyleSheet.create({
   aboutContainerText: {
     marginTop: normalize(12),
     fontSize: normalize(14),
-    fontWeight: "700",
-    color: "#22242A",
+    fontWeight: '700',
+    color: '#22242A',
   },
   aboutContentContainer: {
     marginTop: normalize(6),
@@ -404,7 +396,7 @@ const styles = StyleSheet.create({
   },
   aboutContentContainerText: {
     fontSize: normalize(12),
-    color: "#8A8A8F",
+    color: '#8A8A8F',
   },
   classTitleContainer: {
     marginTop: normalize(12),
@@ -412,47 +404,47 @@ const styles = StyleSheet.create({
   },
   classTitleContainerText: {
     fontSize: normalize(20),
-    color: "#22242A",
-    fontWeight: "bold",
+    color: '#22242A',
+    fontWeight: 'bold',
   },
   distanceContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: normalize(10),
     left: normalize(10),
   },
   distanceContainerArabic: {
-    position: "absolute",
+    position: 'absolute',
     bottom: normalize(10),
     right: normalize(10),
   },
   headerContainer: {
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     borderBottomWidth: 0,
     paddingLeft: normalize(-10),
   },
   backButtonContainer: {
-    justifyContent: "center",
-    display: "flex",
-    flexDirection: "row",
+    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'row',
   },
   backButtonIcon: {
     fontSize: normalize(18),
-    color: "#22242A",
-    fontWeight: "bold",
+    color: '#22242A',
+    fontWeight: 'bold',
   },
   backButtonText: {
     fontSize: normalize(12),
-    color: "#22242A",
+    color: '#22242A',
 
-    top: Platform.OS === "ios" ? normalize(3.1) : normalize(3.3),
+    top: Platform.OS === 'ios' ? normalize(3.1) : normalize(3.3),
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   home: state.home,
   setting: state.setting,
   errors: state.errors,
 });
 
-export default connect(mapStateToProps, { getCoachClasses })(CoachClass);
+export default connect(mapStateToProps, {getCoachClasses})(CoachClass);

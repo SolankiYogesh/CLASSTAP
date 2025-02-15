@@ -2,6 +2,9 @@ import UIKit
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
+import FBSDKCoreKit
+import GoogleMaps
+import Firebase
 
 @main
 class AppDelegate: RCTAppDelegate {
@@ -12,10 +15,17 @@ class AppDelegate: RCTAppDelegate {
     // You can add your custom initial props in the dictionary below.
     // They will be passed down to the ViewController used by React Native.
     self.initialProps = [:]
-
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    GoogleMaps.GMSServices.provideAPIKey("AIzaSyB_Lz_b22Sf5eKRSHhgxOnoZ8InrtXkpSM")
+    FirebaseApp.configure()
+    return ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-
+  
+  override func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        return ApplicationDelegate.shared.application(application, open: url, options: options) ||
+               RCTLinkingManager.application(application, open: url, options: options)
+    }
+  
+  
   override func sourceURL(for bridge: RCTBridge) -> URL? {
     self.bundleURL()
   }

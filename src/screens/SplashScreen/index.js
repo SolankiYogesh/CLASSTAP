@@ -4,7 +4,7 @@ import LottieView from 'lottie-react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {connect} from 'react-redux';
 
-const Splash = (props) => {
+const Splash = props => {
   useEffect(() => {
     SplashScreen.hide();
   }, []);
@@ -50,6 +50,4 @@ const mapStateToProps = state => ({
   auth: state.auth,
 });
 
-export default connect(
-  mapStateToProps,
-)(Splash);
+export default connect(mapStateToProps)(Splash);

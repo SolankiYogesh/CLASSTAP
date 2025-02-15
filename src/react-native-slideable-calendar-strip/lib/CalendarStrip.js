@@ -39,14 +39,8 @@ const TODAY = new Date(_year, _month, _day); // FORMAT: Wed May 16 2018 00:00:00
 
 class DateItem extends PureComponent {
   render() {
-    const {
-      item,
-      marked,
-      highlight,
-      showLunar,
-      onItemPress,
-      currentDate,
-    } = this.props;
+    const {item, marked, highlight, showLunar, onItemPress, currentDate} =
+      this.props;
 
     const solar = format(item, 'D');
     const nowDate = format(currentDate, 'D');
@@ -78,8 +72,8 @@ class DateItem extends PureComponent {
                   color: highlight
                     ? hightlightTextColor
                     : nowDate === solar
-                    ? currentTextColor
-                    : normalTextColor,
+                      ? currentTextColor
+                      : normalTextColor,
                 },
               ]}>
               {solar}
@@ -248,12 +242,8 @@ class CalendarStrip extends Component {
   }
 
   _renderHeader = () => {
-    const {
-      selectedDate,
-      onPressGoToday,
-      isChinese,
-      showWeekNumber,
-    } = this.props;
+    const {selectedDate, onPressGoToday, isChinese, showWeekNumber} =
+      this.props;
 
     const dateFormatted_zh = format(selectedDate, 'YYYY/MM/DD [周]dd', {
       locale: ChineseLocale,

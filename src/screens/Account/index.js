@@ -9,13 +9,7 @@ import {
   Keyboard,
   Alert,
 } from 'react-native';
-import {
-  Form,
-  Item,
-  Input,
-  Label,
-  ActionSheet,
-} from 'native-base';
+import {Form, Item, Input, Label, ActionSheet} from 'native-base';
 import {Grid, Col} from 'react-native-easy-grid';
 import {connect} from 'react-redux';
 import normalize from 'react-native-normalize';
@@ -65,13 +59,16 @@ export class Account extends Component {
   }
   static getDerivedStateFromProps(props, state) {
     if (props.auth.isUpdateUser) {
-      toast.show(I18n.t('accountUpdatedSucessfully', {locale: props.setting.lang}), {
-        type: "normal",
-        placement: "bottom",
-        duration: 4000,
-        offset: 30,
-        animationType: "slide-in",
-      });
+      toast.show(
+        I18n.t('accountUpdatedSucessfully', {locale: props.setting.lang}),
+        {
+          type: 'normal',
+          placement: 'bottom',
+          duration: 4000,
+          offset: 30,
+          animationType: 'slide-in',
+        },
+      );
 
       props.clearUpdateUser();
     }
@@ -297,17 +294,17 @@ export class Account extends Component {
     const image = image_path
       ? {uri: image_path}
       : attachment
-      ? {
-          uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
-        }
-      : require('../../assets/img/avatar1.png');
+        ? {
+            uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
+          }
+        : require('../../assets/img/avatar1.png');
     const {isLodaing} = this.props.errors;
     return (
       <>
         {isLodaing ? (
           <Loading />
         ) : (
-          <View style={{ flex: 1 }}>
+          <View style={{flex: 1}}>
             <HeaderComponent navigation={this.props.navigation} />
             <View style={styles.contentContainer}>
               <View style={styles.userImageContainer}>
@@ -326,11 +323,10 @@ export class Account extends Component {
               <View style={styles.formContainer}>
                 <KeyboardAwareScrollView
                   enableOnAndroid={true}
-                  keyboardShouldPersistTaps={"handled"}
+                  keyboardShouldPersistTaps={'handled'}
                   enableResetScrollToCoords={false}
                   scrollEnabled={isEnablrdScroll}
-                  enableAutomaticScroll={isEnablrdScroll}
-                >
+                  enableAutomaticScroll={isEnablrdScroll}>
                   <Form>
                     <View
                       style={{
@@ -541,10 +537,7 @@ export class Account extends Component {
 
                       {errors.email ? (
                         <Text
-                          style={[
-                            styles.errorMessage,
-                            {textAlign: textAlign},
-                          ]}>
+                          style={[styles.errorMessage, {textAlign: textAlign}]}>
                           {errors.email}
                         </Text>
                       ) : null}
@@ -630,10 +623,7 @@ export class Account extends Component {
 
                       {errors.mobile ? (
                         <Text
-                          style={[
-                            styles.errorMessage,
-                            {textAlign: textAlign},
-                          ]}>
+                          style={[styles.errorMessage, {textAlign: textAlign}]}>
                           {errors.mobile}
                         </Text>
                       ) : null}
@@ -689,8 +679,7 @@ export class Account extends Component {
                                   styles.inputText,
                                   {
                                     flexDirection: 'row',
-                                    textAlign:
-                                      lang === 'ar' ? 'right' : 'left',
+                                    textAlign: lang === 'ar' ? 'right' : 'left',
                                   },
                                 ]}
                                 onChangeText={val =>
@@ -836,9 +825,7 @@ export class Account extends Component {
                               ]}>
                               <Item
                                 floatingLabel
-                                error={
-                                  errors.isConfirmPassword ? true : false
-                                }
+                                error={errors.isConfirmPassword ? true : false}
                                 style={
                                   lang === 'ar'
                                     ? styles.formInputContainerArabic
@@ -910,7 +897,7 @@ export class Account extends Component {
             </View>
           </View>
         )}
-        <Toast ref={(ref) => global['toast'] = ref} />
+        <Toast ref={ref => (global['toast'] = ref)} />
       </>
     );
   }
@@ -1097,13 +1084,10 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    updateUser,
-    currentUser,
-    clearErrors,
-    clearUpdateUser,
-    deleteAttachment,
-  },
-)(Account);
+export default connect(mapStateToProps, {
+  updateUser,
+  currentUser,
+  clearErrors,
+  clearUpdateUser,
+  deleteAttachment,
+})(Account);

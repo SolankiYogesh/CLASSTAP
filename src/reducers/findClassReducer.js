@@ -15,7 +15,7 @@ const initialState = {
   categories: [],
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case GET_POPULAR_GYMS:
       return {

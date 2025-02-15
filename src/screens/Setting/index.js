@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -10,27 +10,27 @@ import {
   Linking,
   AppState,
   Alert,
-} from "react-native";
-import { Container, Form, Icon, Label, Item, Picker } from "native-base";
-import { connect } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import RNRestart from "react-native-restart";
-import I18n from "../../utils/i18n";
-import { setLanguage } from "../../actions/settingActions";
-import HeaderComponent from "../../components/Header";
-import normalize from "react-native-normalize";
-import { API_URI } from "../../utils/config";
-import axios from "axios";
-import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
-import Geolocation from "@react-native-community/geolocation";
-import { currentUser } from "../../actions/authActions";
+} from 'react-native';
+import {Container, Form, Icon, Label, Item, Picker} from 'native-base';
+import {connect} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNRestart from 'react-native-restart';
+import I18n from '../../utils/i18n';
+import {setLanguage} from '../../actions/settingActions';
+import HeaderComponent from '../../components/Header';
+import normalize from 'react-native-normalize';
+import {API_URI} from '../../utils/config';
+import axios from 'axios';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import Geolocation from '@react-native-community/geolocation';
+import {currentUser} from '../../actions/authActions';
 
 export class Setting extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedLanguage: props.setting.lang,
-      isNotification: "",
+      isNotification: '',
       isLocation: false,
       isNewsletter: false,
       isInitial: true,
@@ -38,80 +38,80 @@ export class Setting extends Component {
   }
 
   async componentDidMount() {
-    BackHandler.addEventListener("hardwareBackPress", this.handleBack);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     this.setState({
       isNotification: this.props.auth.user.is_notification,
       isNewsletter: this.props.auth.user.is_newsletter,
     });
-    if (Platform.OS === "ios") {
+    if (Platform.OS === 'ios') {
       await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
-        .then(async (result) => {
-          if (result === "denied" || result === "blocked") {
-            this.setState({ isLocation: false });
-          } else if (result === "granted") {
-            this.setState({ isLocation: true });
+        .then(async result => {
+          if (result === 'denied' || result === 'blocked') {
+            this.setState({isLocation: false});
+          } else if (result === 'granted') {
+            this.setState({isLocation: true});
           }
         })
-        .catch((error) => {
+        .catch(error => {
           // Alert.alert(JSON.stringify(error));
           // …
         });
     } else {
       await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-        .then(async (result) => {
-          if (result === "denied") {
-            this.setState({ isLocation: false });
-          } else if (result === "granted") {
-            this.setState({ isLocation: true });
+        .then(async result => {
+          if (result === 'denied') {
+            this.setState({isLocation: false});
+          } else if (result === 'granted') {
+            this.setState({isLocation: true});
           }
         })
-        .catch((error) => {
+        .catch(error => {
           // …
         });
     }
-    AppState.addEventListener("change", this.handleAppStateChange);
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
   handleAppStateChange = async () => {
     if (!this.state.isInitial) {
-      if (Platform.OS === "ios") {
+      if (Platform.OS === 'ios') {
         await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
-          .then(async (result) => {
-            if (result === "denied" || result === "blocked") {
-              await AsyncStorage.removeItem("latitude");
-              await AsyncStorage.removeItem("longitude");
-              this.setState({ isLocation: false });
-            } else if (result === "granted") {
+          .then(async result => {
+            if (result === 'denied' || result === 'blocked') {
+              await AsyncStorage.removeItem('latitude');
+              await AsyncStorage.removeItem('longitude');
+              this.setState({isLocation: false});
+            } else if (result === 'granted') {
               await this.handleLocation();
               RNRestart.Restart();
-              this.setState({ isLocation: true });
+              this.setState({isLocation: true});
             }
           })
-          .catch((error) => {
+          .catch(error => {
             // …
           });
       } else {
         await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-          .then(async (result) => {
-            if (result === "denied") {
-              await AsyncStorage.removeItem("latitude");
-              await AsyncStorage.removeItem("longitude");
-              this.setState({ isLocation: false });
-            } else if (result === "granted") {
+          .then(async result => {
+            if (result === 'denied') {
+              await AsyncStorage.removeItem('latitude');
+              await AsyncStorage.removeItem('longitude');
+              this.setState({isLocation: false});
+            } else if (result === 'granted') {
               await this.handleLocation();
               RNRestart.Restart();
-              this.setState({ isLocation: true });
+              this.setState({isLocation: true});
             }
           })
-          .catch((error) => {
+          .catch(error => {
             // …
           });
       }
     }
-    this.setState({ isInitial: false });
+    this.setState({isInitial: false});
   };
   componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBack);
-    AppState.removeEventListener("change", this.handleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   handleBack = async () => {
@@ -119,8 +119,8 @@ export class Setting extends Component {
     return true;
   };
 
-  handleSelectLanguage = async (value) => {
-    await AsyncStorage.setItem("lang", value, async () => {
+  handleSelectLanguage = async value => {
+    await AsyncStorage.setItem('lang', value, async () => {
       this.setState({
         selectedLanguage: value,
       });
@@ -134,18 +134,18 @@ export class Setting extends Component {
       is_notification: !this.state.isNotification,
     };
 
-    const { id } = this.props.auth.user;
-    this.setState({ isNotification: !this.state.isNotification });
+    const {id} = this.props.auth.user;
+    this.setState({isNotification: !this.state.isNotification});
     axios
       .put(`${API_URI}/users/${id}`, userData)
-      .then((res) => {
+      .then(res => {
         if (res.data.error.code) {
         } else {
-          const { data } = res.data;
+          const {data} = res.data;
           this.props.currentUser();
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.response.data.error) {
         }
       });
@@ -156,18 +156,18 @@ export class Setting extends Component {
       is_newsletter: !this.state.isNewsletter,
     };
 
-    const { id } = this.props.auth.user;
-    this.setState({ isNewsletter: !this.state.isNewsletter });
+    const {id} = this.props.auth.user;
+    this.setState({isNewsletter: !this.state.isNewsletter});
     axios
       .put(`${API_URI}/users/${id}`, userData)
-      .then((res) => {
+      .then(res => {
         if (res.data.error.code) {
         } else {
-          const { data } = res.data;
+          const {data} = res.data;
           this.props.currentUser();
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.response.data.error) {
         }
       });
@@ -179,45 +179,45 @@ export class Setting extends Component {
 
   handleLocation = async () => {
     Geolocation.getCurrentPosition(
-      async (position) => {
+      async position => {
         await AsyncStorage.setItem(
-          "latitude",
-          position.coords.latitude.toString()
+          'latitude',
+          position.coords.latitude.toString(),
         );
         await AsyncStorage.setItem(
-          "longitude",
-          position.coords.longitude.toString()
+          'longitude',
+          position.coords.longitude.toString(),
         );
 
         await this.props.setLatLong(
           position.coords.latitude,
-          position.coords.longitude
+          position.coords.longitude,
         );
-        this.setState({ isLocation: true });
+        this.setState({isLocation: true});
         return true;
       },
-      (error) => {
+      error => {
         //Alert.alert(JSON.stringify(error));
       },
       {
         enableHighAccuracy: /* Platform.OS === 'ios' ? true : */ false,
         timeout: 20000,
         maximumAge: 1000,
-      }
+      },
     );
   };
   render() {
-    const { isNotification, isLocation, isNewsletter } = this.state;
+    const {isNotification, isLocation, isNewsletter} = this.state;
 
-    const { lang } = this.props.setting;
-    const flexDirection = lang === "ar" ? "row-reverse" : "row";
-    const textAlign = lang === "ar" ? "right" : "left";
-    const alignSelf = lang === "ar" ? "flex-end" : "flex-start";
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
 
     return (
-      <Container style={{ flex: 1, backgroundColor: "#ffffff" }}>
-        <HeaderComponent navigation={this.props.navigation} back={"Profile"} />
-        <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
+      <Container style={{flex: 1, backgroundColor: '#ffffff'}}>
+        <HeaderComponent navigation={this.props.navigation} back={'Profile'} />
+        <View style={{flex: 1, backgroundColor: '#ffffff'}}>
           {/* <View
             style={{
               marginHorizontal: normalize(16),
@@ -257,31 +257,29 @@ export class Setting extends Component {
               {
                 flexDirection: flexDirection,
               },
-            ]}
-          >
+            ]}>
             <View>
               <Text
                 style={{
                   fontSize: normalize(19),
-                  color: "#8A8A8F",
+                  color: '#8A8A8F',
                   textAlign: textAlign,
-                }}
-              >
-                {I18n.t("notification", { locale: lang })}
+                }}>
+                {I18n.t('notification', {locale: lang})}
               </Text>
             </View>
-            <View style={{ position: "absolute", right: 0 }}>
+            <View style={{position: 'absolute', right: 0}}>
               <Switch
                 style={{
                   //transform: [{scaleX: 0.8}, {scaleY: 0.8}],
                   // display: 'flex',
                   /// alignSelf: 'flex-end',
 
-                  borderColor: "#FE9800",
+                  borderColor: '#FE9800',
                 }}
                 onValueChange={this.handleIsNotification}
                 value={isNotification}
-                trackColor={{ true: "#FE9800", false: "#cfcfcf" }}
+                trackColor={{true: '#FE9800', false: '#cfcfcf'}}
                 //trackColor={{true: '#FE9800', false: '#f5f6fc'}}
                 thumbColor="#fff"
                 ios_backgroundColor="#cfcfcf"
@@ -296,31 +294,29 @@ export class Setting extends Component {
                 flexDirection: flexDirection,
                 marginTop: normalize(30),
               },
-            ]}
-          >
+            ]}>
             <View>
               <Text
                 style={{
                   fontSize: normalize(19),
-                  color: "#8A8A8F",
+                  color: '#8A8A8F',
                   textAlign: textAlign,
-                }}
-              >
-                {I18n.t("location", { locale: lang })}
+                }}>
+                {I18n.t('location', {locale: lang})}
               </Text>
             </View>
-            <View style={{ position: "absolute", right: 0 }}>
+            <View style={{position: 'absolute', right: 0}}>
               <Switch
                 style={{
                   //transform: [{scaleX: 0.8}, {scaleY: 0.8}],
                   // display: 'flex',
                   /// alignSelf: 'flex-end',
 
-                  borderColor: "#FE9800",
+                  borderColor: '#FE9800',
                 }}
                 onValueChange={this.handleLocatonEnable}
                 value={isLocation}
-                trackColor={{ true: "#FE9800", false: "#cfcfcf" }}
+                trackColor={{true: '#FE9800', false: '#cfcfcf'}}
                 //trackColor={{true: '#FE9800', false: '#f5f6fc'}}
                 thumbColor="#fff"
                 ios_backgroundColor="#cfcfcf"
@@ -336,31 +332,29 @@ export class Setting extends Component {
                 flexDirection: flexDirection,
                 marginTop: normalize(30),
               },
-            ]}
-          >
+            ]}>
             <View>
               <Text
                 style={{
                   fontSize: normalize(19),
-                  color: "#8A8A8F",
+                  color: '#8A8A8F',
                   textAlign: textAlign,
-                }}
-              >
-                {I18n.t("receiveUpdatesNewsletters", { locale: lang })}
+                }}>
+                {I18n.t('receiveUpdatesNewsletters', {locale: lang})}
               </Text>
             </View>
-            <View style={{ position: "absolute", right: 0 }}>
+            <View style={{position: 'absolute', right: 0}}>
               <Switch
                 style={{
                   //transform: [{scaleX: 0.8}, {scaleY: 0.8}],
                   // display: 'flex',
                   /// alignSelf: 'flex-end',
 
-                  borderColor: "#FE9800",
+                  borderColor: '#FE9800',
                 }}
                 onValueChange={this.handleIsNewsletter}
                 value={isNewsletter}
-                trackColor={{ true: "#FE9800", false: "#cfcfcf" }}
+                trackColor={{true: '#FE9800', false: '#cfcfcf'}}
                 //trackColor={{true: '#FE9800', false: '#f5f6fc'}}
                 thumbColor="#fff"
                 ios_backgroundColor="#cfcfcf"
@@ -377,14 +371,14 @@ export class Setting extends Component {
 
 const styles = StyleSheet.create({
   notificationContainer: {
-    display: "flex",
+    display: 'flex',
     marginHorizontal: normalize(16),
   },
 });
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
   errors: state.errors,
 });
 
-export default connect(mapStateToProps, { setLanguage, currentUser })(Setting);
+export default connect(mapStateToProps, {setLanguage, currentUser})(Setting);

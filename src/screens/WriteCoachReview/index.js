@@ -43,10 +43,8 @@ export class WriteCoachReview extends Component {
   handleReview = async () => {
     const {lang} = this.props.setting;
     const {description, rating} = this.state;
-    const {
-      coach_id,
-      /* class_schedule_id, schedule_dates_id, */ auth,
-    } = this.props;
+    const {coach_id, /* class_schedule_id, schedule_dates_id, */ auth} =
+      this.props;
     const addReviewData = {
       user_id: auth.user.id,
       coach_id,
@@ -66,11 +64,11 @@ export class WriteCoachReview extends Component {
           } else {
             const {data} = res.data;
             toast.show(I18n.t('reviewAddedSucessfully', {locale: lang}), {
-              type: "normal",
-              placement: "bottom",
+              type: 'normal',
+              placement: 'bottom',
               duration: 2000,
               offset: 30,
-              animationType: "slide-in",
+              animationType: 'slide-in',
             });
             this.props.getWhatsOnToday(auth.user.id);
             this.props.handleWriteReview();
@@ -87,10 +85,7 @@ export class WriteCoachReview extends Component {
     }
   };
   truncate = (str, no_words) => {
-    return str
-      .split(' ')
-      .splice(0, no_words)
-      .join(' ');
+    return str.split(' ').splice(0, no_words).join(' ');
   };
   handleChangeText = (name, value) => {
     const errors = this.state.errors;
@@ -252,7 +247,7 @@ export class WriteCoachReview extends Component {
             </ScrollView>
           </KeyboardAvoidingView>
         </Modal>
-        <Toast ref={(ref) => global['toast'] = ref} />
+        <Toast ref={ref => (global['toast'] = ref)} />
       </>
     );
   }
@@ -309,7 +304,8 @@ const mapStateToProps = state => ({
   errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  {addReview, clearErrors, getWhatsOnToday},
-)(WriteCoachReview);
+export default connect(mapStateToProps, {
+  addReview,
+  clearErrors,
+  getWhatsOnToday,
+})(WriteCoachReview);
