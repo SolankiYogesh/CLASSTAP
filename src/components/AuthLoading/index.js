@@ -3,7 +3,7 @@ import Geolocation from '@react-native-community/geolocation'
 import React, {Component} from 'react'
 import {Platform,StyleSheet, View} from 'react-native'
 import {check, PERMISSIONS} from 'react-native-permissions'
-import SplashScreen from 'react-native-splash-screen'
+import splash from 'react-native-bootsplash'
 import {connect} from 'react-redux'
 
 import {currentUser} from '../../actions/authActions'
@@ -97,7 +97,7 @@ class AuthLoading extends Component {
     }
 
     setTimeout(() => {
-      SplashScreen.hide()
+      splash.hide({fade:false})
       this._loadData()
     }, 100)
   }

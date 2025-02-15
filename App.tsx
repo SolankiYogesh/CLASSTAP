@@ -1,9 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import notifee from '@notifee/react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {NativeBaseProvider} from 'native-base'
+import {Root} from 'native-base'
 import React, {useEffect, useMemo,useState} from 'react'
 import {View} from 'react-native'
-import DeviceInfo from 'react-native-device-info'
+import  { getModel } from 'react-native-device-info'
 import normalize from 'react-native-normalize'
 import {ToastProvider} from 'react-native-toast-notifications'
 import {Provider} from 'react-redux'
@@ -25,7 +26,7 @@ const App = () => {
   const [animationFinished, setAnimationFinished] = useState(false)
 
   const isNeedStack = useMemo(()=>{
-    const brand =  DeviceInfo.getModel()
+    const brand =  getModel()
     return brand.includes('12') || brand.includes('13')
   },[])
 
@@ -59,17 +60,17 @@ const App = () => {
     }
   }, [animationFinished])
 
-  return   <Provider store={store}>
+  return   <Provider  store={store}>
   <ToastProvider>
-    <NativeBaseProvider>
+    <Root>
       <View style={{flex: 1, paddingBottom:isNeedStack? normalize(20):0}}>
         <AppNavigation
         
         />
       </View>
-    </NativeBaseProvider>
+    </Root>
     {!animationFinished && (
-      <SplashScreen onAnimationFinish={onAnimationFinish} />
+      <SplashScreen  onAnimationFinish={onAnimationFinish} />
     )}
   </ToastProvider>
 </Provider>

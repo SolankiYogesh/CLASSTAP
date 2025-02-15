@@ -1,12 +1,12 @@
 import LottieView from 'lottie-react-native'
 import React, {useEffect} from 'react'
 import {View} from 'react-native'
-import SplashScreen from 'react-native-splash-screen'
+import splash from 'react-native-bootsplash'
 import {connect} from 'react-redux'
 
 const Splash = props => {
   useEffect(() => {
-    SplashScreen.hide()
+    splash.hide({fade:false})
   }, [])
 
   useEffect(() => {

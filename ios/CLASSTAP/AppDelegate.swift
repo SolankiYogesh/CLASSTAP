@@ -2,9 +2,10 @@ import UIKit
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
-import FBSDKCoreKit
+//import FBSDKCoreKit
 import GoogleMaps
 import Firebase
+import RNBootSplash
 
 @main
 class AppDelegate: RCTAppDelegate {
@@ -17,14 +18,19 @@ class AppDelegate: RCTAppDelegate {
     self.initialProps = [:]
     GoogleMaps.GMSServices.provideAPIKey("AIzaSyB_Lz_b22Sf5eKRSHhgxOnoZ8InrtXkpSM")
     FirebaseApp.configure()
-    return ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
   
-  override func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        return ApplicationDelegate.shared.application(application, open: url, options: options) ||
-               RCTLinkingManager.application(application, open: url, options: options)
-    }
-  
+  override func customize(_ rootView: RCTRootView!) {
+    super.customize(rootView)
+    RNBootSplash.initWithStoryboard("BootSplash", rootView: rootView) // ⬅️ initialize the splash screen
+  }
+//
+//  override func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+//        return ApplicationDelegate.shared.application(application, open: url, options: options) ||
+//               RCTLinkingManager.application(application, open: url, options: options)
+//    }
+//  
   
   override func sourceURL(for bridge: RCTBridge) -> URL? {
     self.bundleURL()

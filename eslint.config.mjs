@@ -26,10 +26,8 @@ export default [
     ignores: [
       'commitlint.config.mjs',
       'eslint.config.mjs',
-      'packages/mobile/babel.config.js',
-      'packages/mobile/metro.config.js',
-      'commands',
-      '**/dist/'
+      'babel.config.js',
+      'metro.config.js',
     ]
   },
   ...tseslint.config(
