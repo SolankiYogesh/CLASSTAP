@@ -28,6 +28,7 @@ export default [
       'eslint.config.mjs',
       'babel.config.js',
       'metro.config.js',
+      "react-native.config.js"
     ]
   },
   ...tseslint.config(

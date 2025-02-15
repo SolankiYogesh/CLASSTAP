@@ -44,9 +44,6 @@ const App = () => {
     saveFirstStart()
   }, [])
 
-  const onAnimationFinish = () => {
-    setAnimationFinished(true)
-  }
 
   useEffect(() => {
     if (!animationFinished) {
@@ -70,7 +67,7 @@ const App = () => {
       </View>
     </Root>
     {!animationFinished && (
-      <SplashScreen  onAnimationFinish={onAnimationFinish} />
+      <SplashScreen  onAnimationFinish={()=>  setAnimationFinished(true)} />
     )}
   </ToastProvider>
 </Provider>

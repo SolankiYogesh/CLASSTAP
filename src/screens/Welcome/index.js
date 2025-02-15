@@ -48,6 +48,7 @@ const Welcome = props => {
         {cancelable: false},
       )
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.setting, props.errors])
 
   const handleLocation = async () => {
@@ -79,7 +80,8 @@ const Welcome = props => {
     )
   }
 
-  useEffect(async () => {
+  useEffect(() => {
+  const load = async()=>{
     if (Platform.OS === 'ios') {
       await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
         .then(async result => {
@@ -95,7 +97,7 @@ const Welcome = props => {
             await handleLocation()
           }
         })
-        .catch(error => {
+        .catch(() => {
           // …
         })
     } else {
@@ -118,6 +120,8 @@ const Welcome = props => {
           // …
         })
     }
+  }
+  load()
   }, [])
 
   useEffect(() => {
