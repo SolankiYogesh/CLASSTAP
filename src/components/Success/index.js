@@ -1,21 +1,14 @@
-import React from 'react';
-import {View, Text, Image, SafeAreaView, TouchableOpacity} from 'react-native';
-import normalize from 'react-native-normalize';
-import {StackActions, NavigationActions} from 'react-navigation';
+import React from 'react'
+import {Image, SafeAreaView, Text, TouchableOpacity,View} from 'react-native'
+import normalize from 'react-native-normalize'
+
 const handleMoveScreen = (screen, navigation) => {
-  /* const resetAction = StackActions.reset({
-    index: 0,
-    actions: [
-      NavigationActions.navigate({routeName: 'Success'}),
-      //NavigationActions.navigate({ routeName: 'Settings' }),
-    ],
-  });
-  navigation.dispatch(resetAction); */
-  navigation.navigate(screen);
-};
+
+  navigation.navigate(screen)
+}
 const Success = props => {
   const {text, shortText, buttonText, MoveScreenName} =
-    props.navigation.state.params;
+    props.navigation.state.params
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#ffffff'}}>
       <View style={{flex: 3, alignItems: 'center', marginTop: normalize(20)}}>
@@ -32,7 +25,7 @@ const Success = props => {
               fontSize: normalize(40),
               color: '#231F20',
               fontWeight: 'bold',
-              textAlign: 'center',
+              textAlign: 'center'
             }}>
             {text}
           </Text>
@@ -43,7 +36,7 @@ const Success = props => {
             style={{
               fontSize: normalize(13),
               color: '#8A8A8F',
-              textAlign: 'center',
+              textAlign: 'center'
             }}>
             {shortText}
           </Text>
@@ -52,7 +45,7 @@ const Success = props => {
           style={{
             marginTop: normalize(40),
             marginLeft: normalize(40),
-            marginRight: normalize(40),
+            marginRight: normalize(40)
           }}>
           <TouchableOpacity
             onPress={() => handleMoveScreen(MoveScreenName, props.navigation)}
@@ -62,12 +55,12 @@ const Success = props => {
               backgroundColor: '#FE9800',
               justifyContent: 'center',
               alignItems: 'center',
-              borderRadius: normalize(23),
+              borderRadius: normalize(23)
             }}>
             <Text
               style={{
                 color: '#ffffff',
-                fontSize: normalize(15),
+                fontSize: normalize(15)
                 ///fontWeight: 'bold',
               }}>
               {buttonText}
@@ -76,7 +69,7 @@ const Success = props => {
         </View>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default Success;
+export default Success

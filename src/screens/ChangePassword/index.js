@@ -1,47 +1,48 @@
-import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import {Container, Form, Item, Input} from 'native-base';
-import FIcon from '@react-native-vector-icons/fontawesome';
-import {connect} from 'react-redux';
-import I18n from '../../utils/i18n';
-import HeaderComponent from '../../components/Header';
-import {registerUser} from '../../actions/authActions';
+import FIcon from '@react-native-vector-icons/fontawesome'
+import {Container, Form, Input,Item} from 'native-base'
+import React, {Component} from 'react'
+import {StyleSheet, Text, TouchableOpacity,View} from 'react-native'
+import {connect} from 'react-redux'
+
+import {registerUser} from '../../actions/authActions'
+import HeaderComponent from '../../components/Header'
+import I18n from '../../utils/i18n'
 
 export class Login extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       isAlreadyLogin: true,
       mobile: '',
       password: '',
       isSecure: true,
-      errors: {},
-    };
+      errors: {}
+    }
   }
   handleChangeText = (name, value) => {
-    const errors = this.state.errors;
+    const {errors} = this.state
     if (name === 'mobile' && errors.isMobile) {
-      delete errors.isMobile;
+      delete errors.isMobile
     } else if (name === 'password' && errors.isPassword) {
-      delete errors.isPassword;
+      delete errors.isPassword
     }
     if (errors[name]) {
-      delete errors[name];
+      delete errors[name]
 
       //delete errors.common;
     }
     //this.props.clearErrors();
-    this.setState({[name]: value, errors});
-  };
+    this.setState({[name]: value, errors})
+  }
   handleShowPassword = () => {
-    this.setState({isSecure: !this.state.isSecure});
-  };
-  handleCreateAccount = () => {};
+    this.setState({isSecure: !this.state.isSecure})
+  }
+  handleCreateAccount = () => {}
   render() {
-    const {isAlreadyLogin, errors, mobile, password, isSecure} = this.state;
-    const {lang} = this.props.setting;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const {isAlreadyLogin, errors, mobile, password, isSecure} = this.state
+    const {lang} = this.props.setting
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
+    const textAlign = lang === 'ar' ? 'right' : 'left'
     return (
       <Container>
         <HeaderComponent navigation={this.props.navigation} />
@@ -77,13 +78,13 @@ export class Login extends Component {
                   error={errors.isPassword ? true : false}
                   style={[
                     styles.formInputText,
-                    {flexDirection: flexDirection},
+                    {flexDirection: flexDirection}
                   ]}>
                   <FIcon
                     name={isSecure ? 'lock' : 'unlock-alt'}
                     size={18}
                     style={{
-                      flexDirection: flexDirection,
+                      flexDirection: flexDirection
                     }}
                   />
                   <Input
@@ -114,13 +115,13 @@ export class Login extends Component {
                   error={errors.isPassword ? true : false}
                   style={[
                     styles.formInputText,
-                    {flexDirection: flexDirection},
+                    {flexDirection: flexDirection}
                   ]}>
                   <FIcon
                     name={isSecure ? 'lock' : 'unlock-alt'}
                     size={18}
                     style={{
-                      flexDirection: flexDirection,
+                      flexDirection: flexDirection
                     }}
                   />
                   <Input
@@ -151,13 +152,13 @@ export class Login extends Component {
                   error={errors.isPassword ? true : false}
                   style={[
                     styles.formInputText,
-                    {flexDirection: flexDirection},
+                    {flexDirection: flexDirection}
                   ]}>
                   <FIcon
                     name={isSecure ? 'lock' : 'unlock-alt'}
                     size={18}
                     style={{
-                      flexDirection: flexDirection,
+                      flexDirection: flexDirection
                     }}
                   />
                   <Input
@@ -214,114 +215,114 @@ export class Login extends Component {
           </View>
         </View>
       </Container>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  accountButton: {
+    backgroundColor: '#FE9800',
+    borderRadius: 23,
+    height: 46,
+    justifyContent: 'center',
+    marginHorizontal: 45,
+    marginVertical: 15
+  },
+  accountButtonText: {
+    color: '#ffffff',
+    fontSize: 15,
+    textAlign: 'center'
+  },
+  alreadyAccount: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  alreadyAccountText: {
+    textAlign: 'center'
+  },
+  buttonContainer: {
     flex: 1,
+    justifyContent: 'space-evenly'
+  },
+  container: {
     backgroundColor: '#ffffff',
+    flex: 1
   },
   contentContainer: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
+  },
+  forgotPasswordAccount: {
+    marginVertical: '1%'
+  },
+  forgotPasswordAccountText: {
+    fontSize: 13,
+    textAlign: 'center'
+  },
+  formContainer: {
+    flex: 5,
+    justifyContent: 'flex-start'
+  },
+  formInput: {
+    marginLeft: 5
+  },
+  formInputArabic: {
+    flexDirection: 'row',
+    marginLeft: 5,
+    textAlign: 'right'
+  },
+  formInputText: {
+    //flex: 1,
+    marginLeft: '10%',
+    marginRight: '10%',
+    marginVertical: '2%'
   },
   headerContainer: {
     backgroundColor: '#ffffff',
-    borderBottomWidth: 0,
+    borderBottomWidth: 0
+  },
+  signUpText: {
+    fontSize: 13,
+    fontWeight: 'bold'
   },
   titleContainer: {
     flex: 1,
     //height: 80,
     justifyContent: 'center',
     marginLeft: '10%',
-    marginRight: '10%',
+    marginRight: '10%'
     //alignItems: 'center',
   },
   titleText: {
-    fontSize: 20,
     fontFamily: 'arial',
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   welcomeText: {
     fontSize: 28,
     fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  welcomeTextSmall: {
-    fontSize: 12,
-    color: '#000000',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  welcomeUserContainer: {
-    flex: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: '10%',
-    marginRight: '10%',
-  },
-  formContainer: {
-    flex: 5,
-    justifyContent: 'flex-start',
-  },
-  formInput: {
-    marginLeft: 5,
-  },
-  formInputArabic: {
-    marginLeft: 5,
-    flexDirection: 'row',
-    textAlign: 'right',
-  },
-  formInputText: {
-    //flex: 1,
-    marginLeft: '10%',
-    marginRight: '10%',
-    marginVertical: '2%',
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'space-evenly',
-  },
-  accountButton: {
-    height: 46,
-    backgroundColor: '#FE9800',
-    marginHorizontal: 45,
-    borderRadius: 23,
-    justifyContent: 'center',
-    marginVertical: 15,
-  },
-  accountButtonText: {
-    fontSize: 15,
-    textAlign: 'center',
-    color: '#ffffff',
-  },
-  forgotPasswordAccount: {
-    marginVertical: '1%',
-  },
-  forgotPasswordAccountText: {
-    textAlign: 'center',
-    fontSize: 13,
-  },
-  alreadyAccount: {
-    justifyContent: 'center',
-    flexDirection: 'row',
+    textAlign: 'center'
   },
 
-  alreadyAccountText: {
-    textAlign: 'center',
+  welcomeTextSmall: {
+    color: '#000000',
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: 'center'
   },
-  signUpText: {
-    fontWeight: 'bold',
-    fontSize: 13,
-  },
-});
+  welcomeUserContainer: {
+    alignItems: 'center',
+    flex: 5,
+    justifyContent: 'center',
+    marginLeft: '10%',
+    marginRight: '10%'
+  }
+})
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
-  errors: state.errors,
-});
+  errors: state.errors
+})
 
-export default connect(mapStateToProps, {registerUser})(Login);
+export default connect(mapStateToProps, {registerUser})(Login)

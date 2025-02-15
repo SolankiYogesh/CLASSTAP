@@ -1,44 +1,44 @@
 //import isEmpty from "../validation/is-empty";
 
 import {
-  GET_POPULAR_GYMS,
-  GET_FIND_CLASSES,
-  SET_GYM_AND_CLASS_COUNT,
   GET_CATEGORIES,
-} from '../actions/types';
+  GET_FIND_CLASSES,
+  GET_POPULAR_GYMS,
+  SET_GYM_AND_CLASS_COUNT
+} from '../actions/types'
 
 const initialState = {
   popularGyms: [],
   findClasses: [],
   gym_count: 0,
   class_count: 0,
-  categories: [],
-};
+  categories: []
+}
 
 export default function (state = initialState, action) {
   switch (action.type) {
     case GET_POPULAR_GYMS:
       return {
         ...state,
-        popularGyms: action.payload,
-      };
+        popularGyms: action.payload
+      }
     case GET_FIND_CLASSES:
       return {
         ...state,
-        findClasses: action.payload,
-      };
+        findClasses: action.payload
+      }
     case SET_GYM_AND_CLASS_COUNT:
       return {
         ...state,
         gym_count: action.gym_count,
-        class_count: action.class_count,
-      };
+        class_count: action.class_count
+      }
     case GET_CATEGORIES:
       return {
         ...state,
-        categories: action.payload,
-      };
+        categories: action.payload
+      }
     default:
-      return state;
+      return state
   }
 }

@@ -1,37 +1,28 @@
-import React from 'react';
+import React from 'react'
 import {
-  View,
-  Text,
   Image,
-  SafeAreaView,
-  TouchableOpacity,
   Modal,
-} from 'react-native';
-import normalize from 'react-native-normalize';
-import {StackActions, NavigationActions} from 'react-navigation';
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
+import normalize from 'react-native-normalize'
 const handleMoveScreen = (
   screen,
   navigation,
   handlePaymentSuccess,
   isGoBack,
 ) => {
-  handlePaymentSuccess();
-  /* const resetAction = StackActions.reset({
-    index: 0,
-    actions: [
-      NavigationActions.navigate({routeName: 'Success'}),
-      //NavigationActions.navigate({ routeName: 'Settings' }),
-    ],
-  });
-  navigation.dispatch(resetAction); */
+  handlePaymentSuccess()
   if (isGoBack) {
-    navigation.goBack();
+    navigation.goBack()
   } else {
-    navigation.navigate(screen);
+    navigation.navigate(screen)
   }
-};
+}
 const PaymentSuccess = props => {
-  const {text, shortText, buttonText, MoveScreenName, isGoBack} = props;
+  const {text, shortText, buttonText, MoveScreenName, isGoBack} = props
   return (
     <Modal
       visible={props.isShowPaymentSuccess}
@@ -55,7 +46,7 @@ const PaymentSuccess = props => {
                 fontSize: normalize(40),
                 color: '#231F20',
                 fontWeight: 'bold',
-                textAlign: 'center',
+                textAlign: 'center'
               }}>
               {text}
             </Text>
@@ -66,7 +57,7 @@ const PaymentSuccess = props => {
               style={{
                 fontSize: normalize(13),
                 color: '#8A8A8F',
-                textAlign: 'center',
+                textAlign: 'center'
               }}>
               {shortText}
             </Text>
@@ -75,7 +66,7 @@ const PaymentSuccess = props => {
             style={{
               marginTop: normalize(40),
               marginLeft: normalize(40),
-              marginRight: normalize(40),
+              marginRight: normalize(40)
             }}>
             <TouchableOpacity
               onPress={() =>
@@ -92,12 +83,12 @@ const PaymentSuccess = props => {
                 backgroundColor: '#FE9800',
                 justifyContent: 'center',
                 alignItems: 'center',
-                borderRadius: normalize(23),
+                borderRadius: normalize(23)
               }}>
               <Text
                 style={{
                   color: '#ffffff',
-                  fontSize: normalize(15),
+                  fontSize: normalize(15)
                   ///fontWeight: 'bold',
                 }}>
                 {buttonText}
@@ -107,7 +98,7 @@ const PaymentSuccess = props => {
         </View>
       </SafeAreaView>
     </Modal>
-  );
-};
+  )
+}
 
-export default PaymentSuccess;
+export default PaymentSuccess

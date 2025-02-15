@@ -1,12 +1,13 @@
-import React, {Component} from 'react';
-import {Text, ScrollView} from 'react-native';
-import {Container} from 'native-base';
-import HeaderComponent from '../../components/Header';
+import {Container} from 'native-base'
+import React, {Component} from 'react'
+import {ScrollView,Text} from 'react-native'
+
+import HeaderComponent from '../../components/Header'
 
 export class Payment extends Component {
   constructor(props) {
-    super(props);
-    this.state = {};
+    super(props)
+    this.state = {}
   }
   render() {
     return (
@@ -18,8 +19,8 @@ export class Payment extends Component {
           <Text> Payment </Text>
         </ScrollView>
       </Container>
-    );
+    )
   }
 }
 
-export default Payment;
+export default Payment

@@ -1,25 +1,25 @@
-import React, {useEffect} from 'react';
-import {View} from 'react-native';
-import LottieView from 'lottie-react-native';
-import SplashScreen from 'react-native-splash-screen';
-import {connect} from 'react-redux';
+import LottieView from 'lottie-react-native'
+import React, {useEffect} from 'react'
+import {View} from 'react-native'
+import SplashScreen from 'react-native-splash-screen'
+import {connect} from 'react-redux'
 
 const Splash = props => {
   useEffect(() => {
-    SplashScreen.hide();
-  }, []);
+    SplashScreen.hide()
+  }, [])
 
   useEffect(() => {
     if (props.auth.user && !props.errors.isLodaing) {
       setTimeout(() => {
-        props.onAnimationFinish();
-      }, 2000);
+        props.onAnimationFinish()
+      }, 2000)
     } else if (!props.auth.user) {
       setTimeout(() => {
-        props.onAnimationFinish();
-      }, 1500);
+        props.onAnimationFinish()
+      }, 1500)
     }
-  }, [props.errors]);
+  }, [props.errors])
 
   return (
     <View
@@ -32,7 +32,7 @@ const Splash = props => {
         left: 0,
         position: 'absolute',
         right: 0,
-        top: 0,
+        top: 0
       }}>
       <LottieView
         source={require('../../assets/splash.json')}
@@ -40,14 +40,14 @@ const Splash = props => {
         loop={false}
       />
     </View>
-  );
-};
+  )
+}
 
 // export default Splash;
 const mapStateToProps = state => ({
   home: state.home,
   errors: state.errors,
-  auth: state.auth,
-});
+  auth: state.auth
+})
 
-export default connect(mapStateToProps)(Splash);
+export default connect(mapStateToProps)(Splash)

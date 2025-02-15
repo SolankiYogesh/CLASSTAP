@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
-import normalize from 'react-native-normalize';
+import {StyleSheet} from 'react-native'
+import normalize from 'react-native-normalize'
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     // height: normalize(326),
     width: '100%',
     resizeMode: 'cover',
-    alignSelf: 'stretch',
+    alignSelf: 'stretch'
     //marginRight: normalize(10),
   },
   circleDiv: {
@@ -20,42 +20,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: 10,
-  },
-  whiteCircle: {
-    width: 9.14,
-    height: 2,
-    borderRadius: 1,
-    margin: 5,
-    backgroundColor: '#fff',
+    height: 10
   },
   container: {
-    flex: 1,
+    flex: 1
   },
+  contentItem: {flex: 6.3},
 
-  sliderItem: {
+  pageWrapper: {
     flex: 1,
-    width: normalize(321),
-    padding: normalize(10),
+    marginLeft: normalize(16)
+  },
+  sliderItem: {
     backgroundColor: '#ffffff',
-    marginRight: normalize(16),
     borderRadius: normalize(4),
+    elevation: 4,
+    flex: 1,
     marginBottom: normalize(4),
+    marginRight: normalize(16),
+    padding: normalize(10),
     shadowColor: '#00000029',
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 3
     },
     shadowOpacity: 1,
     shadowRadius: 4,
 
-    elevation: 4,
+    width: normalize(321)
   },
-  contentItem: {flex: 6.3},
-  pageWrapper: {
-    flex: 1,
-    marginLeft: normalize(16),
-  },
-});
+  whiteCircle: {
+    backgroundColor: '#fff',
+    borderRadius: 1,
+    height: 2,
+    margin: 5,
+    width: 9.14
+  }
+})
 
-export default styles;
+export default styles

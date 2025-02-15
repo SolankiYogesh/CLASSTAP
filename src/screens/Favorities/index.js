@@ -1,68 +1,67 @@
-import React, {Component} from 'react';
+import FastImage from '@d11/react-native-fast-image'
+import {Icon} from 'native-base'
+import React, {Component} from 'react'
 import {
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-  Image,
+  Alert,
+  BackHandler,
   Dimensions,
   FlatList,
-  StyleSheet,
+  Image,
   Platform,
-  BackHandler,
-  Alert,
   RefreshControl,
-} from 'react-native';
-import FastImage from '@d11/react-native-fast-image';
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
+import normalize from 'react-native-normalize'
+import {connect} from 'react-redux'
 
-import {Icon} from 'native-base';
-import {connect} from 'react-redux';
-import I18n from '../../utils/i18n';
-import normalize from 'react-native-normalize';
 import {
-  getFavorites,
-  removeFavorite,
   getClasses,
-  getGyms,
+  getFavorites,
   getFavoritesRefresh,
-} from '../../actions/homeActions';
-import Loading from '../Loading';
-import ReviewShow from '../Review/ReviewShow';
-import {IMAGE_URI} from '../../utils/config';
-import isEmpty from '../../validation/is-empty';
+  getGyms,
+  removeFavorite
+} from '../../actions/homeActions'
+import FavoriteRedIcon from '../../assets/img/favorite-red.svg'
+import {IMAGE_URI} from '../../utils/config'
+import I18n from '../../utils/i18n'
+import isEmpty from '../../validation/is-empty'
+import Loading from '../Loading'
+import ReviewShow from '../Review/ReviewShow'
 
-import FavoriteRedIcon from '../../assets/img/favorite-red.svg';
-
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get('window')
 
 export class Favorities extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      refreshing: false,
-    };
+      refreshing: false
+    }
   }
 
   componentDidMount() {
     if (!isEmpty(this.props.auth.user)) {
-      const {id} = this.props.auth.user;
-      this.props.getFavorites(id);
+      const {id} = this.props.auth.user
+      this.props.getFavorites(id)
       //this.props.getGyms();
       //this.props.getClasses();
     } else {
       //this.props.navigation.navigate('Login');
     }
     this.focusListener = this.props.navigation.addListener('willFocus', () => {
-      BackHandler.addEventListener('hardwareBackPress', this.handleBack);
-    });
+      BackHandler.addEventListener('hardwareBackPress', this.handleBack)
+    })
 
     this.focusListener1 = this.props.navigation.addListener('willBlur', () => {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
-    });
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBack)
+    })
     this.focusListener2 = this.props.navigation.addListener('didFocus', () => {
       // do something
-      const {lang} = this.props.setting;
+      const {lang} = this.props.setting
       if (isEmpty(this.props.auth.user)) {
         Alert.alert(
           I18n.t('login', {locale: lang}),
@@ -71,61 +70,61 @@ export class Favorities extends Component {
             {
               text: I18n.t('no', {locale: lang}),
               onPress: () => this.props.navigation.navigate('Home'),
-              style: 'cancel',
+              style: 'cancel'
             },
             {
               text: I18n.t('yes', {locale: lang}),
-              onPress: () => this.props.navigation.navigate('Login'),
-            },
+              onPress: () => this.props.navigation.navigate('Login')
+            }
           ],
           {
-            cancelable: false,
+            cancelable: false
           },
-        );
+        )
       }
-    });
+    })
     //BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }
 
   handleBack = async back => {
     ///BackHandler.exitApp();
     //this.props.navigation.goBack();
-    this.props.navigation.navigate('Home');
-    return true;
-  };
+    this.props.navigation.navigate('Home')
+    return true
+  }
 
   componentWillUnmount() {
     //BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
-    this.focusListener.remove();
-    this.focusListener1.remove();
-    this.focusListener2.remove();
+    this.focusListener.remove()
+    this.focusListener1.remove()
+    this.focusListener2.remove()
   }
 
   renderItem = ({item}) => {
     const attachments =
-      item.class === 'Gym' ? item.gym.attachments : item.clas.attachments;
-    const {lang} = this.props.setting;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
-    let image;
+      item.class === 'Gym' ? item.gym.attachments : item.clas.attachments
+    const {lang} = this.props.setting
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
+    const textAlign = lang === 'ar' ? 'right' : 'left'
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
+    let image
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
         newImage => newImage.is_primary === true,
-      );
+      )
 
       if (!isEmpty(primaryAttachment)) {
         image = {
-          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`,
-        };
+          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`
+        }
       } else {
         image = {
-          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`,
-        };
+          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`
+        }
       }
     } else {
-      image = require('../../assets/img/no_image_found.png');
+      image = require('../../assets/img/no_image_found.png')
     }
     return (
       <TouchableOpacity
@@ -133,11 +132,11 @@ export class Favorities extends Component {
           item.class === 'Gym'
             ? this.props.navigation.navigate('Gym', {
                 id: item.gym.id,
-                back: 'Favorities',
+                back: 'Favorities'
               })
             : this.props.navigation.navigate('GymClass', {
                 id: item.clas.id,
-                back: 'Favorities',
+                back: 'Favorities'
               })
         }
         style={{flexDirection: flexDirection, marginBottom: normalize(16)}}>
@@ -147,11 +146,11 @@ export class Favorities extends Component {
               style={{
                 width: normalize(60),
                 height: normalize(60),
-                borderRadius: normalize(10),
+                borderRadius: normalize(10)
               }}
               source={{
                 uri: image.url,
-                priority: FastImage.priority.normal,
+                priority: FastImage.priority.normal
               }}
               resizeMode={FastImage.resizeMode.cover}
             />
@@ -162,7 +161,7 @@ export class Favorities extends Component {
               style={{
                 width: normalize(60),
                 height: normalize(60),
-                borderRadius: normalize(10),
+                borderRadius: normalize(10)
               }}
             />
           )}
@@ -174,7 +173,7 @@ export class Favorities extends Component {
             flexDirection: flexDirection,
             width: normalize(267),
             marginLeft: normalize(20),
-            justifyContent: 'space-between',
+            justifyContent: 'space-between'
           }}>
           <View>
             <View>
@@ -182,7 +181,7 @@ export class Favorities extends Component {
                 style={{
                   fontSize: normalize(17),
                   fontWeight: '700',
-                  textAlign: textAlign,
+                  textAlign: textAlign
                 }}>
                 {item.class === 'Gym'
                   ? lang === 'ar'
@@ -196,11 +195,11 @@ export class Favorities extends Component {
                 style={{
                   fontSize: normalize(12),
                   color: '#8A8A8F',
-                  textAlign: textAlign,
+                  textAlign: textAlign
                 }}>
                 {item.class === 'Gym'
                   ? `${item.gym.classes.length} ${I18n.t('classes', {
-                      locale: lang,
+                      locale: lang
                     })}`
                   : lang === 'ar'
                     ? item.clas.gym.name_ar
@@ -209,7 +208,7 @@ export class Favorities extends Component {
               <View
                 style={[
                   styles.classRatingContainer,
-                  {flexDirection: flexDirection},
+                  {flexDirection: flexDirection}
                 ]}>
                 <ReviewShow
                   rating={
@@ -219,7 +218,7 @@ export class Favorities extends Component {
                   }
                   style={{
                     fontSize: normalize(11),
-                    paddingRight: normalize(2.75),
+                    paddingRight: normalize(2.75)
                   }}
                 />
 
@@ -237,7 +236,7 @@ export class Favorities extends Component {
             style={{
               justifyContent: 'flex-end',
               marginRight: Platform.OS === 'ios' ? normalize(3) : 0,
-              marginLeft: Platform.OS === 'ios' ? normalize(3) : 0,
+              marginLeft: Platform.OS === 'ios' ? normalize(3) : 0
             }}>
             <TouchableOpacity
               onPress={() => this.handleRemoveFavorite(item.id)}>
@@ -246,32 +245,32 @@ export class Favorities extends Component {
           </View>
         </View>
       </TouchableOpacity>
-    );
-  };
+    )
+  }
   renderItemGym = ({item}) => {
-    const {lang} = this.props.setting;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
-    const {id, name, name_ar, attachments, distance} = item;
-    let image;
+    const {lang} = this.props.setting
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
+    const textAlign = lang === 'ar' ? 'right' : 'left'
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
+    const {id, name, name_ar, attachments, distance} = item
+    let image
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
         newImage => newImage.is_primary === true,
-      );
+      )
 
       if (!isEmpty(primaryAttachment)) {
         image = {
-          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`,
-        };
+          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`
+        }
       } else {
         image = {
-          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`,
-        };
+          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`
+        }
       }
     } else {
-      image = require('../../assets/img/no_image_found.png');
+      image = require('../../assets/img/no_image_found.png')
     }
     return (
       <TouchableOpacity
@@ -282,12 +281,12 @@ export class Favorities extends Component {
           width: normalize(204),
           marginRight: normalize(10),
           height: normalize(157),
-          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}]
         }}>
         <View
           style={{
             width: normalize(204),
-            height: normalize(136),
+            height: normalize(136)
             //borderRadius: 10,
           }}>
           {image.url ? (
@@ -295,11 +294,11 @@ export class Favorities extends Component {
               style={{
                 width: normalize(204),
                 height: normalize(136),
-                borderRadius: normalize(10),
+                borderRadius: normalize(10)
               }}
               source={{
                 uri: image.url,
-                priority: FastImage.priority.normal,
+                priority: FastImage.priority.normal
               }}
               resizeMode={FastImage.resizeMode.cover}
             />
@@ -310,7 +309,7 @@ export class Favorities extends Component {
               style={{
                 width: normalize(204),
                 height: normalize(136),
-                borderRadius: normalize(10),
+                borderRadius: normalize(10)
               }}
             />
           )}
@@ -318,7 +317,7 @@ export class Favorities extends Component {
             <View
               style={[
                 {position: 'absolute', bottom: normalize(10)},
-                lang === 'ar' ? styles.moveRight : styles.moveLeft,
+                lang === 'ar' ? styles.moveRight : styles.moveLeft
               ]}>
               <View
                 style={{
@@ -327,7 +326,7 @@ export class Favorities extends Component {
                   borderRadius: normalize(14),
                   fontSize: normalize(10),
                   paddingHorizontal: normalize(5),
-                  paddingVertical: normalize(2),
+                  paddingVertical: normalize(2)
                 }}>
                 <Text>
                   {distance >= 1
@@ -344,32 +343,32 @@ export class Favorities extends Component {
           </Text>
         </View>
       </TouchableOpacity>
-    );
-  };
+    )
+  }
   renderItemClass = ({item}) => {
-    const {lang} = this.props.setting;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
-    const {id, name, name_ar, attachments} = item;
-    let image;
+    const {lang} = this.props.setting
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
+    const textAlign = lang === 'ar' ? 'right' : 'left'
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
+    const {id, name, name_ar, attachments} = item
+    let image
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
         newImage => newImage.is_primary === true,
-      );
+      )
 
       if (!isEmpty(primaryAttachment)) {
         image = {
-          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`,
-        };
+          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`
+        }
       } else {
         image = {
-          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`,
-        };
+          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`
+        }
       }
     } else {
-      image = require('../../assets/img/no_image_found.png');
+      image = require('../../assets/img/no_image_found.png')
     }
     return (
       <TouchableOpacity
@@ -380,12 +379,12 @@ export class Favorities extends Component {
           width: normalize(142),
           marginRight: normalize(10),
           height: normalize(171),
-          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}]
         }}>
         <View
           style={{
             width: normalize(142),
-            height: normalize(142),
+            height: normalize(142)
             //borderRadius: 10,
           }}>
           {image.url ? (
@@ -393,11 +392,11 @@ export class Favorities extends Component {
               style={{
                 width: normalize(142),
                 height: normalize(142),
-                borderRadius: normalize(10),
+                borderRadius: normalize(10)
               }}
               source={{
                 uri: image.url,
-                priority: FastImage.priority.normal,
+                priority: FastImage.priority.normal
               }}
               resizeMode={FastImage.resizeMode.cover}
             />
@@ -408,7 +407,7 @@ export class Favorities extends Component {
               style={{
                 width: normalize(142),
                 height: normalize(142),
-                borderRadius: normalize(10),
+                borderRadius: normalize(10)
               }}
             />
           )}
@@ -419,30 +418,30 @@ export class Favorities extends Component {
           </Text>
         </View>
       </TouchableOpacity>
-    );
-  };
+    )
+  }
 
   handleRemoveFavorite = id => {
-    this.props.removeFavorite(id);
-  };
+    this.props.removeFavorite(id)
+  }
   handleRefresh = async () => {
-    this.setState({refreshing: true});
+    this.setState({refreshing: true})
     if (!isEmpty(this.props.auth.user)) {
-      const {id} = this.props.auth.user;
-      this.props.getFavoritesRefresh(id);
+      const {id} = this.props.auth.user
+      this.props.getFavoritesRefresh(id)
     }
     setTimeout(() => {
-      this.setState({refreshing: false});
-    }, 2000);
-  };
+      this.setState({refreshing: false})
+    }, 2000)
+  }
   render() {
-    const {refreshing} = this.state;
-    const {favourites, recommendedGyms, recommendedClasses} = this.props.home;
-    const {lang} = this.props.setting;
-    const {isLodaing} = this.props.errors;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    const {refreshing} = this.state
+    const {favourites, recommendedGyms, recommendedClasses} = this.props.home
+    const {lang} = this.props.setting
+    const {isLodaing} = this.props.errors
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
+    const textAlign = lang === 'ar' ? 'right' : 'left'
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
     return (
       <>
         {isLodaing || isEmpty(this.props.auth.user) ? (
@@ -462,13 +461,13 @@ export class Favorities extends Component {
                   height: normalize(40),
                   marginHorizontal: normalize(16),
                   justifyContent: 'center',
-                  marginTop: normalize(16),
+                  marginTop: normalize(16)
                 }}>
                 <Text
                   style={{
                     fontSize: normalize(40),
                     fontWeight: 'bold',
-                    alignSelf: alignSelf,
+                    alignSelf: alignSelf
                   }}>
                   {I18n.t('favorites', {locale: lang})}
                 </Text>
@@ -476,12 +475,12 @@ export class Favorities extends Component {
               <View
                 style={{
                   marginTop: normalize(24),
-                  marginHorizontal: normalize(16),
+                  marginHorizontal: normalize(16)
                 }}>
                 {favourites.length > 0 ? (
                   <View style={{marginBottom: normalize(10)}}>
                     {favourites.map(item => {
-                      return this.renderItem({item});
+                      return this.renderItem({item})
                     })}
                   </View>
                 ) : (
@@ -490,7 +489,7 @@ export class Favorities extends Component {
                       style={{
                         fontSize: normalize(16),
                         color: '#8f8f8f',
-                        textAlign: textAlign,
+                        textAlign: textAlign
                       }}>
                       {I18n.t('noFavourites', {locale: lang})}
                     </Text>
@@ -501,7 +500,7 @@ export class Favorities extends Component {
                 style={{
                   marginTop: normalize(20),
                   marginHorizontal: normalize(16),
-                  flexDirection: flexDirection,
+                  flexDirection: flexDirection
                 }}>
                 <Text style={{fontSize: normalize(20), fontWeight: 'bold'}}>
                   {I18n.t('recommendedGyms', {locale: lang})}
@@ -514,12 +513,12 @@ export class Favorities extends Component {
                   height: normalize(171),
                   transform: [{rotateY: lang === 'ar' ? '180deg' : '0deg'}],
                   paddingLeft: normalize(16),
-                  flexDirection: flexDirection,
+                  flexDirection: flexDirection
                 }}>
                 {recommendedGyms.length > 0 ? (
                   <FlatList
                     horizontal={true}
-                    style={[styles.container]}
+                    style={styles.container}
                     data={recommendedGyms}
                     renderItem={this.renderItemGym}
                     keyExtractor={item => item.id.toString()}
@@ -534,7 +533,7 @@ export class Favorities extends Component {
                       borderRadius: normalize(10),
                       backgroundColor: '#efefef',
                       justifyContent: 'center',
-                      alignItems: 'center',
+                      alignItems: 'center'
                     }}>
                     <Text style={{fontSize: normalize(16), color: '#8f8f8f'}}>
                       {I18n.t('noRecommendedGyms', {locale: lang})}
@@ -546,7 +545,7 @@ export class Favorities extends Component {
                 style={{
                   marginTop: normalize(20),
                   marginHorizontal: normalize(16),
-                  flexDirection: flexDirection,
+                  flexDirection: flexDirection
                 }}>
                 <Text style={{fontSize: normalize(20), fontWeight: 'bold'}}>
                   {I18n.t('recommendedClasses', {locale: lang})}
@@ -560,13 +559,13 @@ export class Favorities extends Component {
                   height: normalize(171),
                   transform: [{rotateY: lang === 'ar' ? '180deg' : '0deg'}],
                   paddingLeft: normalize(16),
-                  flexDirection: flexDirection,
+                  flexDirection: flexDirection
                 }}>
                 {recommendedClasses.length > 0 ? (
                   <FlatList
                     showsHorizontalScrollIndicator={false}
                     horizontal={true}
-                    style={[styles.container]}
+                    style={styles.container}
                     data={recommendedClasses}
                     renderItem={this.renderItemClass}
                     keyExtractor={item => item.id.toString()}
@@ -581,13 +580,13 @@ export class Favorities extends Component {
                       borderRadius: normalize(10),
                       backgroundColor: '#efefef',
                       justifyContent: 'center',
-                      alignItems: 'center',
+                      alignItems: 'center'
                     }}>
                     <Text
                       style={{
                         fontSize: normalize(16),
                         color: '#8f8f8f',
-                        textAlign: 'center',
+                        textAlign: 'center'
                       }}>
                       {I18n.t('noRecommendedClasses', {locale: lang})}
                     </Text>
@@ -598,55 +597,55 @@ export class Favorities extends Component {
           </SafeAreaView>
         )}
       </>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  eventContainer: {
-    marginTop: normalize(12),
-    marginHorizontal: normalize(16),
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
   classRatingContainer: {
-    display: 'flex',
     alignItems: 'center',
+    display: 'flex'
 
     //flexDirection: 'row',
   },
   classStarIcon: {
-    fontSize: normalize(11),
     color: '#FE9800',
-    paddingRight: normalize(2.75),
+    fontSize: normalize(11),
+    paddingRight: normalize(2.75)
+  },
+  container: {
+    flex: 1
+  },
+  eventContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: normalize(16),
+    marginTop: normalize(12)
   },
   gymRatingCountText: {
     color: '#8A8A8F',
-    fontSize: normalize(12),
-  },
-  moveRight: {
-    right: normalize(10),
+    fontSize: normalize(12)
   },
   moveLeft: {
-    left: normalize(10),
+    left: normalize(10)
   },
-});
+  moveRight: {
+    right: normalize(10)
+  }
+})
 
 const mapStateToProps = state => ({
   auth: state.auth,
   home: state.home,
   setting: state.setting,
-  errors: state.errors,
-});
+  errors: state.errors
+})
 
 export default connect(mapStateToProps, {
   getFavorites,
   removeFavorite,
   getClasses,
   getGyms,
-  getFavoritesRefresh,
-})(Favorities);
+  getFavoritesRefresh
+})(Favorities)

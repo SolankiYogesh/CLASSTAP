@@ -1,75 +1,76 @@
-import React, {Component} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Geolocation from '@react-native-community/geolocation'
+import axios from 'axios'
+import {Container, Form, Icon, Item, Label, Picker} from 'native-base'
+import React, {Component} from 'react'
 import {
-  Text,
-  View,
+  Alert,
+  AppState,
+  BackHandler,
+  Linking,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Switch,
-  BackHandler,
-  Platform,
-  Linking,
-  AppState,
-  Alert,
-} from 'react-native';
-import {Container, Form, Icon, Label, Item, Picker} from 'native-base';
-import {connect} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import RNRestart from 'react-native-restart';
-import I18n from '../../utils/i18n';
-import {setLanguage} from '../../actions/settingActions';
-import HeaderComponent from '../../components/Header';
-import normalize from 'react-native-normalize';
-import {API_URI} from '../../utils/config';
-import axios from 'axios';
-import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
-import Geolocation from '@react-native-community/geolocation';
-import {currentUser} from '../../actions/authActions';
+  Text,
+  View
+} from 'react-native'
+import normalize from 'react-native-normalize'
+import {check, PERMISSIONS, request,RESULTS} from 'react-native-permissions'
+import RNRestart from 'react-native-restart'
+import {connect} from 'react-redux'
+
+import {currentUser} from '../../actions/authActions'
+import {setLanguage} from '../../actions/settingActions'
+import HeaderComponent from '../../components/Header'
+import {API_URI} from '../../utils/config'
+import I18n from '../../utils/i18n'
 
 export class Setting extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       selectedLanguage: props.setting.lang,
       isNotification: '',
       isLocation: false,
       isNewsletter: false,
-      isInitial: true,
-    };
+      isInitial: true
+    }
   }
 
   async componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack)
     this.setState({
       isNotification: this.props.auth.user.is_notification,
-      isNewsletter: this.props.auth.user.is_newsletter,
-    });
+      isNewsletter: this.props.auth.user.is_newsletter
+    })
     if (Platform.OS === 'ios') {
       await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
         .then(async result => {
           if (result === 'denied' || result === 'blocked') {
-            this.setState({isLocation: false});
+            this.setState({isLocation: false})
           } else if (result === 'granted') {
-            this.setState({isLocation: true});
+            this.setState({isLocation: true})
           }
         })
         .catch(error => {
           // Alert.alert(JSON.stringify(error));
           // …
-        });
+        })
     } else {
       await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
         .then(async result => {
           if (result === 'denied') {
-            this.setState({isLocation: false});
+            this.setState({isLocation: false})
           } else if (result === 'granted') {
-            this.setState({isLocation: true});
+            this.setState({isLocation: true})
           }
         })
         .catch(error => {
           // …
-        });
+        })
     }
-    AppState.addEventListener('change', this.handleAppStateChange);
+    AppState.addEventListener('change', this.handleAppStateChange)
   }
   handleAppStateChange = async () => {
     if (!this.state.isInitial) {
@@ -77,105 +78,105 @@ export class Setting extends Component {
         await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
           .then(async result => {
             if (result === 'denied' || result === 'blocked') {
-              await AsyncStorage.removeItem('latitude');
-              await AsyncStorage.removeItem('longitude');
-              this.setState({isLocation: false});
+              await AsyncStorage.removeItem('latitude')
+              await AsyncStorage.removeItem('longitude')
+              this.setState({isLocation: false})
             } else if (result === 'granted') {
-              await this.handleLocation();
-              RNRestart.Restart();
-              this.setState({isLocation: true});
+              await this.handleLocation()
+              RNRestart.Restart()
+              this.setState({isLocation: true})
             }
           })
           .catch(error => {
             // …
-          });
+          })
       } else {
         await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
           .then(async result => {
             if (result === 'denied') {
-              await AsyncStorage.removeItem('latitude');
-              await AsyncStorage.removeItem('longitude');
-              this.setState({isLocation: false});
+              await AsyncStorage.removeItem('latitude')
+              await AsyncStorage.removeItem('longitude')
+              this.setState({isLocation: false})
             } else if (result === 'granted') {
-              await this.handleLocation();
-              RNRestart.Restart();
-              this.setState({isLocation: true});
+              await this.handleLocation()
+              RNRestart.Restart()
+              this.setState({isLocation: true})
             }
           })
           .catch(error => {
             // …
-          });
+          })
       }
     }
-    this.setState({isInitial: false});
-  };
+    this.setState({isInitial: false})
+  }
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
-    AppState.removeEventListener('change', this.handleAppStateChange);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack)
+    AppState.removeEventListener('change', this.handleAppStateChange)
   }
 
   handleBack = async () => {
-    this.props.navigation.goBack();
-    return true;
-  };
+    this.props.navigation.goBack()
+    return true
+  }
 
   handleSelectLanguage = async value => {
     await AsyncStorage.setItem('lang', value, async () => {
       this.setState({
-        selectedLanguage: value,
-      });
-      await this.props.setLanguage(value);
+        selectedLanguage: value
+      })
+      await this.props.setLanguage(value)
 
-      RNRestart.Restart();
-    });
-  };
+      RNRestart.Restart()
+    })
+  }
   handleIsNotification = () => {
     const userData = {
-      is_notification: !this.state.isNotification,
-    };
+      is_notification: !this.state.isNotification
+    }
 
-    const {id} = this.props.auth.user;
-    this.setState({isNotification: !this.state.isNotification});
+    const {id} = this.props.auth.user
+    this.setState({isNotification: !this.state.isNotification})
     axios
       .put(`${API_URI}/users/${id}`, userData)
       .then(res => {
         if (res.data.error.code) {
         } else {
-          const {data} = res.data;
-          this.props.currentUser();
+          const {data} = res.data
+          this.props.currentUser()
         }
       })
       .catch(err => {
         if (err.response.data.error) {
         }
-      });
-  };
+      })
+  }
 
   handleIsNewsletter = () => {
     const userData = {
-      is_newsletter: !this.state.isNewsletter,
-    };
+      is_newsletter: !this.state.isNewsletter
+    }
 
-    const {id} = this.props.auth.user;
-    this.setState({isNewsletter: !this.state.isNewsletter});
+    const {id} = this.props.auth.user
+    this.setState({isNewsletter: !this.state.isNewsletter})
     axios
       .put(`${API_URI}/users/${id}`, userData)
       .then(res => {
         if (res.data.error.code) {
         } else {
-          const {data} = res.data;
-          this.props.currentUser();
+          const {data} = res.data
+          this.props.currentUser()
         }
       })
       .catch(err => {
         if (err.response.data.error) {
         }
-      });
-  };
+      })
+  }
 
   handleLocatonEnable = async () => {
-    Linking.openSettings();
-  };
+    Linking.openSettings()
+  }
 
   handleLocation = async () => {
     Geolocation.getCurrentPosition(
@@ -183,18 +184,18 @@ export class Setting extends Component {
         await AsyncStorage.setItem(
           'latitude',
           position.coords.latitude.toString(),
-        );
+        )
         await AsyncStorage.setItem(
           'longitude',
           position.coords.longitude.toString(),
-        );
+        )
 
         await this.props.setLatLong(
           position.coords.latitude,
           position.coords.longitude,
-        );
-        this.setState({isLocation: true});
-        return true;
+        )
+        this.setState({isLocation: true})
+        return true
       },
       error => {
         //Alert.alert(JSON.stringify(error));
@@ -202,17 +203,17 @@ export class Setting extends Component {
       {
         enableHighAccuracy: /* Platform.OS === 'ios' ? true : */ false,
         timeout: 20000,
-        maximumAge: 1000,
+        maximumAge: 1000
       },
-    );
-  };
+    )
+  }
   render() {
-    const {isNotification, isLocation, isNewsletter} = this.state;
+    const {isNotification, isLocation, isNewsletter} = this.state
 
-    const {lang} = this.props.setting;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    const {lang} = this.props.setting
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
+    const textAlign = lang === 'ar' ? 'right' : 'left'
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
 
     return (
       <Container style={{flex: 1, backgroundColor: '#ffffff'}}>
@@ -255,15 +256,15 @@ export class Setting extends Component {
             style={[
               styles.notificationContainer,
               {
-                flexDirection: flexDirection,
-              },
+                flexDirection: flexDirection
+              }
             ]}>
             <View>
               <Text
                 style={{
                   fontSize: normalize(19),
                   color: '#8A8A8F',
-                  textAlign: textAlign,
+                  textAlign: textAlign
                 }}>
                 {I18n.t('notification', {locale: lang})}
               </Text>
@@ -275,7 +276,7 @@ export class Setting extends Component {
                   // display: 'flex',
                   /// alignSelf: 'flex-end',
 
-                  borderColor: '#FE9800',
+                  borderColor: '#FE9800'
                 }}
                 onValueChange={this.handleIsNotification}
                 value={isNotification}
@@ -292,15 +293,15 @@ export class Setting extends Component {
               styles.notificationContainer,
               {
                 flexDirection: flexDirection,
-                marginTop: normalize(30),
-              },
+                marginTop: normalize(30)
+              }
             ]}>
             <View>
               <Text
                 style={{
                   fontSize: normalize(19),
                   color: '#8A8A8F',
-                  textAlign: textAlign,
+                  textAlign: textAlign
                 }}>
                 {I18n.t('location', {locale: lang})}
               </Text>
@@ -312,7 +313,7 @@ export class Setting extends Component {
                   // display: 'flex',
                   /// alignSelf: 'flex-end',
 
-                  borderColor: '#FE9800',
+                  borderColor: '#FE9800'
                 }}
                 onValueChange={this.handleLocatonEnable}
                 value={isLocation}
@@ -330,15 +331,15 @@ export class Setting extends Component {
               styles.notificationContainer,
               {
                 flexDirection: flexDirection,
-                marginTop: normalize(30),
-              },
+                marginTop: normalize(30)
+              }
             ]}>
             <View>
               <Text
                 style={{
                   fontSize: normalize(19),
                   color: '#8A8A8F',
-                  textAlign: textAlign,
+                  textAlign: textAlign
                 }}>
                 {I18n.t('receiveUpdatesNewsletters', {locale: lang})}
               </Text>
@@ -350,7 +351,7 @@ export class Setting extends Component {
                   // display: 'flex',
                   /// alignSelf: 'flex-end',
 
-                  borderColor: '#FE9800',
+                  borderColor: '#FE9800'
                 }}
                 onValueChange={this.handleIsNewsletter}
                 value={isNewsletter}
@@ -365,20 +366,20 @@ export class Setting extends Component {
           {/* End News Letter */}
         </View>
       </Container>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
   notificationContainer: {
     display: 'flex',
-    marginHorizontal: normalize(16),
-  },
-});
+    marginHorizontal: normalize(16)
+  }
+})
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
-  errors: state.errors,
-});
+  errors: state.errors
+})
 
-export default connect(mapStateToProps, {setLanguage, currentUser})(Setting);
+export default connect(mapStateToProps, {setLanguage, currentUser})(Setting)

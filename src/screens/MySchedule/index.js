@@ -1,127 +1,127 @@
-import React, {Component} from 'react';
+import FastImage from '@d11/react-native-fast-image'
+import axios from 'axios'
+import moment from 'moment-timezone'
+import {Container} from 'native-base'
+import React, {Component} from 'react'
 import {
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  FlatList,
-  StyleSheet,
-  BackHandler,
   Alert,
-} from 'react-native';
-import FastImage from '@d11/react-native-fast-image';
+  BackHandler,
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
+import normalize from 'react-native-normalize'
+import {connect} from 'react-redux'
 
-import {Container} from 'native-base';
-import {connect} from 'react-redux';
-import I18n from '../../utils/i18n';
-import normalize from 'react-native-normalize';
+import {currentUser} from '../../actions/authActions'
 import {
   getUpcomingClasses,
-  getWhatsOnToday,
-} from '../../actions/subscriptionActions';
-import {currentUser} from '../../actions/authActions';
-import HeaderComponent from '../../components/Header';
-import Loading from '../Loading';
-import {IMAGE_URI, API_URI} from '../../utils/config';
-import isEmpty from '../../validation/is-empty';
-import axios from 'axios';
-import moment from 'moment-timezone';
-moment.tz.setDefault('Asia/Qatar');
+  getWhatsOnToday
+} from '../../actions/subscriptionActions'
+import HeaderComponent from '../../components/Header'
+import {API_URI,IMAGE_URI} from '../../utils/config'
+import I18n from '../../utils/i18n'
+import isEmpty from '../../validation/is-empty'
+import Loading from '../Loading'
+moment.tz.setDefault('Asia/Qatar')
 
 export class MySchedule extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       myScheduleClasses: [],
-      isLoading: true,
-    };
+      isLoading: true
+    }
   }
 
   handleData = async () => {
-    const {id} = await this.props.auth.user;
-    let url = `${API_URI}/my_schedule?filter={"where": {"user_id": ${id},"is_cancel":false}}`;
+    const {id} = await this.props.auth.user
+    let url = `${API_URI}/my_schedule?filter={"where": {"user_id": ${id},"is_cancel":false}}`
     await axios
       .get(url)
       .then(res => {
         if (res.data.error.code) {
         } else {
-          const {data} = res.data;
+          const {data} = res.data
 
-          this.setState({myScheduleClasses: data, isLoading: false});
-          return true;
+          this.setState({myScheduleClasses: data, isLoading: false})
+          return true
         }
       })
       .catch(err => {
-        this.setState({isLoading: false});
-      });
-  };
+        this.setState({isLoading: false})
+      })
+  }
 
   async componentDidMount() {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      this.handleData();
-    });
+      this.handleData()
+    })
 
-    handleData();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    handleData()
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack)
   }
 
   componentWillUnmount() {
-    this.focusListener.remove();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener.remove()
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack)
   }
 
   handleBack = async () => {
-    this.props.navigation.goBack();
-    return true;
-  };
+    this.props.navigation.goBack()
+    return true
+  }
 
   /* componentDidMount() {
     this.props.getUpcomingClasses();
   } */
 
   handleCancelClass = async (e, id, item) => {
-    e.preventDefault();
-    const {lang} = this.props.setting;
-    const {schedule_date, class_schedule} = item;
+    e.preventDefault()
+    const {lang} = this.props.setting
+    const {schedule_date, class_schedule} = item
 
     const refundParams = {
       refundTime: '',
-      refundPercents: '',
-    };
+      refundPercents: ''
+    }
 
     await axios
       .get(`${API_URI}/settings`)
       .then(data => {
         const percent = data.data.data.find(
           item => item.type === 'refund_percent',
-        );
-        const time = data.data.data.find(item => item.type === 'refund_time');
+        )
+        const time = data.data.data.find(item => item.type === 'refund_time')
 
-        refundParams.refundTime = time.value;
-        refundParams.refundPercents = percent.value;
+        refundParams.refundTime = time.value
+        refundParams.refundPercents = percent.value
       })
       .catch(err => {
-        console.log(err);
-      });
+        console.log(err)
+      })
 
-    let classDate = `${schedule_date.date}T${schedule_date.start_time}`;
-    classDate = new Date(classDate).getTime();
-    let date = moment().utcOffset('+03:00').format('YYYY-MM-DD[T]HH:mm:ss');
-    let currentTime = new Date(date).getTime();
-    let remainTimestamp = classDate - currentTime;
-    let hours = (remainTimestamp / 1000 / 60 / 60).toString();
+    let classDate = `${schedule_date.date}T${schedule_date.start_time}`
+    classDate = new Date(classDate).getTime()
+    let date = moment().utcOffset('+03:00').format('YYYY-MM-DD[T]HH:mm:ss')
+    let currentTime = new Date(date).getTime()
+    let remainTimestamp = classDate - currentTime
+    let hours = (remainTimestamp / 1000 / 60 / 60).toString()
 
-    let message;
+    let message
     if (hours <= 0.5) {
-      message = I18n.t('cancelledClassesWithin1Hour', {locale: lang});
+      message = I18n.t('cancelledClassesWithin1Hour', {locale: lang})
     } else {
-      message = I18n.t('areYouSureWantToCancelThisClass', {locale: lang});
+      message = I18n.t('areYouSureWantToCancelThisClass', {locale: lang})
     }
 
     message = message
       .replace('X', `${refundParams.refundTime}`)
-      .replace('Y', `${refundParams.refundPercents}`);
+      .replace('Y', `${refundParams.refundPercents}`)
 
     Alert.alert(
       I18n.t('cancel', {locale: lang}),
@@ -130,79 +130,79 @@ export class MySchedule extends Component {
         {
           text: I18n.t('no', {locale: lang}),
           onPress: () => console.log('come'),
-          style: 'cancel',
+          style: 'cancel'
         },
         {
           text: I18n.t('yes', {locale: lang}),
           onPress: async () => {
-            let url = `${API_URI}/booking_classes/${id}`;
+            let url = `${API_URI}/booking_classes/${id}`
             let updateData = {
               is_cancel: 1,
-              hours: hours,
-            };
+              hours: hours
+            }
             await axios
               .put(url, updateData)
               .then(res => {
                 if (res.data.error.code) {
                 } else {
-                  const {data} = res.data;
-                  this.props.getWhatsOnToday(this.props.auth.user.id);
-                  this.props.currentUser();
-                  let myScheduleClasses = [...this.state.myScheduleClasses];
+                  const {data} = res.data
+                  this.props.getWhatsOnToday(this.props.auth.user.id)
+                  this.props.currentUser()
+                  let myScheduleClasses = [...this.state.myScheduleClasses]
                   myScheduleClasses = myScheduleClasses.filter(
                     bookClass => bookClass.id !== id,
-                  );
-                  this.setState({myScheduleClasses});
-                  return true;
+                  )
+                  this.setState({myScheduleClasses})
+                  return true
                 }
               })
               .catch(err => {
                 // this.setState({isLoading: false});
-              });
-          },
-        },
+              })
+          }
+        }
       ],
       {
-        cancelable: false,
+        cancelable: false
       },
-    );
-  };
+    )
+  }
 
   handleNavigateMyScheduleClass = (e, id) => {
-    e.preventDefault();
+    e.preventDefault()
     this.props.navigation.navigate({
       routeName: 'BookClass',
       params: {
-        id: id,
+        id: id
       },
-      key: `MyScheduleClass_${Math.random() * 10000}`,
-    });
-  };
+      key: `MyScheduleClass_${Math.random() * 10000}`
+    })
+  }
 
   renderItem = ({item}) => {
-    const {id, class: gymClass, class_schedule, schedule_date} = item;
-    const {name, name_ar, gym, start_date, start_time, attachments} = gymClass;
-    const {lang} = this.props.setting;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
-    let image;
+    const {id, class: gymClass, class_schedule, schedule_date} = item
+    const {name, name_ar, gym, start_date, start_time, attachments} = gymClass
+    const {lang} = this.props.setting
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
+    const textAlign = lang === 'ar' ? 'right' : 'left'
+    let image
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
         newImage => newImage.is_primary === true,
-      );
+      )
 
       if (!isEmpty(primaryAttachment)) {
         image = {
-          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`,
-        };
+          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`
+        }
       } else {
         image = {
-          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`,
-        };
+          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`
+        }
       }
     } else {
-      image = require('../../assets/img/no_image_found.png');
+      image = require('../../assets/img/no_image_found.png')
     }
     return (
       <TouchableOpacity
@@ -210,7 +210,7 @@ export class MySchedule extends Component {
         style={{
           flex: 1,
           flexDirection: flexDirection,
-          marginBottom: normalize(16),
+          marginBottom: normalize(16)
         }}>
         <View style={{display: 'flex', width: normalize(60)}}>
           {image.url ? (
@@ -218,11 +218,11 @@ export class MySchedule extends Component {
               style={{
                 width: normalize(60),
                 height: normalize(60),
-                borderRadius: normalize(10),
+                borderRadius: normalize(10)
               }}
               source={{
                 uri: image.url,
-                priority: FastImage.priority.normal,
+                priority: FastImage.priority.normal
               }}
               resizeMode={FastImage.resizeMode.contain}
             />
@@ -233,7 +233,7 @@ export class MySchedule extends Component {
               style={{
                 width: normalize(60),
                 height: normalize(60),
-                borderRadius: normalize(10),
+                borderRadius: normalize(10)
               }}
             />
           )}
@@ -244,14 +244,14 @@ export class MySchedule extends Component {
             display: 'flex',
             //flexDirection: 'row',
             width: normalize(190),
-            marginHorizontal: normalize(20),
+            marginHorizontal: normalize(20)
             //justifyContent: 'space-between',
           }}>
           <Text
             style={{
               fontSize: normalize(17),
               fontWeight: '700',
-              textAlign: textAlign,
+              textAlign: textAlign
             }}>
             {lang === 'ar' ? name_ar : name}
           </Text>
@@ -259,7 +259,7 @@ export class MySchedule extends Component {
             style={{
               fontSize: normalize(12),
               color: '#8A8A8F',
-              textAlign: textAlign,
+              textAlign: textAlign
             }}>
             {lang === 'ar' ? gym.name_ar : gym.name}
           </Text>
@@ -267,7 +267,7 @@ export class MySchedule extends Component {
             style={{
               fontSize: normalize(13),
               color: '#8A8A8F',
-              textAlign: textAlign,
+              textAlign: textAlign
             }}>
             {`${moment(schedule_date.date, 'YYYY-MM-DD').calendar(null, {
               sameDay: '[Today]',
@@ -275,7 +275,7 @@ export class MySchedule extends Component {
               nextWeek: 'dddd',
               lastDay: '[Yesterday]',
               //lastWeek: '[Last] dddd',
-              sameElse: 'DD MMM YYYY',
+              sameElse: 'DD MMM YYYY'
             })} ${moment(schedule_date.start_time, 'h:mm:ss').format(
               'h:mm A',
             )} - ${class_schedule.duration} min`}
@@ -291,25 +291,25 @@ export class MySchedule extends Component {
             borderColor: '#CFCFCF',
             borderRadius: normalize(4),
             justifyContent: 'center',
-            alignItems: 'center',
+            alignItems: 'center'
             //marginRight: Platform.OS === 'ios' ? normalize(4) : 0,
             //marginLeft: Platform.OS === 'ios' ? normalize(4) : 0,
           }}>
           <Text style={{fontSize: normalize(14), color: '#8A8A8F'}}>
             {I18n.t('cancel', {
-              locale: lang,
+              locale: lang
             })}
           </Text>
         </TouchableOpacity>
       </TouchableOpacity>
-    );
-  };
+    )
+  }
   render() {
-    const {lang} = this.props.setting;
-    const {myScheduleClasses, isLoading} = this.state;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    const {lang} = this.props.setting
+    const {myScheduleClasses, isLoading} = this.state
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
+    const textAlign = lang === 'ar' ? 'right' : 'left'
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
     return (
       <>
         {isLoading ? (
@@ -324,17 +324,17 @@ export class MySchedule extends Component {
                 style={{
                   height: normalize(50),
                   marginHorizontal: normalize(16),
-                  justifyContent: 'center',
+                  justifyContent: 'center'
                   //flexDirection: flexDirection,
                 }}>
                 <Text
                   style={{
                     fontSize: normalize(40),
                     fontWeight: 'bold',
-                    alignSelf: alignSelf,
+                    alignSelf: alignSelf
                   }}>
                   {`${I18n.t('mySchedule', {
-                    locale: lang,
+                    locale: lang
                   })}`}
                 </Text>
               </View>
@@ -342,11 +342,11 @@ export class MySchedule extends Component {
               <View
                 style={{
                   marginTop: normalize(24),
-                  marginHorizontal: normalize(16),
+                  marginHorizontal: normalize(16)
                 }}>
                 {myScheduleClasses.length > 0 ? (
                   <FlatList
-                    style={[styles.container]}
+                    style={styles.container}
                     data={myScheduleClasses}
                     renderItem={this.renderItem}
                     keyExtractor={item => item.id.toString()}
@@ -357,7 +357,7 @@ export class MySchedule extends Component {
                       style={{
                         color: '#8f8f8f',
                         fontSize: normalize(16),
-                        textAlign: textAlign,
+                        textAlign: textAlign
                       }}>
                       {I18n.t('noScheduledClasses', {locale: lang})}
                     </Text>
@@ -368,32 +368,32 @@ export class MySchedule extends Component {
           </Container>
         )}
       </>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   eventContainer: {
-    marginTop: normalize(12),
-    marginHorizontal: normalize(16),
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-});
+    marginHorizontal: normalize(16),
+    marginTop: normalize(12)
+  }
+})
 
 const mapStateToProps = state => ({
   auth: state.auth,
   subscription: state.subscription,
   setting: state.setting,
-  errors: state.errors,
-});
+  errors: state.errors
+})
 
 export default connect(mapStateToProps, {
   getUpcomingClasses,
   getWhatsOnToday,
-  currentUser,
-})(MySchedule);
+  currentUser
+})(MySchedule)

@@ -1,9 +1,9 @@
-import React, {Fragment} from 'react';
-import {View, Text} from 'react-native';
-import {Icon} from 'native-base';
+import {Icon} from 'native-base'
+import React, {Fragment} from 'react'
+import {Text,View} from 'react-native'
 
 const ReviewShow = ({rating, style}) => {
-  let React_Native_Rating_Bar = [];
+  let React_Native_Rating_Bar = []
   //Array to hold the filled or empty Stars
   for (var i = 1; i <= 5; i++) {
     React_Native_Rating_Bar.push(
@@ -24,9 +24,9 @@ const ReviewShow = ({rating, style}) => {
           />
         )}
       </Fragment>,
-    );
+    )
   }
-  return <>{React_Native_Rating_Bar}</>;
-};
+  return <>{React_Native_Rating_Bar}</>
+}
 
-export default ReviewShow;
+export default ReviewShow
