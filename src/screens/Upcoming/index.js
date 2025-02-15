@@ -1,6 +1,6 @@
 import axios from 'axios'
 import moment from 'moment-timezone'
-import {Card,Container, Form, Input, Item} from 'native-base'
+import {Card, Container, Form, Input, Item} from 'native-base'
 import React, {Component} from 'react'
 import {
   Alert,
@@ -26,7 +26,7 @@ import {
   getWhatsOnToday
 } from '../../actions/subscriptionActions'
 import HeaderComponent from '../../components/Header'
-import {API_URI,IMAGE_URI} from '../../utils/config'
+import {API_URI, IMAGE_URI} from '../../utils/config'
 import I18n from '../../utils/i18n'
 import isEmpty from '../../validation/is-empty'
 import Loading from '../Loading'

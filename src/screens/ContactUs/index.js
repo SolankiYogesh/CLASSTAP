@@ -1,4 +1,3 @@
-import FIcon from '@react-native-vector-icons/fontawesome'
 import axios from 'axios'
 import {
   CheckBox,
@@ -23,7 +22,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import {Col,Grid} from 'react-native-easy-grid'
+import {Col, Grid} from 'react-native-easy-grid'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import normalize from 'react-native-normalize'
 import Toast from 'react-native-toast-notifications'

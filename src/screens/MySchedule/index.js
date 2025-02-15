@@ -23,7 +23,7 @@ import {
   getWhatsOnToday
 } from '../../actions/subscriptionActions'
 import HeaderComponent from '../../components/Header'
-import {API_URI,IMAGE_URI} from '../../utils/config'
+import {API_URI, IMAGE_URI} from '../../utils/config'
 import I18n from '../../utils/i18n'
 import isEmpty from '../../validation/is-empty'
 import Loading from '../Loading'

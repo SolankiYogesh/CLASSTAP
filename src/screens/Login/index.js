@@ -4,8 +4,7 @@ import appleAuth, {
   AppleAuthRequestScope
 } from '@invertase/react-native-apple-authentication'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import FIcon from '@react-native-vector-icons/fontawesome'
-import {Container, Form, Input,Item} from 'native-base'
+import {Container, Form, Input, Item} from 'native-base'
 import React, {Component} from 'react'
 import {
   BackHandler,
@@ -17,12 +16,13 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import {AccessToken,LoginManager} from 'react-native-fbsdk-next'
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import normalize from 'react-native-normalize'
+import FIcon from 'react-native-vector-icons/FontAwesome6'
 import {connect} from 'react-redux'
 
-import {getUser,loginUser,socialLoginUser} from '../../actions/authActions'
+import {getUser, loginUser, socialLoginUser} from '../../actions/authActions'
 import {clearErrors} from '../../actions/errorAction'
 import LockIcon from '../../assets/img/lock.svg'
 import PhoneIcon from '../../assets/img/phone.svg'

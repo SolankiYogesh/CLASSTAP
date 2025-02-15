@@ -1,5 +1,5 @@
 import moment from 'moment-timezone'
-import {Body,Button, Container, Header, Icon, Left} from 'native-base'
+import {Body, Button, Container, Header, Icon, Left} from 'native-base'
 import React, {Component} from 'react'
 import {
   BackHandler,
@@ -24,7 +24,8 @@ moment.tz.setDefault('Asia/Qatar')
 import {
   getCategories,
   getFilterFindClassCount,
-  getFilterFindClasses} from '../../actions/findClassActions'
+  getFilterFindClasses
+} from '../../actions/findClassActions'
 
 const genders = [
   {id: 1, name: 'Male', name_ar: 'الذكر'},

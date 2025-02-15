@@ -1,13 +1,13 @@
-import I18n from 'i18n-js';
+import I18n from 'i18n-js'
 
-import ar from '../translations/ar.json';
-import en from '../translations/en.json';
-import sp from '../translations/sp.json';
-I18n.fallbacks = true;
+import ar from '../translations/ar.json'
+import en from '../translations/en.json'
+import sp from '../translations/sp.json'
+I18n.fallbacks = true
 I18n.translations = {
   ar,
   en,
-  sp,
-};
+  sp
+}
 
-export default I18n;
+export default I18n

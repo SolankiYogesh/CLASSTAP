@@ -22,9 +22,10 @@ export default memo(() => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator screenOptions={{
-        headerShown:false
-      }}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}>
         <Stack.Screen name="AuthLoading" component={AuthLoading} />
         <Stack.Screen name="Auth" component={AuthNavigator} />
         <Stack.Screen

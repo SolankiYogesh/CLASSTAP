@@ -30,7 +30,7 @@ import normalize from 'react-native-normalize'
 import {connect} from 'react-redux'
 
 import {getCoachReviews} from '../../actions/homeActions'
-import {API_URI,IMAGE_URI} from '../../utils/config'
+import {API_URI, IMAGE_URI} from '../../utils/config'
 import I18n from '../../utils/i18n'
 import isEmpty from '../../validation/is-empty'
 import Loading from '../Loading'

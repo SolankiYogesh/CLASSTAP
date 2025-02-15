@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Geolocation from '@react-native-community/geolocation'
-import {CheckBox,Left, ListItem, Right, Text} from 'native-base'
+import {CheckBox, Left, ListItem, Right, Text} from 'native-base'
 import React, {Component} from 'react'
 import {
   Alert,
@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native'
 import normalize from 'react-native-normalize'
-import {check, PERMISSIONS, request,RESULTS} from 'react-native-permissions'
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions'
 import RNRestart from 'react-native-restart'
 import {connect} from 'react-redux'
 

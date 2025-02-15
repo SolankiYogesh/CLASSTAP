@@ -1,19 +1,20 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Favorities} from '../screens/Favorities';
-import {Gym} from '../screens/Gym';
-import {GymClass} from '../screens/Class';
-import {Coach} from '../screens/Coach';
-import {Review} from '../screens/Review';
-import {WriteReview} from '../screens/WriteReview';
-import {GymDetail} from '../screens/Gym/GymDetail';
-import {CoachClass} from '../screens/CoachClass';
-import {Membership} from '../screens/Membership';
-import Map from '../screens/Map';
-import {BookClass} from '../screens/BookClass';
-import Success from '../components/Success';
-import {CoachReview} from '../screens/CoachReview';
+import {createNativeStackNavigator} from '@react-navigation/native-stack'
 
-const Stack = createNativeStackNavigator();
+import Success from '../components/Success'
+import {BookClass} from '../screens/BookClass'
+import {GymClass} from '../screens/Class'
+import {Coach} from '../screens/Coach'
+import {CoachClass} from '../screens/CoachClass'
+import {CoachReview} from '../screens/CoachReview'
+import {Favorities} from '../screens/Favorities'
+import {Gym} from '../screens/Gym'
+import {GymDetail} from '../screens/Gym/GymDetail'
+import Map from '../screens/Map'
+import {Membership} from '../screens/Membership'
+import {Review} from '../screens/Review'
+import {WriteReview} from '../screens/WriteReview'
+
+const Stack = createNativeStackNavigator()
 
 export default () => (
   <Stack.Navigator initialRouteName="Favorities">
@@ -75,4 +76,4 @@ export default () => (
       options={{headerShown: false}}
     />
   </Stack.Navigator>
-);
+)

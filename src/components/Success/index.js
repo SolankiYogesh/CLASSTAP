@@ -1,9 +1,8 @@
 import React from 'react'
-import {Image, SafeAreaView, Text, TouchableOpacity,View} from 'react-native'
+import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native'
 import normalize from 'react-native-normalize'
 
 const handleMoveScreen = (screen, navigation) => {
-
   navigation.navigate(screen)
 }
 const Success = props => {

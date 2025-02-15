@@ -22,7 +22,7 @@ import {
   getUpcomingClasses,
   getWhatsOnToday
 } from '../../actions/subscriptionActions'
-import {API_URI,IMAGE_URI} from '../../utils/config'
+import {API_URI, IMAGE_URI} from '../../utils/config'
 import isEmpty from '../../validation/is-empty'
 const {height} = Dimensions.get('window')
 

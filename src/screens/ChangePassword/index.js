@@ -1,7 +1,7 @@
-import FIcon from '@react-native-vector-icons/fontawesome'
-import {Container, Form, Input,Item} from 'native-base'
+import {Container, Form, Input, Item} from 'native-base'
 import React, {Component} from 'react'
-import {StyleSheet, Text, TouchableOpacity,View} from 'react-native'
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import FIcon from 'react-native-vector-icons/FontAwesome6'
 import {connect} from 'react-redux'
 
 import {registerUser} from '../../actions/authActions'

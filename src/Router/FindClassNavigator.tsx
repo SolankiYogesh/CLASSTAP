@@ -1,21 +1,22 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {FindClass} from '../screens/FindClass';
-import {FindClassMap} from '../screens/FindClassMap';
-import Filter from '../screens/Filter';
-import {Gym} from '../screens/Gym';
-import {GymClass} from '../screens/Class';
-import {Coach} from '../screens/Coach';
-import {Review} from '../screens/Review';
-import Map from '../screens/Map';
-import {GymDetail} from '../screens/Gym/GymDetail';
-import {WriteReview} from '../screens/WriteReview';
-import {CoachClass} from '../screens/CoachClass';
-import {Membership} from '../screens/Membership';
-import {BookClass} from '../screens/BookClass';
-import Success from '../components/Success';
-import {CoachReview} from '../screens/CoachReview';
+import {createNativeStackNavigator} from '@react-navigation/native-stack'
 
-const Stack = createNativeStackNavigator();
+import Success from '../components/Success'
+import {BookClass} from '../screens/BookClass'
+import {GymClass} from '../screens/Class'
+import {Coach} from '../screens/Coach'
+import {CoachClass} from '../screens/CoachClass'
+import {CoachReview} from '../screens/CoachReview'
+import Filter from '../screens/Filter'
+import {FindClass} from '../screens/FindClass'
+import {FindClassMap} from '../screens/FindClassMap'
+import {Gym} from '../screens/Gym'
+import {GymDetail} from '../screens/Gym/GymDetail'
+import Map from '../screens/Map'
+import {Membership} from '../screens/Membership'
+import {Review} from '../screens/Review'
+import {WriteReview} from '../screens/WriteReview'
+
+const Stack = createNativeStackNavigator()
 
 export default () => (
   <Stack.Navigator initialRouteName="FindClass">
@@ -87,4 +88,4 @@ export default () => (
       options={{headerShown: false}}
     />
   </Stack.Navigator>
-);
+)

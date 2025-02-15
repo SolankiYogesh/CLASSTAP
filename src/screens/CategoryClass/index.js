@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import moment from 'moment'
-import {Button,Icon} from 'native-base'
+import {Button, Icon} from 'native-base'
 import React, {Component} from 'react'
 import {
   BackHandler,
@@ -22,7 +22,7 @@ import {connect} from 'react-redux'
 
 import {getCategoryClasses} from '../../actions/homeActions'
 import HeaderComponent from '../../components/Header'
-import {API_URI,IMAGE_URI} from '../../utils/config'
+import {API_URI, IMAGE_URI} from '../../utils/config'
 import I18n from '../../utils/i18n'
 import isEmpty from '../../validation/is-empty'
 import ConfirmBooking from '../ConfirmBooking'

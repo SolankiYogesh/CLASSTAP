@@ -1,14 +1,15 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Welcome from '../screens/Welcome';
-import {Login} from '../screens/Login';
-import {ForgotPassword} from '../screens/ForgotPassword';
-import {Signup} from '../screens/Signup';
-import Otp from '../screens/Otp';
-import {ResetPassword} from '../screens/ResetPassword';
-import Success from '../components/Success';
-import Language from '../screens/Language';
+import {createNativeStackNavigator} from '@react-navigation/native-stack'
 
-const Stack = createNativeStackNavigator();
+import Success from '../components/Success'
+import {ForgotPassword} from '../screens/ForgotPassword'
+import Language from '../screens/Language'
+import {Login} from '../screens/Login'
+import Otp from '../screens/Otp'
+import {ResetPassword} from '../screens/ResetPassword'
+import {Signup} from '../screens/Signup'
+import Welcome from '../screens/Welcome'
+
+const Stack = createNativeStackNavigator()
 
 export default () => (
   <Stack.Navigator initialRouteName="Welcome">
@@ -49,4 +50,4 @@ export default () => (
       options={{headerShown: false}}
     />
   </Stack.Navigator>
-);
+)

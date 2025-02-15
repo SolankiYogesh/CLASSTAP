@@ -33,7 +33,7 @@ import {connect} from 'react-redux'
 
 import {clearErrors} from '../../actions/errorAction'
 import {addBookingClass} from '../../actions/subscriptionActions'
-import {API_URI,IMAGE_URI} from '../../utils/config'
+import {API_URI, IMAGE_URI} from '../../utils/config'
 import isEmpty from '../../validation/is-empty'
 const {width, height} = Dimensions.get('window')
 

@@ -1,7 +1,7 @@
 import FastImage from '@d11/react-native-fast-image'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import moment from 'moment-timezone'
-import {Button,Icon} from 'native-base'
+import {Button, Icon} from 'native-base'
 import React, {Component} from 'react'
 import {
   Alert,
@@ -33,7 +33,7 @@ import {
   removeFavorite
 } from '../../actions/homeActions'
 import CarouselSlider from '../../components/CarouselSlider'
-import {API_URI,IMAGE_URI} from '../../utils/config'
+import {API_URI, IMAGE_URI} from '../../utils/config'
 import I18n from '../../utils/i18n'
 import isEmpty from '../../validation/is-empty'
 import Loading from '../Loading'

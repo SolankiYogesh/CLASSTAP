@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Geolocation from '@react-native-community/geolocation'
 import React, {Component} from 'react'
-import {Platform,StyleSheet, View} from 'react-native'
-import {check, PERMISSIONS} from 'react-native-permissions'
+import {Platform, StyleSheet, View} from 'react-native'
 import splash from 'react-native-bootsplash'
+import {check, PERMISSIONS} from 'react-native-permissions'
 import {connect} from 'react-redux'
 
 import {currentUser} from '../../actions/authActions'
@@ -97,7 +97,7 @@ class AuthLoading extends Component {
     }
 
     setTimeout(() => {
-      splash.hide({fade:false})
+      splash.hide({fade: false})
       this._loadData()
     }, 100)
   }

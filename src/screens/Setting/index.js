@@ -16,7 +16,7 @@ import {
   View
 } from 'react-native'
 import normalize from 'react-native-normalize'
-import {check, PERMISSIONS, request,RESULTS} from 'react-native-permissions'
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions'
 import RNRestart from 'react-native-restart'
 import {connect} from 'react-redux'
 

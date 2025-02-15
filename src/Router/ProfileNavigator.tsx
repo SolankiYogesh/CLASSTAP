@@ -1,24 +1,25 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Map from '../screens/Map';
-import {Profile} from '../screens/Profile';
-import {MySchedule} from '../screens/MySchedule';
-import {Membership} from '../screens/Membership';
-import {PaymentWeb} from '../components/PaymentWeb';
-import {Account} from '../screens/Account';
-import {Setting} from '../screens/Setting';
-import {ContactUs} from '../screens/ContactUs';
-import {Gym} from '../screens/Gym';
-import {GymClass} from '../screens/Class';
-import {Coach} from '../screens/Coach';
-import {Review} from '../screens/Review';
-import {WriteReview} from '../screens/WriteReview';
-import {GymDetail} from '../screens/Gym/GymDetail';
-import {CoachClass} from '../screens/CoachClass';
-import {BookClass} from '../screens/BookClass';
-import {ChangeMobile} from '../screens/ChangeMobile';
-import MobileOtp from '../screens/MobileOtp';
-import {CoachReview} from '../screens/CoachReview';
-const Stack = createNativeStackNavigator();
+import {createNativeStackNavigator} from '@react-navigation/native-stack'
+
+import {PaymentWeb} from '../components/PaymentWeb'
+import {Account} from '../screens/Account'
+import {BookClass} from '../screens/BookClass'
+import {ChangeMobile} from '../screens/ChangeMobile'
+import {GymClass} from '../screens/Class'
+import {Coach} from '../screens/Coach'
+import {CoachClass} from '../screens/CoachClass'
+import {CoachReview} from '../screens/CoachReview'
+import {ContactUs} from '../screens/ContactUs'
+import {Gym} from '../screens/Gym'
+import {GymDetail} from '../screens/Gym/GymDetail'
+import Map from '../screens/Map'
+import {Membership} from '../screens/Membership'
+import MobileOtp from '../screens/MobileOtp'
+import {MySchedule} from '../screens/MySchedule'
+import {Profile} from '../screens/Profile'
+import {Review} from '../screens/Review'
+import {Setting} from '../screens/Setting'
+import {WriteReview} from '../screens/WriteReview'
+const Stack = createNativeStackNavigator()
 export default () => {
   return (
     <Stack.Navigator initialRouteName="Profile">
@@ -110,5 +111,5 @@ export default () => {
         options={{headerShown: false}}
       />
     </Stack.Navigator>
-  );
-};
+  )
+}

@@ -1,8 +1,8 @@
 import axios from 'axios'
 import {Container, Input, Item} from 'native-base'
 import React, {Component} from 'react'
-import {StyleSheet, Text, TouchableOpacity,View} from 'react-native'
-import {Col,Grid} from 'react-native-easy-grid'
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {Col, Grid} from 'react-native-easy-grid'
 import normalize from 'react-native-normalize'
 import Toast from 'react-native-toast-notifications'
 import {connect} from 'react-redux'
@@ -92,8 +92,9 @@ class Otp extends Component {
   }
 
   focusPrevious(key, index) {
-    if (key === 'Backspace' && index !== 0)
-      {this.otpTextInput[index - 1]._root.focus()}
+    if (key === 'Backspace' && index !== 0) {
+      this.otpTextInput[index - 1]._root.focus()
+    }
   }
 
   focusNext(index, value) {

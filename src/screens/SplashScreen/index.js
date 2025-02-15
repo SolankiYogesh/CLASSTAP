@@ -6,20 +6,9 @@ import {connect} from 'react-redux'
 
 const Splash = props => {
   useEffect(() => {
-    hide({fade:false})
+    hide({fade: false})
   }, [])
 
-  useEffect(() => {
-    if (props.auth.user && !props.errors.isLodaing) {
-      setTimeout(() => {
-        props.onAnimationFinish()
-      }, 2000)
-    } else if (!props.auth.user) {
-      setTimeout(() => {
-        props.onAnimationFinish()
-      }, 1500)
-    }
-  }, [props.errors])
 
   return (
     <View
@@ -38,6 +27,13 @@ const Splash = props => {
         source={require('../../assets/splash.json')}
         autoPlay
         loop={false}
+        resizeMode='cover'
+        duration={2000}
+        onAnimationFinish={props.onAnimationFinish}
+        style={{
+          width:200,
+          height:200
+        }}
       />
     </View>
   )

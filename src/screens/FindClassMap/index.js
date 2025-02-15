@@ -1,6 +1,6 @@
 import FastImage from '@d11/react-native-fast-image'
 import Geolocation from '@react-native-community/geolocation'
-import {Icon,Input, Item} from 'native-base'
+import {Icon, Input, Item} from 'native-base'
 import React, {Component} from 'react'
 import {
   Alert,
@@ -15,15 +15,15 @@ import {
   View
 } from 'react-native'
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler'
-import MapView, {Callout,Marker, PROVIDER_GOOGLE} from 'react-native-maps'
+import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps'
 import normalize from 'react-native-normalize'
-import {check, PERMISSIONS, request,RESULTS} from 'react-native-permissions'
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions'
 import Carousel from 'react-native-snap-carousel'
 import {connect} from 'react-redux'
 
 import {clearErrors} from '../../actions/errorAction'
 import {getSearchFindClasses} from '../../actions/findClassActions'
-import {getClasses,getGyms} from '../../actions/homeActions'
+import {getClasses, getGyms} from '../../actions/homeActions'
 import FilterIcon from '../../assets/img/filter.svg'
 import FilterSearchIcon from '../../assets/img/filter_search.svg'
 import ListIcon from '../../assets/img/list.svg'
@@ -789,9 +789,9 @@ export class FindClassMap extends Component {
         </View>
         <View
           style={{
-              flex: 1,
-              marginTop: normalize(16)
-            }}>
+            flex: 1,
+            marginTop: normalize(16)
+          }}>
           {initialPosition ? (
             <>
               <MapView

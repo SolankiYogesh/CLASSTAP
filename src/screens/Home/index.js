@@ -31,7 +31,7 @@ import {
 import {getWhatsOnToday} from '../../actions/subscriptionActions'
 import CheckCircleIcon from '../../assets/img/check_circle_active.svg'
 import ClockIcon from '../../assets/img/clock.svg'
-import {API_URI,IMAGE_URI} from '../../utils/config'
+import {API_URI, IMAGE_URI} from '../../utils/config'
 import I18n from '../../utils/i18n'
 import isEmpty from '../../validation/is-empty'
 import Loading from '../Loading'
@@ -43,8 +43,7 @@ import axios from 'axios'
 import {check, PERMISSIONS} from 'react-native-permissions'
 
 import {updateUserDeviceToken} from '../../actions/authActions'
-import { navigate } from '../../Rootnavigation'
-
+import {navigate} from '../../Rootnavigation'
 
 export class Home extends Component {
   constructor(props) {
@@ -112,16 +111,18 @@ export class Home extends Component {
   }
 
   async componentDidMount() {
-
     notifee.cancelAllNotifications()
 
     messaging().onMessage(async foregroundNotification => {
       if (this.lastNotificationId !== foregroundNotification.messageId) {
         this.lastNotificationId = foregroundNotification.messageId
 
-        notifee.displayNotification({...foregroundNotification,   id: 'localNotificationHandler',
+        notifee.displayNotification({
+          ...foregroundNotification,
+          id: 'localNotificationHandler',
           channelId: 'default-channel-id',
-          smallIcon: 'ic_launcher'})
+          smallIcon: 'ic_launcher'
+        })
         notifee.cancelAllNotifications()
       }
     })

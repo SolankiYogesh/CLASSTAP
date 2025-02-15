@@ -2,7 +2,7 @@
 import notifee from '@notifee/react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Root} from 'native-base'
-import React, {useEffect, useMemo,useState} from 'react'
+import React, {useCallback, useEffect, useMemo,useState} from 'react'
 import {View} from 'react-native'
 import  { getModel } from 'react-native-device-info'
 import normalize from 'react-native-normalize'
@@ -31,31 +31,28 @@ const App = () => {
   },[])
 
 
-  const saveFirstStart = async () => {
-    const status = await AsyncStorage.getItem('firstStart')
-
-    if (!status) {
-      notifee.setBadgeCount(0)
-      AsyncStorage.setItem('firstStart', 'true')
-    }
-  }
-
   useEffect(() => {
+    const saveFirstStart = async () => {
+      const status = await AsyncStorage.getItem('firstStart')
+  
+      if (!status) {
+        notifee.setBadgeCount(0)
+        AsyncStorage.setItem('firstStart', 'true')
+      }
+    }
     saveFirstStart()
   }, [])
 
-
-  useEffect(() => {
-    if (!animationFinished) {
-      store.dispatch(getGyms())
+  const onAnimationFinish = useCallback(()=>{
+    store.dispatch(getGyms())
       store.dispatch(getCategories())
       store.dispatch(getGymsLocation())
       store.dispatch(getRecommendedGyms())
       store.dispatch(getRecommendedClasses())
       store.dispatch(getTodayClasses())
       store.dispatch(getGymsRefresh())
-    }
-  }, [animationFinished])
+  },[])
+
 
   return   <Provider  store={store}>
   <ToastProvider>
@@ -67,7 +64,10 @@ const App = () => {
       </View>
     </Root>
     {!animationFinished && (
-      <SplashScreen  onAnimationFinish={()=>  setAnimationFinished(true)} />
+      <SplashScreen  onAnimationFinish={()=> {
+        setAnimationFinished(true)
+         onAnimationFinish()
+      }} />
     )}
   </ToastProvider>
 </Provider>

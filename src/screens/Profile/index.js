@@ -1,5 +1,5 @@
 import moment from 'moment-timezone'
-import {Body, Card, CardItem, Icon,Text} from 'native-base'
+import {Body, Card, CardItem, Icon, Text} from 'native-base'
 import React, {Component} from 'react'
 import {
   Alert,
@@ -19,7 +19,7 @@ import normalize from 'react-native-normalize'
 import {connect} from 'react-redux'
 
 import {currentUser, logoutUser, updateUser} from '../../actions/authActions'
-import {API_URI,IMAGE_URI} from '../../utils/config'
+import {API_URI, IMAGE_URI} from '../../utils/config'
 import I18n from '../../utils/i18n'
 import isEmpty from '../../validation/is-empty'
 import Loading from '../Loading'

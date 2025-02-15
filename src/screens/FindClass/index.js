@@ -1,6 +1,6 @@
 import FastImage from '@d11/react-native-fast-image'
 import moment from 'moment-timezone'
-import {Icon,Input, Item} from 'native-base'
+import {Icon, Input, Item} from 'native-base'
 import React, {Component} from 'react'
 import {
   Alert,

@@ -4,7 +4,6 @@ import appleAuth, {
 } from '@invertase/react-native-apple-authentication'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Geolocation from '@react-native-community/geolocation'
-import FIcon from '@react-native-vector-icons/fontawesome'
 import React, {useEffect} from 'react'
 import {
   Alert,
@@ -16,8 +15,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import {AccessToken,LoginManager} from 'react-native-fbsdk-next'
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next'
 import {check, PERMISSIONS, request} from 'react-native-permissions'
+import FIcon from 'react-native-vector-icons/FontAwesome6'
 import {connect} from 'react-redux'
 
 import {socialLoginUser} from '../../actions/authActions'
@@ -48,7 +48,7 @@ const Welcome = props => {
         {cancelable: false},
       )
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.setting, props.errors])
 
   const handleLocation = async () => {
@@ -81,47 +81,47 @@ const Welcome = props => {
   }
 
   useEffect(() => {
-  const load = async()=>{
-    if (Platform.OS === 'ios') {
-      await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
-        .then(async result => {
-          if (result === 'denied') {
-            await request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(
-              async result => {
-                if (result === 'granted') {
-                  await handleLocation()
-                }
-              },
-            )
-          } else if (result === 'granted') {
-            await handleLocation()
-          }
-        })
-        .catch(() => {
-          // …
-        })
-    } else {
-      await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-        .then(async result => {
-          if (result === 'denied') {
-            await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(
-              async result => {
-                if (result === 'granted') {
-                  await handleLocation()
-                }
-              },
-            )
-          } else if (result === 'granted') {
-            //alert(result);
-            await handleLocation()
-          }
-        })
-        .catch(error => {
-          // …
-        })
+    const load = async () => {
+      if (Platform.OS === 'ios') {
+        await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+          .then(async result => {
+            if (result === 'denied') {
+              await request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(
+                async result => {
+                  if (result === 'granted') {
+                    await handleLocation()
+                  }
+                },
+              )
+            } else if (result === 'granted') {
+              await handleLocation()
+            }
+          })
+          .catch(() => {
+            // …
+          })
+      } else {
+        await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+          .then(async result => {
+            if (result === 'denied') {
+              await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(
+                async result => {
+                  if (result === 'granted') {
+                    await handleLocation()
+                  }
+                },
+              )
+            } else if (result === 'granted') {
+              //alert(result);
+              await handleLocation()
+            }
+          })
+          .catch(error => {
+            // …
+          })
+      }
     }
-  }
-  load()
+    load()
   }, [])
 
   useEffect(() => {

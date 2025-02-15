@@ -1,4 +1,4 @@
-import {ActionSheet,Form, Input, Item, Label} from 'native-base'
+import {ActionSheet, Form, Input, Item, Label} from 'native-base'
 import React, {Component} from 'react'
 import {
   Alert,
@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import {Col,Grid} from 'react-native-easy-grid'
+import {Col, Grid} from 'react-native-easy-grid'
 import ImagePicker from 'react-native-image-crop-picker'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import normalize from 'react-native-normalize'

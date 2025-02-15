@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import moment from 'moment-timezone'
-import {Button,Icon, Text} from 'native-base'
+import {Button, Icon, Text} from 'native-base'
 import React, {Component} from 'react'
 import {
   BackHandler,

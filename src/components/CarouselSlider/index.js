@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Dimensions, Image,ScrollView, StyleSheet, View} from 'react-native'
+import {Dimensions, Image, ScrollView, StyleSheet, View} from 'react-native'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
 

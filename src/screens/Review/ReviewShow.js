@@ -1,6 +1,6 @@
 import {Icon} from 'native-base'
 import React, {Fragment} from 'react'
-import {Text,View} from 'react-native'
+import {Text, View} from 'react-native'
 
 const ReviewShow = ({rating, style}) => {
   let React_Native_Rating_Bar = []

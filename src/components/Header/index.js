@@ -10,7 +10,7 @@ import {
   Text
 } from 'native-base'
 import React from 'react'
-import {Platform,StyleSheet, View} from 'react-native'
+import {Platform, StyleSheet, View} from 'react-native'
 import normalize from 'react-native-normalize'
 import {connect} from 'react-redux'
 

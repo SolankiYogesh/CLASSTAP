@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import {Body,Button, Container, Header, Icon, Left} from 'native-base'
+import {Body, Button, Container, Header, Icon, Left} from 'native-base'
 import React, {Component} from 'react'
 import {
   Alert,

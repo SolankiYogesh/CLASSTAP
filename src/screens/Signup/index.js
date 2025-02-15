@@ -1,10 +1,8 @@
 import appleAuth, {
- 
   AppleAuthRequestOperation,
   AppleAuthRequestScope
 } from '@invertase/react-native-apple-authentication'
-import FIcon from '@react-native-vector-icons/fontawesome'
-import {CheckBox, Container, Form,  Input, Item} from 'native-base'
+import {CheckBox, Container, Form, Input, Item} from 'native-base'
 import React, {Component} from 'react'
 import {
   BackHandler,
@@ -15,12 +13,13 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import {AccessToken,LoginManager} from 'react-native-fbsdk-next'
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import normalize from 'react-native-normalize'
+import FIcon from 'react-native-vector-icons/FontAwesome6'
 import {connect} from 'react-redux'
 
-import {registerUser,socialLoginUser} from '../../actions/authActions'
+import {registerUser, socialLoginUser} from '../../actions/authActions'
 import {clearErrors} from '../../actions/errorAction'
 import LockIcon from '../../assets/img/lock.svg'
 import MailIcon from '../../assets/img/mail.svg'
