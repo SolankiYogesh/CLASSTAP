@@ -1,118 +1,303 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, {useState, useEffect} from 'react';
+import {View} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
+import {Provider} from 'react-redux';
+import normalize from 'react-native-normalize';
+import {NativeBaseProvider} from 'native-base';
+import notifee from '@notifee/react-native';
+import I18n from './src/utils/i18n';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import store from './store';
+
+import AuthLoading from './src/components/AuthLoading';
+import SplashScreen from './src/screens/SplashScreen';
+
+import NavigationService from './NavigationService';
+import {ToastProvider} from 'react-native-toast-notifications';
+import DeviceInfo from 'react-native-device-info';
+
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+  AuthNavigator,
+  HomeNavigator,
+  FindClassNavigator,
+  FavoritieNavigator,
+  ProfileNavigator,
+} from './NavigatorStacks';
 
 import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  getGyms,
+  getCategories,
+  getGymsLocation,
+  getRecommendedGyms,
+  getRecommendedClasses,
+  getTodayClasses,
+  getGymsRefresh,
+} from './src/actions/homeActions';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+import HomeIcon from './src/assets/img/home.svg';
+import HomeActiveIcon from './src/assets/img/home-active.svg';
+import SearchIcon from './src/assets/img/search.svg';
+import SearchActiveIcon from './src/assets/img/search-active.svg';
+import FavoriteIcon from './src/assets/img/favorite.svg';
+import FavoriteActiveIcon from './src/assets/img/favorite-active.svg';
+import ProfileIcon from './src/assets/img/profile.svg';
+import ProfileActiveIcon from './src/assets/img/profile-active.svg';
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+FindClassNavigator.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+  for (let i = 0; i < navigation.state.routes.length; i++) {
+    if (navigation.state.routes[i].routeName == 'Filter') {
+      tabBarVisible = false;
+    }
+  }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  return {
+    tabBarVisible,
+  };
+};
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+ProfileNavigator.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+  for (let i = 0; i < navigation.state.routes.length; i++) {
+    if (navigation.state.routes[i].routeName == 'Account') {
+      tabBarVisible = false;
+    }
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+
+let TAB_BAR_NAV = {};
+
+const App = () => {
+  const [lang, setLang] = useState('en');
+  const [animationFinished, setAnimationFinished] = useState(false);
+  const [isNeedStack, setIsNeedStack] = useState(false);
+
+  const getLanguage = async () => {
+    const lang = await AsyncStorage.getItem('lang');
+    setLang(lang !== null ? lang : 'en');
   };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+  const getDeviceType = async () => {
+    let brand = await DeviceInfo.getModel();
+    if (brand.includes('12') || brand.includes('13')) {
+      setIsNeedStack(true);
+    }
+  };
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+  const saveFirstStart = async () => {
+    const status = await AsyncStorage.getItem('firstStart');
+
+    if (!status) {
+      notifee.setBadgeCount(0);
+      AsyncStorage.setItem('firstStart', 'true');
+    }
+  };
+
+  useEffect(() => {
+    getDeviceType();
+    getLanguage();
+    saveFirstStart();
+  }, []);
+
+  const onAnimationFinish = () => {
+    setAnimationFinished(true);
+  };
+
+  if (lang === 'ar') {
+    TAB_BAR_NAV = {
+      Profile: {
+        screen: ProfileNavigator,
+        navigationOptions: {
+          tabBarLabel: I18n.t('profile', {locale: lang}),
+          tabBarIcon: ({focused}) => {
+            return focused ? (
+              <ProfileActiveIcon width={normalize(30)} height={normalize(30)} />
+            ) : (
+              <ProfileIcon width={normalize(30)} height={normalize(30)} />
+            );
+          },
+        },
+      },
+      Favorities: {
+        screen: FavoritieNavigator,
+        navigationOptions: {
+          tabBarLabel: I18n.t('favorities', {locale: lang}),
+          tabBarIcon: ({focused}) => {
+            return focused ? (
+              <FavoriteActiveIcon
+                width={normalize(30)}
+                height={normalize(30)}
+              />
+            ) : (
+              <FavoriteIcon width={normalize(30)} height={normalize(30)} />
+            );
+          },
+        },
+      },
+
+      FindClass: {
+        screen: FindClassNavigator,
+        navigationOptions: {
+          tabBarLabel: I18n.t('findClass', {locale: lang}),
+          tabBarIcon: ({focused}) => {
+            return focused ? (
+              <SearchActiveIcon width={normalize(30)} height={normalize(30)} />
+            ) : (
+              <SearchIcon width={normalize(30)} height={normalize(30)} />
+            );
+          },
+        },
+      },
+
+      Home: {
+        screen: HomeNavigator,
+        navigationOptions: {
+          tabBarLabel: I18n.t('home', {locale: lang}),
+          tabBarIcon: ({focused}) => {
+            return focused ? (
+              <HomeActiveIcon width={normalize(30)} height={normalize(30)} />
+            ) : (
+              <HomeIcon width={normalize(30)} height={normalize(30)} />
+            );
+          },
+        },
+      },
+    };
+  } else {
+    TAB_BAR_NAV = {
+      Home: {
+        screen: HomeNavigator,
+        navigationOptions: {
+          tabBarLabel: I18n.t('home', {locale: lang}),
+          tabBarIcon: ({focused}) => {
+            return focused ? (
+              <HomeActiveIcon width={normalize(30)} height={normalize(30)} />
+            ) : (
+              <HomeIcon width={normalize(30)} height={normalize(30)} />
+            );
+          },
+        },
+      },
+      FindClass: {
+        screen: FindClassNavigator,
+        navigationOptions: {
+          tabBarLabel: I18n.t('findClass', {locale: lang}),
+          tabBarIcon: ({focused}) => {
+            return focused ? (
+              <SearchActiveIcon width={normalize(30)} height={normalize(30)} />
+            ) : (
+              <SearchIcon width={normalize(30)} height={normalize(30)} />
+            );
+          },
+        },
+      },
+      Favorities: {
+        screen: FavoritieNavigator,
+        navigationOptions: {
+          tabBarLabel: I18n.t('favorities', {locale: lang}),
+          tabBarIcon: ({focused}) => {
+            return focused ? (
+              <FavoriteActiveIcon
+                width={normalize(30)}
+                height={normalize(30)}
+              />
+            ) : (
+              <FavoriteIcon width={normalize(30)} height={normalize(30)} />
+            );
+          },
+        },
+      },
+      Profile: {
+        screen: ProfileNavigator,
+        navigationOptions: {
+          tabBarLabel: I18n.t('profile', {locale: lang}),
+          tabBarIcon: ({focused}) => {
+            return focused ? (
+              <ProfileActiveIcon width={normalize(30)} height={normalize(30)} />
+            ) : (
+              <ProfileIcon width={normalize(30)} height={normalize(30)} />
+            );
+          },
+        },
+      },
+    };
+  }
+
+  const AppNavigator = createBottomTabNavigator(TAB_BAR_NAV, {
+    initialRouteName: 'Home',
+    tabBarOptions: {
+      activeTintColor: '#FE9800',
+      showLabel: false,
+      style: {
+        borderTopColor: 'rgba(108, 123, 138, 0.1)',
+      },
+    },
+  });
+
+  const MainNavigator = createSwitchNavigator(
+    {
+      AuthLoading: AuthLoading,
+      Auth: AuthNavigator,
+      Main: AppNavigator,
+    },
+    {
+      initialRouteName: 'AuthLoading',
+    },
+  );
+
+  const AppContainer = createAppContainer(MainNavigator);
+
+  useEffect(() => {
+    if (!animationFinished) {
+      store.dispatch(getGyms());
+      store.dispatch(getCategories());
+      store.dispatch(getGymsLocation());
+      store.dispatch(getRecommendedGyms());
+      store.dispatch(getRecommendedClasses());
+      store.dispatch(getTodayClasses());
+      store.dispatch(getGymsRefresh());
+    }
+  }, [animationFinished]);
+
+  return isNeedStack ? (
+    <Provider store={store}>
+      <ToastProvider>
+        <NativeBaseProvider>
+          <View style={{flex: 1, paddingBottom: normalize(20)}}>
+            <AppContainer
+              ref={navigatorRef => {
+                NavigationService.setTopLevelNavigator(navigatorRef);
+              }}
+            />
+          </View>
+        </NativeBaseProvider>
+        {!animationFinished && (
+          <SplashScreen onAnimationFinish={onAnimationFinish} />
+        )}
+      </ToastProvider>
+    </Provider>
+  ) : (
+    <Provider store={store}>
+      <ToastProvider>
+        <NativeBaseProvider>
+          <AppContainer
+            ref={navigatorRef => {
+              NavigationService.setTopLevelNavigator(navigatorRef);
+            }}
+          />
+        </NativeBaseProvider>
+        {!animationFinished && (
+          <SplashScreen onAnimationFinish={onAnimationFinish} />
+        )}
+      </ToastProvider>
+    </Provider>
+  );
+};
 
 export default App;

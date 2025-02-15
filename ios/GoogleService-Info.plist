@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>589224257217-um2p3329o2v8nt9h0g3cd41mt8jho0at.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.589224257217-um2p3329o2v8nt9h0g3cd41mt8jho0at</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAZirJUl3cSUlugyVN2Ynik6Z8U6glBWmg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>589224257217</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.tecnova.classtap</string>
+	<key>PROJECT_ID</key>
+	<string>classtap-db639</string>
+	<key>STORAGE_BUCKET</key>
+	<string>classtap-db639.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:589224257217:ios:dad524b068f2f583d8d640</string>
+	<key>DATABASE_URL</key>
+	<string>https://classtap-db639.firebaseio.com</string>
+</dict>
+</plist>

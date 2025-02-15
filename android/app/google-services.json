@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "589224257217",
+    "firebase_url": "https://classtap-db639.firebaseio.com",
+    "project_id": "classtap-db639",
+    "storage_bucket": "classtap-db639.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589224257217:android:0da6d39a75a0fae3d8d640",
+        "android_client_info": {
+          "package_name": "com.classtap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "589224257217-koij8b5jqg1nnto837j67ijvrsppgtn7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9D-GJM4lKPxsz4sOG0-ELR_6fzNc9j3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "589224257217-koij8b5jqg1nnto837j67ijvrsppgtn7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "589224257217-lg000f3ajnbjl1p4j3oulhdivgm0c5o8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.classtab"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
