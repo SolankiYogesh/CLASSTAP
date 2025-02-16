@@ -4,7 +4,7 @@ import appleAuth, {
 } from '@invertase/react-native-apple-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {
   Alert,
   BackHandler,
@@ -129,21 +129,19 @@ const Welcome = props => {
     load();
   }, []);
 
-  useEffect(() => {
-    const focusListener = props.navigation.addListener('didFocus', () => {
-      props.clearLoading();
-    });
-    BackHandler.addEventListener('hardwareBackPress', handleBack);
-
-    return () => {
-      focusListener.remove();
-    };
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      props?.clearLoading();
+    }, []),
+  );
 
   useEffect(() => {
+    const back = BackHandler.addEventListener('hardwareBackPress', handleBack);
     return () => {
-      props.clearErrors();
-      BackHandler.removeEventListener('hardwareBackPress', handleBack);
+      props?.clearErrors();
+      if (back.remove) {
+        back.remove(0);
+      }
     };
   }, []);
 
@@ -334,6 +332,7 @@ const Welcome = props => {
 };
 
 import styles from './styles';
+import {useFocusEffect} from '@react-navigation/native';
 import Const from '../../utils/Const';
 
 const mapStateToProps = state => ({

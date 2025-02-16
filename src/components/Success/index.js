@@ -1,8 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import normalize from 'react-native-normalize';
-import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
+import analytics from '@react-native-firebase/analytics';
 
 const handleMoveScreen = (screen, navigation) => {
   navigation.navigate(screen);

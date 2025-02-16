@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {clearErrors} from '../../actions/errorAction';
 import {addReview, getTodayClasses} from '../../actions/homeActions';
 import {addReviewValidation} from '../../validation/validation';
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 import axios from 'axios';
 import Toast from 'react-native-toast-notifications';
 
@@ -74,10 +74,7 @@ export class WriteReview extends Component {
             this.props.handleReviews(data);
           }
         })
-        .catch(err => {
-          /* if (err.response.data.error) {
-          } */
-        });
+        .catch(() => {});
 
       this.props.handleWriteReview();
     } else {
@@ -133,11 +130,10 @@ export class WriteReview extends Component {
     this.props.clearErrors();
   }
   render() {
-    const {description, errors, isEnablrdScroll} = this.state;
+    const {description, errors} = this.state;
     const {lang} = this.props.setting;
     const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
     const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let React_Native_Rating_Bar = [];
     //Array to hold the filled or empty Stars
     for (var i = 1; i <= this.state.Max_Rating; i++) {

@@ -1,6 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
-import {Body, Button, Header, Icon, Left} from 'native-base';
+import {Body, Button, Header, Icon} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
@@ -18,7 +17,6 @@ import normalize from 'react-native-normalize';
 import {connect} from 'react-redux';
 
 import {getCoachClasses} from '../../actions/homeActions';
-import HeaderComponent from '../../components/Header';
 import {IMAGE_URI} from '../../utils/config';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
@@ -26,8 +24,6 @@ import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-
-const {width} = Dimensions.get('window');
 
 export class CoachClass extends Component {
   constructor(props) {
@@ -50,24 +46,13 @@ export class CoachClass extends Component {
   }
 
   renderItem = ({item}) => {
-    const {
-      id,
-      name,
-      name_ar,
-      attachments,
-      credits,
-      start_time,
-      end_time,
-      coach_id,
-      class_schedules,
-    } = item;
+    const {name, name_ar, attachments, class_schedules} = item;
 
     // const {distance} = this.props.home.gym;
 
     const {lang} = this.props.setting;
     const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
     const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let image;
 
     if (attachments && attachments.length > 0) {
@@ -213,7 +198,6 @@ export class CoachClass extends Component {
   };
 
   handleBack = async () => {
-    const id = await this.props.navigation.getParam('id');
     this.props.navigation.goBack();
     //this.props.navigation.navigate('Coach', {id, back: 'GymClass'});
 
@@ -259,10 +243,6 @@ export class CoachClass extends Component {
     const {lang} = this.props.setting;
     const {isLodaing} = this.props.errors;
     const {coachClasses} = this.props.home;
-
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
 
     return (
       <>

@@ -23,7 +23,6 @@ moment.tz.setDefault('Asia/Qatar');
 
 import {WebView} from 'react-native-webview';
 import analytics from '@react-native-firebase/analytics';
-import paymentPage from './test.html';
 import Const from '../../utils/Const.js';
 
 export class PaymentWeb extends Component {

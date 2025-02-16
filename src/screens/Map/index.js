@@ -1,16 +1,12 @@
-import {Card, Container, Form, Input, Item} from 'native-base';
+import {Container} from 'native-base';
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 //import axios from 'axios';
 import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 
 import HeaderComponent from '../../components/Header';
-import {API_URI, IMAGE_URI} from '../../utils/config';
-import isEmpty from '../../validation/is-empty';
-import Loading from '../Loading';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-
 export class Map extends Component {
   constructor(props) {
     super(props);

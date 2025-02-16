@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment-timezone';
 import {
   Body,
@@ -21,7 +20,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import normalize from 'react-native-normalize';
@@ -34,12 +32,10 @@ import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
 import WriteCoachReview from '../WriteCoachReview';
-import analytics from '@react-native-firebase/analytics';
 moment.tz.setDefault('Asia/Qatar');
 import axios from 'axios';
+import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-
-const {width} = Dimensions.get('window');
 
 export class CoachReview extends Component {
   constructor(props) {

@@ -70,7 +70,6 @@ export class Home extends Component {
         isLoading: true,
       };
     }
-    return null;
   }
 
   handleLocation = async () => {
@@ -84,10 +83,6 @@ export class Home extends Component {
           position.coords.longitude,
         );
         return true;
-        //this.setState({position: {longitude: position.longitude, latitude: position.latitude}});
-      },
-      error => {
-        //Alert.alert(JSON.stringify(error));
       },
       () => {},
       {
@@ -234,27 +229,8 @@ export class Home extends Component {
     );
   }
 
-  async onNotification() {
-    navigate('Home');
-  }
-
-  async onRegister(token) {
-    console.log(token, 'onRegister token');
-  }
-
-  async onOpenNotification() {
-    navigate('Home');
-  }
-
-  componentWillUnmount() {
-    // BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
-    // this.focusListener.remove();
-    // this.focusListener1.remove();
-    // this.focusListener2.remove();
-  }
   handleBack = () => {
     const {lang} = this.props.setting;
-    //this.props.navigation.goBack();
     Alert.alert(
       I18n.t('exit', {locale: lang}),
       I18n.t('areYouExitApp', {locale: lang}),
@@ -478,7 +454,6 @@ export class Home extends Component {
             width: normalize(234),
             height: normalize(128),
             display: 'flex',
-            //borderRadius: 10,
           }}>
           {image.url ? (
             <FastImage

@@ -52,7 +52,6 @@ import analytics from '@react-native-firebase/analytics';
 
 const {width} = Dimensions.get('window');
 
-import WriteCoachReview from '../WriteCoachReview';
 import Const from '../../utils/Const';
 
 export class BookClass extends Component {

@@ -20,7 +20,6 @@ import {forgotPasswordValidation} from '../../validation/validation';
 import Loading from '../Loading';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-
 export class ChangeMobile extends Component {
   constructor(props) {
     super(props);

@@ -32,9 +32,10 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
-import analytics from '@react-native-firebase/analytics';
-
+import WriteReview from '../WriteReview';
 moment.tz.setDefault('Asia/Qatar');
+
+import analytics from '@react-native-firebase/analytics';
 
 import WriteCoachReview from '../WriteCoachReview';
 import Const from '../../utils/Const';

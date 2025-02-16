@@ -1,6 +1,6 @@
 import axios from 'axios';
 import moment from 'moment-timezone';
-import {Card, Container, Form, Input, Item} from 'native-base';
+import {Container} from 'native-base';
 import React, {Component} from 'react';
 import {
   Alert,

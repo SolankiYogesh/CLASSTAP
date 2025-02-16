@@ -16,7 +16,6 @@ import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-
 class MobileOtp extends Component {
   constructor(props) {
     super(props);
