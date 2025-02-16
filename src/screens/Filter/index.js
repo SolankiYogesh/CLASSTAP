@@ -18,6 +18,7 @@ import {clearErrors} from '../../actions/errorAction';
 import CalendarStrip from '../../react-native-slideable-calendar-strip';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
+import analytics from '@react-native-firebase/analytics';
 moment.tz.setDefault('Asia/Qatar');
 
 //import {getCategories} from '../../actions/homeActions';
@@ -26,6 +27,7 @@ import {
   getFilterFindClassCount,
   getFilterFindClasses,
 } from '../../actions/findClassActions';
+import Const from '../../utils/Const';
 
 const genders = [
   {id: 1, name: 'Male', name_ar: 'الذكر'},
@@ -50,6 +52,7 @@ export class Membership extends Component {
     };
   }
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.FILTER_SCREEN);
     this.handleSearchFilterCount();
     //this.props.clearErrors();
     BackHandler.addEventListener('hardwareBackPress', this.handleBack);

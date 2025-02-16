@@ -1,6 +1,6 @@
 import axios from 'axios';
 import moment from 'moment-timezone';
-import {Container} from 'native-base';
+import {Card, Container, Form, Input, Item} from 'native-base';
 import React, {Component} from 'react';
 import {
   Alert,
@@ -28,6 +28,8 @@ import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 moment.tz.setDefault('Asia/Qatar');
 import FastImage from '@d11/react-native-fast-image';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 export class Upcoming extends Component {
   constructor(props) {
@@ -49,6 +51,7 @@ export class Upcoming extends Component {
   }
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.UPCOMING_GYM_EVENT_SCREEN);
     const {upcomingClasses} = this.props.subscription;
     this.setState({upcomingClasses: upcomingClasses, isLoading: false});
     /* const {id} = await this.props.auth.user;

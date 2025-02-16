@@ -32,6 +32,7 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import {loginValidation} from '../../validation/validation';
 import Loading from '../Loading';
+import analytics from '@react-native-firebase/analytics';
 
 export class Login extends Component {
   constructor(props) {
@@ -65,6 +66,9 @@ export class Login extends Component {
   }
   async componentDidMount() {
     this.props.clearErrors();
+
+    analytics().logEvent(Const.ANALYTICS_EVENT.WELCOME);
+
     const user_id = await AsyncStorage.getItem('pre_user_id');
     if (user_id) {
       this.props.getUser(user_id);

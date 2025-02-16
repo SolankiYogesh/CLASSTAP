@@ -18,6 +18,9 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import {forgotPasswordValidation} from '../../validation/validation';
 import Loading from '../Loading';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
+
 export class ChangeMobile extends Component {
   constructor(props) {
     super(props);
@@ -78,6 +81,7 @@ export class ChangeMobile extends Component {
     }
   };
   componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.CHANGE_MOBILE_SCREEN);
     this.props.clearErrors();
     BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }

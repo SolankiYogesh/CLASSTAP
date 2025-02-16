@@ -48,6 +48,8 @@ import FavoriteGreyIcon from '../../assets/img/favorite-grey.svg';
 import FavoriteRedIcon from '../../assets/img/favorite-red.svg';
 import MapIcon from '../../assets/img/map.svg';
 import ConfirmBooking from '../ConfirmBooking';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
@@ -76,6 +78,7 @@ export class Gym extends Component {
   } */
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.GYM_SCREEN);
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.handleRefresh();
     });

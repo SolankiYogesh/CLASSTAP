@@ -9,6 +9,8 @@ import {connect} from 'react-redux';
 import {currentUser} from '../../actions/authActions';
 import {setLanguage, setLatLong} from '../../actions/settingActions';
 import setAuthToken from '../../utils/setAuthToken';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 class AuthLoading extends Component {
   constructor(props) {
@@ -68,6 +70,7 @@ class AuthLoading extends Component {
   };
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.AUTH_LOADING_SCREEN);
     if (Platform.OS === 'ios') {
       await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
         .then(async result => {

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import normalize from 'react-native-normalize';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 const handleMoveScreen = (screen, navigation) => {
   navigation.navigate(screen);
@@ -8,6 +10,11 @@ const handleMoveScreen = (screen, navigation) => {
 const Success = props => {
   const {text, shortText, buttonText, MoveScreenName} =
     props.navigation.state.params;
+
+  useEffect(() => {
+    analytics().logEvent(Const.ANALYTICS_EVENT.SUCCESS_SCREEN);
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#ffffff'}}>
       <View style={{flex: 3, alignItems: 'center', marginTop: normalize(20)}}>

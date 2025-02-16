@@ -4,7 +4,7 @@ import appleAuth, {
 } from '@invertase/react-native-apple-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
-import React, {useCallback, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
   Alert,
   BackHandler,
@@ -30,8 +30,13 @@ import {setLatLong} from '../../actions/settingActions';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
+import analytics from '@react-native-firebase/analytics';
 
 const Welcome = props => {
+  useEffect(() => {
+    analytics().logEvent(Const.ANALYTICS_EVENT.WELCOME);
+  }, []);
+
   useEffect(() => {
     const {lang} = props.setting;
 
@@ -124,19 +129,21 @@ const Welcome = props => {
     load();
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      props?.clearLoading();
-    }, []),
-  );
+  useEffect(() => {
+    const focusListener = props.navigation.addListener('didFocus', () => {
+      props.clearLoading();
+    });
+    BackHandler.addEventListener('hardwareBackPress', handleBack);
+
+    return () => {
+      focusListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
-    const back = BackHandler.addEventListener('hardwareBackPress', handleBack);
     return () => {
-      props?.clearErrors();
-      if (back.remove) {
-        back.remove(0);
-      }
+      props.clearErrors();
+      BackHandler.removeEventListener('hardwareBackPress', handleBack);
     };
   }, []);
 
@@ -327,7 +334,7 @@ const Welcome = props => {
 };
 
 import styles from './styles';
-import {useFocusEffect} from '@react-navigation/native';
+import Const from '../../utils/Const';
 
 const mapStateToProps = state => ({
   setting: state.setting,

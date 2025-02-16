@@ -35,6 +35,9 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import {updateUserValidation} from '../../validation/validation';
 import Loading from '../Loading';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
+
 export class Account extends Component {
   constructor(props) {
     super(props);
@@ -90,6 +93,7 @@ export class Account extends Component {
     this.focusListener2.remove();
   }
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.ACCOUNT_SCREEN);
     this.props.clearErrors();
     BackHandler.addEventListener(
       'hardwareBackPress',

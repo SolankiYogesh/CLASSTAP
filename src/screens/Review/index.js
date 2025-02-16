@@ -26,6 +26,8 @@ import WriteReview from '../WriteReview';
 import ReviewShow from './ReviewShow';
 moment.tz.setDefault('Asia/Qatar');
 import axios from 'axios';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
@@ -39,6 +41,7 @@ export class Review extends Component {
     };
   }
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.REVIEW_SCREEN);
     const foreign_id = await this.props.navigation.getParam('foreign_id');
     const foreign_class = await this.props.navigation.getParam('class');
     await axios

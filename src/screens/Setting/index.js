@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
-import {Container} from 'native-base';
+import {Container, Form, Icon, Item, Label, Picker} from 'native-base';
 import React, {Component} from 'react';
 import {
   AppState,
@@ -14,7 +14,7 @@ import {
   View,
 } from 'react-native';
 import normalize from 'react-native-normalize';
-import {check, PERMISSIONS} from 'react-native-permissions';
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import RNRestart from 'react-native-restart';
 import {connect} from 'react-redux';
 
@@ -23,6 +23,8 @@ import {setLanguage} from '../../actions/settingActions';
 import HeaderComponent from '../../components/Header';
 import {API_URI} from '../../utils/config';
 import I18n from '../../utils/i18n';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 export class Setting extends Component {
   constructor(props) {
@@ -37,6 +39,7 @@ export class Setting extends Component {
   }
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.SETTING_SCREEN);
     BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     this.setState({
       isNotification: this.props.auth.user.is_notification,

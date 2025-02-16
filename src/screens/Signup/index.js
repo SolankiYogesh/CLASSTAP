@@ -32,6 +32,8 @@ import isEmpty from '../../validation/is-empty';
 import {registerValidation} from '../../validation/validation';
 import Loading from '../Loading';
 import styles from './styles';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 export class Signup extends Component {
   constructor(props) {
@@ -147,6 +149,7 @@ export class Signup extends Component {
   };
 
   componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.SIGN_UP);
     this.props.clearErrors();
     BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }

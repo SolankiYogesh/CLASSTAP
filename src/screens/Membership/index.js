@@ -28,6 +28,8 @@ import {API_URI} from '../../utils/config';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 export class Membership extends Component {
   constructor(props) {
@@ -50,6 +52,7 @@ export class Membership extends Component {
     };
   }
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.MEMBERSHIP_SCREEN);
     //this.props.clearErrors();
     BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     this.props.getSubscriptions();

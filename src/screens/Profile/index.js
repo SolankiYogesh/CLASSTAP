@@ -26,6 +26,7 @@ import Loading from '../Loading';
 moment.tz.setDefault('Asia/Qatar');
 import axios from 'axios';
 import Toast from 'react-native-toast-notifications';
+import analytics from '@react-native-firebase/analytics';
 
 import {
   addUserSubscription,
@@ -42,6 +43,7 @@ import PaymentIcon from '../../assets/img/payment.svg';
 import SettingIcon from '../../assets/img/settings.svg';
 import PaymentSuccess from '../../components/PaymentSuccess';
 import PaymentWeb from '../../components/PaymentWeb';
+import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 const {height} = Dimensions.get('window');
@@ -62,6 +64,7 @@ export class Profile extends Component {
   }
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.PROFILE_SCREEN);
     /*  if (isEmpty(this.props.auth.user)) {
       this.props.navigation.navigate('Login');
     } */

@@ -27,6 +27,8 @@ import {API_URI, IMAGE_URI} from '../../utils/config';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 moment.tz.setDefault('Asia/Qatar');
 
 export class MySchedule extends Component {
@@ -58,6 +60,7 @@ export class MySchedule extends Component {
   };
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.MY_SCHEDULE_SCREEN);
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.handleData();
     });

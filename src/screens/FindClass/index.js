@@ -36,6 +36,8 @@ import isEmpty from '../../validation/is-empty';
 import ReviewShow from '../Review/ReviewShow';
 moment.tz.setDefault('Asia/Qatar');
 import ConfirmBooking from '../ConfirmBooking';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
@@ -60,6 +62,7 @@ export class FindClass extends Component {
     };
   }
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.FIND_CLASS_SCREEN);
     let {selectedDate, start_time, end_time, search} = this.state;
     let date = selectedDate;
 

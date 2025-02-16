@@ -31,6 +31,8 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
@@ -43,6 +45,7 @@ export class Favorities extends Component {
   }
 
   componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.FAVORITE_SCREEN);
     if (!isEmpty(this.props.auth.user)) {
       const {id} = this.props.auth.user;
       this.props.getFavorites(id);

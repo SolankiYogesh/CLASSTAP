@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
-import {CheckBox, ListItem, Text} from 'native-base';
+import {CheckBox, Left, ListItem, Right, Text} from 'native-base';
 import React, {Component} from 'react';
 import {
   Platform,
@@ -10,12 +10,14 @@ import {
   View,
 } from 'react-native';
 import normalize from 'react-native-normalize';
-import {check, PERMISSIONS, request} from 'react-native-permissions';
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import RNRestart from 'react-native-restart';
 import {connect} from 'react-redux';
 
 import {setLanguage, setLatLong} from '../../actions/settingActions';
 import I18n from '../../utils/i18n';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 export class Language extends Component {
   constructor(props) {
@@ -73,6 +75,7 @@ export class Language extends Component {
   };
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.LANGUAGE_SCREEN);
     if (Platform.OS === 'ios') {
       await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
         .then(async result => {

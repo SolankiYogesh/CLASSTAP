@@ -16,11 +16,13 @@ import {connect} from 'react-redux';
 
 import {getCompletedClasses} from '../../actions/subscriptionActions';
 import HeaderComponent from '../../components/Header';
-import {IMAGE_URI} from '../../utils/config';
+import {API_URI, IMAGE_URI} from '../../utils/config';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 moment.tz.setDefault('Asia/Qatar');
 
 export class Completed extends Component {
@@ -43,6 +45,7 @@ export class Completed extends Component {
   }
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.COMPLETED_EVENT_SCREEN);
     const {completedClasses} = this.props.subscription;
     this.setState({completedClasses: completedClasses, isLoading: false});
     /*  const {id} = await this.props.auth.user;

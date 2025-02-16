@@ -47,6 +47,8 @@ import CallIcon from '../../assets/img/call.svg';
 import FavoriteGreyIcon from '../../assets/img/favorite-grey.svg';
 import FavoriteRedIcon from '../../assets/img/favorite-red.svg';
 import MapIcon from '../../assets/img/map.svg';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
@@ -72,6 +74,7 @@ export class GymDetail extends Component {
   } */
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.GYM_DETAIL_SCREEN);
     const id = await this.props.navigation.getParam('id');
     const latitude = await AsyncStorage.getItem('latitude');
     const longitude = await AsyncStorage.getItem('longitude');

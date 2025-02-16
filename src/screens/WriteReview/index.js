@@ -19,13 +19,15 @@ import {connect} from 'react-redux';
 import {clearErrors} from '../../actions/errorAction';
 import {addReview, getTodayClasses} from '../../actions/homeActions';
 import {addReviewValidation} from '../../validation/validation';
-const {height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 import axios from 'axios';
 import Toast from 'react-native-toast-notifications';
 
 import {API_URI} from '../../utils/config';
 import I18n from '../../utils/i18n';
 import {UtilsParserReviews} from '../../utils/regExp';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 export class WriteReview extends Component {
   constructor(props) {
@@ -72,7 +74,10 @@ export class WriteReview extends Component {
             this.props.handleReviews(data);
           }
         })
-        .catch(() => {});
+        .catch(err => {
+          /* if (err.response.data.error) {
+          } */
+        });
 
       this.props.handleWriteReview();
     } else {
@@ -120,6 +125,7 @@ export class WriteReview extends Component {
   };
 
   componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.WRITE_REVIEW_SCREEN);
     this.props.clearErrors();
   }
 
@@ -127,10 +133,11 @@ export class WriteReview extends Component {
     this.props.clearErrors();
   }
   render() {
-    const {description, errors} = this.state;
+    const {description, errors, isEnablrdScroll} = this.state;
     const {lang} = this.props.setting;
     const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
     const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let React_Native_Rating_Bar = [];
     //Array to hold the filled or empty Stars
     for (var i = 1; i <= this.state.Max_Rating; i++) {

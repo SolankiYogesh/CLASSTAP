@@ -14,6 +14,9 @@ import {API_URI} from '../../utils/config';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
+
 class MobileOtp extends Component {
   constructor(props) {
     super(props);
@@ -39,6 +42,7 @@ class MobileOtp extends Component {
   }
 
   componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.MOBILE_OTP_SCREEN);
     this.props.clearErrors();
     //if (this.otpTextInput[0]) {
     this.otpTextInput[0]._root.focus();

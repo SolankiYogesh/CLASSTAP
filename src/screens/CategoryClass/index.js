@@ -28,6 +28,8 @@ import isEmpty from '../../validation/is-empty';
 import ConfirmBooking from '../ConfirmBooking';
 import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
@@ -50,6 +52,7 @@ export class CategoryClass extends Component {
     BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   } */
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.CATEGORY_CLASS_SCREEN);
     const id = await this.props.navigation.getParam('id');
     const latitude = await AsyncStorage.getItem('latitude');
     const longitude = await AsyncStorage.getItem('longitude');

@@ -22,8 +22,9 @@ import I18n from '../../utils/i18n';
 moment.tz.setDefault('Asia/Qatar');
 
 import {WebView} from 'react-native-webview';
-
+import analytics from '@react-native-firebase/analytics';
 import paymentPage from './test.html';
+import Const from '../../utils/Const.js';
 
 export class PaymentWeb extends Component {
   constructor(props) {
@@ -34,6 +35,7 @@ export class PaymentWeb extends Component {
     };
   }
   componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.PAYMENT_WEB_SCREEN);
     this.props.clearErrors();
   }
 

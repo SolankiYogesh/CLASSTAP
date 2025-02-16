@@ -48,10 +48,12 @@ import FavoriteGreyIcon from '../../assets/img/favorite-grey.svg';
 import FavoriteRedIcon from '../../assets/img/favorite-red.svg';
 import MapIcon from '../../assets/img/map.svg';
 import ConfirmBooking from '../ConfirmBooking';
+import analytics from '@react-native-firebase/analytics';
 
 const {width} = Dimensions.get('window');
 
 import WriteCoachReview from '../WriteCoachReview';
+import Const from '../../utils/Const';
 
 export class BookClass extends Component {
   constructor(props) {
@@ -75,6 +77,7 @@ export class BookClass extends Component {
   } */
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.BOOK_CLASS_SCREEN);
     const id = await this.props.navigation.getParam('id');
     const isCoachReview = await this.props.navigation.getParam('isCoachReview');
     const latitude = await AsyncStorage.getItem('latitude');

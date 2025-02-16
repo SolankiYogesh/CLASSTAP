@@ -32,10 +32,12 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
-import WriteReview from '../WriteReview';
+import analytics from '@react-native-firebase/analytics';
+
 moment.tz.setDefault('Asia/Qatar');
 
 import WriteCoachReview from '../WriteCoachReview';
+import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 const {height} = Dimensions.get('window');
@@ -50,6 +52,7 @@ export class Coach extends Component {
   }
 
   async componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.COACH_SCREEN);
     let id = await this.props.navigation.getParam('id');
     let latitude = await AsyncStorage.getItem('latitude');
     let longitude = await AsyncStorage.getItem('longitude');

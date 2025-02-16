@@ -13,6 +13,8 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import {resetValidation} from '../../validation/validation';
 import Loading from '../Loading';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 export class ResetPassword extends Component {
   constructor(props) {
@@ -113,6 +115,7 @@ export class ResetPassword extends Component {
   }
 
   componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.RESET_PASSWORD);
     this.props.clearErrors();
   }
   render() {

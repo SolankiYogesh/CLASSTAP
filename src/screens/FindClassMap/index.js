@@ -33,6 +33,8 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
+import analytics from '@react-native-firebase/analytics';
+import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
@@ -47,6 +49,7 @@ export class FindClassMap extends Component {
     };
   }
   componentDidMount() {
+    analytics().logEvent(Const.ANALYTICS_EVENT.FIND_CLASS_MAP_SCREEN);
     this.props.getGyms();
     this.props.getClasses();
     this.requestLocationPermission();
