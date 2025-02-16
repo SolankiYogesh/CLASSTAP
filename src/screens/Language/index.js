@@ -19,7 +19,7 @@ import I18n from '../../utils/i18n';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class Language extends Component {
+class Language extends Component {
   constructor(props) {
     super(props);
     this.state = {

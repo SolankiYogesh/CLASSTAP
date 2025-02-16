@@ -35,7 +35,7 @@ const genders = [
   {id: 3, name: 'Mixed', name_ar: 'مختلط'},
 ];
 
-export class Membership extends Component {
+class Membership extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,8 +54,10 @@ export class Membership extends Component {
   async componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.FILTER_SCREEN);
     this.handleSearchFilterCount();
-    //this.props.clearErrors();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
     this.props.getCategories();
   }
 
@@ -65,13 +67,13 @@ export class Membership extends Component {
   };
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove(0);
+    }
   }
 
   handleSelectDate = date => {
     const {selectedDate} = this.state;
-
-    //this.setState({selectedDate: date});
     this.setState(
       {
         selectedDate: selectedDate !== date ? date : 0,

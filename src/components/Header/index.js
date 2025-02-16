@@ -1,9 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Body, Button, Header, Icon, Left, Text} from 'native-base';
+import {Button,Text} from 'native-base';
 import React from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import normalize from 'react-native-normalize';
 import {connect} from 'react-redux';
+import FIcon from 'react-native-vector-icons/FontAwesome6';
 
 import {clearErrors} from '../../actions/errorAction';
 import I18n from '../../utils/i18n';
@@ -25,11 +26,10 @@ const HeaderComponent = props => {
   };
   const {lang} = props.setting;
   return (
-    <Header style={styles.headerContainer}>
-      <Left>
-        <Button transparent onPress={handleBack}>
+    <View  style={styles.headerContainer}>
+    <Button  backgroundColor={"transparent"} onPress={handleBack}>
           <View style={styles.backButtonContainer}>
-            <Icon
+            <FIcon
               type="FontAwesome"
               name="angle-left"
               style={styles.backButtonIcon}
@@ -39,9 +39,7 @@ const HeaderComponent = props => {
             </Text>
           </View>
         </Button>
-      </Left>
-      <Body />
-    </Header>
+    </View>
   );
 };
 
@@ -50,6 +48,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems:"center",
+    columnGap:normalize(10)
   },
   backButtonIcon: {
     color: '#22242A',
@@ -58,13 +58,13 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#22242A',
-    fontSize: normalize(12),
-
-    top: Platform.OS === 'ios' ? normalize(3) : normalize(3.3),
+    fontSize: normalize(12)
   },
   headerContainer: {
     backgroundColor: '#ffffff',
     borderBottomWidth: 0,
+    flexDirection:"row",
+    alignItems:"center"
   },
 });
 

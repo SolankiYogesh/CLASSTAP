@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import notifee from '@notifee/react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {NativeBaseProvider} from 'native-base'
+import {extendTheme, NativeBaseProvider} from 'native-base'
 import React, {useCallback, useEffect, useMemo,useState} from 'react'
 import {View} from 'react-native'
 import  { getModel } from 'react-native-device-info'
@@ -21,6 +21,8 @@ import {
 import AppNavigation from './src/Router/AppNavigation'
 import SplashScreen from './src/screens/SplashScreen'
 import store from './store'
+
+
 
 const App = () => {
   const [animationFinished, setAnimationFinished] = useState(false)
@@ -53,10 +55,25 @@ const App = () => {
       store.dispatch(getGymsRefresh())
   },[])
 
+  const theme = extendTheme({
+    colors: {
+      primary:{
+        "100":"#FE9800",
+        "200":"#FE9800",
+        "300":"#FE9800",
+        "400":"#FE9800",
+        "500":"#FE9800",
+        "600":"#FE9800",
+        "700":"#FE9800",
+        "800":"#FE9800",
+        "900":"#FE9800",
+      },
+    },
+  });
 
   return   <Provider  store={store}>
   <ToastProvider>
-    <NativeBaseProvider>
+    <NativeBaseProvider theme={theme}>
       <View style={{flex: 1, paddingBottom:isNeedStack? normalize(20):0}}>
         <AppNavigation
         

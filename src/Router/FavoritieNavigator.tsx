@@ -1,18 +1,19 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Success from '../components/Success';
-import {BookClass} from '../screens/BookClass';
-import {GymClass} from '../screens/Class';
-import {Coach} from '../screens/Coach';
-import {CoachClass} from '../screens/CoachClass';
-import {CoachReview} from '../screens/CoachReview';
-import {Favorities} from '../screens/Favorities';
-import {Gym} from '../screens/Gym';
-import {GymDetail} from '../screens/Gym/GymDetail';
+import BookClass from '../screens/BookClass';
+import GymClass from '../screens/Class';
+import Coach from '../screens/Coach';
+import CoachClass from '../screens/CoachClass';
+
+import Favorites from '../screens/Favorities';
+import Gym from '../screens/Gym';
+import GymDetail from '../screens/Gym/GymDetail';
 import Map from '../screens/Map';
-import {Membership} from '../screens/Membership';
-import {Review} from '../screens/Review';
-import {WriteReview} from '../screens/WriteReview';
+import Membership from '../screens/Membership';
+import Review from '../screens/Review';
+import WriteReview from '../screens/WriteReview';
+import CoachReview from '../screens/CoachReview';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +21,7 @@ export default () => (
   <Stack.Navigator initialRouteName="Favorities">
     <Stack.Screen
       name="Favorities"
-      component={Favorities}
+      component={Favorites}
       options={{headerShown: false}}
     />
     <Stack.Screen name="Gym" component={Gym} options={{headerShown: false}} />

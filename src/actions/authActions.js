@@ -21,9 +21,7 @@ import {
   SET_UPDATE_USER,
 } from './types';
 
-// Register User
 export const registerUser = (userData, navigation) => dispatch => {
-  //alert('come');
   dispatch({
     type: LOADING,
   });

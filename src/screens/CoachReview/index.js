@@ -36,8 +36,7 @@ moment.tz.setDefault('Asia/Qatar');
 import axios from 'axios';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-
-export class CoachReview extends Component {
+class CoachReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -62,10 +61,12 @@ export class CoachReview extends Component {
         }
       })
       .catch(err => {});
-    //this.props.getReviews(foreign_id, foreign_class);
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
     this.focusListener2 = this.props.navigation.addListener(
-      'didFocus',
+      'focus',
       async () => {
         let coach_id = await this.props.navigation.getParam('coach_id');
         await axios
@@ -85,10 +86,10 @@ export class CoachReview extends Component {
   }
 
   componentWillUnmount() {
-    ///this.setState({gym: {}});
-    //this.props.clearGym();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
-    this.focusListener2.remove();
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
+    this.focusListener2();
   }
 
   handleReviews = review => {

@@ -4,7 +4,7 @@ import {ScrollView, Text} from 'react-native';
 
 import HeaderComponent from '../../components/Header';
 
-export class Payment extends Component {
+class Payment extends Component {
   constructor(props) {
     super(props);
     this.state = {};

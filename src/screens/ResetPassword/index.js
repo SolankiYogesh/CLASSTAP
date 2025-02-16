@@ -16,7 +16,7 @@ import Loading from '../Loading';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class ResetPassword extends Component {
+class ResetPassword extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +27,8 @@ export class ResetPassword extends Component {
       errors: {},
     };
   }
-  static getDerivedStateFromProps(props, state) {
+
+  componentDidUpdate(props, state) {
     if (props.auth.isAuthenticated) {
     }
 
@@ -41,13 +42,6 @@ export class ResetPassword extends Component {
       }
     }
     if (props.auth.isResetPassword) {
-      // toast.show(I18n.t('PasswordChangedSucessfully', {locale: props.setting.lang}), {
-      //   type: "normal",
-      //   placement: "bottom",
-      //   duration: 2000,
-      //   offset: 30,
-      //   animationType: "slide-in",
-      // });
       props.navigation.navigate('Login');
     }
     return null;

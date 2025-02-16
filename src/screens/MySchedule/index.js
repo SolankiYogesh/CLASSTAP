@@ -31,7 +31,7 @@ import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 moment.tz.setDefault('Asia/Qatar');
 
-export class MySchedule extends Component {
+class MySchedule extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -59,19 +59,24 @@ export class MySchedule extends Component {
       });
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.MY_SCHEDULE_SCREEN);
-    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
       this.handleData();
     });
 
     handleData();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
-    this.focusListener.remove();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener();
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   handleBack = async () => {

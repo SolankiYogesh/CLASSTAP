@@ -4,13 +4,14 @@ import appleAuth, {
   AppleAuthRequestScope,
 } from '@invertase/react-native-apple-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Container, Form, Input, Item} from 'native-base';
+import {Container,  FormControl,  HStack,  Input, Stack} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
   Image,
   Keyboard,
   Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -35,7 +36,7 @@ import Loading from '../Loading';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,11 +50,7 @@ export class Login extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
-    if (props.auth.isAuthenticated) {
-      //props.history.push("/dashboard");
-    }
-
+  componentDidUpdate(props, state) {
     if (!isEmpty(props.errors.error)) {
       return {
         errors: {common: props.errors.error},
@@ -65,6 +62,7 @@ export class Login extends Component {
     }
     return null;
   }
+  
   async componentDidMount() {
     this.props.clearErrors();
 
@@ -76,23 +74,20 @@ export class Login extends Component {
     }
 
     this.setState({isAlreadyLogin: user_id ? true : false, isLoading: false});
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
-
-  onKeyboarDidShow = () => {
-    this.setState({isEnablrdScroll: true});
-  };
-
-  onKeyboardWillHide = () => {
-    this.setState({isEnablrdScroll: false});
-  };
 
   componentWillUnmount() {
     this.props.clearErrors();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
-  handleBack = async back => {
+  handleBack = async () => {
     this.props.navigation.goBack();
     return true;
   };
@@ -243,8 +238,6 @@ export class Login extends Component {
   };
 
   render() {
-    console.log(this.props.navigation, 'this.props.navigation');
-
     const {
       isAlreadyLogin,
       errors,
@@ -257,7 +250,6 @@ export class Login extends Component {
 
     const {lang} = this.props.setting;
     const {preUser: user} = this.props.auth;
-    const {isLodaing} = this.props.errors;
     const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
     const textAlign = lang === 'ar' ? 'right' : 'left';
     const image = user.attachment
@@ -265,13 +257,16 @@ export class Login extends Component {
           uri: `${IMAGE_URI}/${user.attachment.dir}/${user.attachment.file_name}`,
         }
       : require('../../assets/img/avatar1.png');
-    // const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+
     return (
       <>
         {isLoading ? (
           <Loading />
         ) : (
-          <Container>
+          <SafeAreaView style={{
+            flex:1,
+            backgroundColor: '#ffffff',
+          }}>
             <HeaderComponent navigation={this.props.navigation} />
 
             <View style={styles.contentContainer}>
@@ -333,16 +328,24 @@ export class Login extends Component {
                 )}
 
                 <View style={styles.formContainer}>
-                  <Form>
+                  <FormControl>
                     <View>
-                      <Item
-                        error={errors.isMobile ? true : false}
+                      <View 
+                       
                         style={[
                           styles.formInputText,
                           {flexDirection: flexDirection},
+                          {
+                            flex:1,
+                            alignItems:"center"
+                          }
                         ]}>
-                        {/* <FIcon name="phone" size={18} /> */}
-                        <PhoneIcon
+                      
+                        <Input
+                          placeholderTextColor="#8A8A8F"
+                          minLength={8}
+                          maxLength={13}
+                          InputLeftElement={  <PhoneIcon
                           width={normalize(20)}
                           height={normalize(20)}
                           style={{
@@ -350,11 +353,9 @@ export class Login extends Component {
                               {rotate: lang === 'ar' ? '270deg' : '0deg'},
                             ],
                           }}
-                        />
-                        <Input
-                          placeholderTextColor="#8A8A8F"
-                          minLength={8}
-                          maxLength={13}
+                        />}
+                          variant="underlined"
+                          width={'100%'}
                           placeholder={I18n.t('phoneNumber', {locale: lang})}
                           style={
                             lang === 'ar'
@@ -370,7 +371,7 @@ export class Login extends Component {
                           returnKeyType="done"
                           onSubmitEditing={Keyboard.dismiss}
                         />
-                      </Item>
+                      </View>
                       {errors.mobile ? (
                         <Text
                           style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -379,24 +380,25 @@ export class Login extends Component {
                       ) : null}
                     </View>
                     <View>
-                      <Item
+                      <View
                         error={errors.isPassword ? true : false}
                         style={[
                           styles.formInputText,
                           {flexDirection: flexDirection},
+                          {
+                            flex:1,
+                            alignItems:"center"
+                          }
                         ]}>
-                        {/* <FIcon
-                        name={isSecure ? 'lock' : 'unlock-alt'}
-                        size={18}
-                        style={{
-                          flexDirection: flexDirection,
-                        }}
-                      /> */}
-                        <LockIcon
+                       
+                        <Input
+                        InputLeftElement={ <LockIcon
                           width={normalize(20)}
                           height={normalize(20)}
-                        />
-                        <Input
+                        />}
+                        variant="underlined"
+                        width={"100%"}
+                        
                           placeholderTextColor="#8A8A8F"
                           placeholder={I18n.t('password', {locale: lang})}
                           secureTextEntry={isSecure}
@@ -411,16 +413,16 @@ export class Login extends Component {
                           value={password}
                           returnKeyLabel="Done"
                           returnKeyType="done"
-                          onSubmitEditing={Keyboard.dismiss}
-                        />
-                        <TouchableOpacity onPress={this.handleShowPassword}>
+                          InputRightElement={  <TouchableOpacity onPress={this.handleShowPassword}>
                           <Text style={{fontSize: normalize(11)}}>
                             {isSecure
                               ? I18n.t('show', {locale: lang})
                               : I18n.t('hide', {locale: lang})}
                           </Text>
-                        </TouchableOpacity>
-                      </Item>
+                        </TouchableOpacity>}
+                          onSubmitEditing={Keyboard.dismiss}
+                        />
+                      </View>
                       {errors.password ? (
                         <Text
                           style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -428,7 +430,7 @@ export class Login extends Component {
                         </Text>
                       ) : null}
                     </View>
-                  </Form>
+                  </FormControl>
                   {errors.common ? (
                     <Text style={[styles.errorMessage, {textAlign: textAlign}]}>
                       {typeof errors.common === 'string' ? errors.common : ''}
@@ -488,7 +490,7 @@ export class Login extends Component {
                 </View>
               </View>
             </View>
-          </Container>
+          </SafeAreaView>
         )}
       </>
     );

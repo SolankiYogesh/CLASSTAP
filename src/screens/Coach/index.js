@@ -43,7 +43,7 @@ import Const from '../../utils/Const';
 const {width} = Dimensions.get('window');
 const {height} = Dimensions.get('window');
 
-export class Coach extends Component {
+class Coach extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -67,7 +67,7 @@ export class Coach extends Component {
 
     BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     this.focusListener2 = this.props.navigation.addListener(
-      'didFocus',
+      'focus',
       async () => {
         let id = await this.props.navigation.getParam('id');
         let latitude = await AsyncStorage.getItem('latitude');
@@ -83,8 +83,10 @@ export class Coach extends Component {
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
-    this.focusListener2.remove();
+    if (this.back) {
+      this.back?.remove();
+    }
+    this.focusListener2();
   }
 
   handleBack = async () => {

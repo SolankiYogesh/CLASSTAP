@@ -54,7 +54,7 @@ const {width} = Dimensions.get('window');
 
 import Const from '../../utils/Const';
 
-export class BookClass extends Component {
+class BookClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -66,14 +66,6 @@ export class BookClass extends Component {
       isCoachReviewRate: false,
     };
   }
-
-  /*  static getDerivedStateFromProps(props, state) {
-    if (props.navigation.state.params.id == state.class.id) return null;
-    let gymClass = {...props.home.class};
-    return {
-      class: gymClass,
-    };
-  } */
 
   async componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.BOOK_CLASS_SCREEN);
@@ -98,7 +90,6 @@ export class BookClass extends Component {
             isLoading: false,
             isCoachReviewRate,
           });
-          //this.checkCoachReview(data.class_schedule.coach_id);
           return true;
         }
       })
@@ -106,13 +97,16 @@ export class BookClass extends Component {
         this.setState({isLoading: false});
       });
 
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
-    //this.setState({class: {}});
-    //this.props.clearClass();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   handleBack = async () => {

@@ -1,7 +1,7 @@
 import FastImage from '@d11/react-native-fast-image';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment-timezone';
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {
   Alert,
   BackHandler,
@@ -43,12 +43,12 @@ import axios from 'axios';
 import {check, PERMISSIONS} from 'react-native-permissions';
 
 import {updateUserDeviceToken} from '../../actions/authActions';
-import {navigate} from '../../Rootnavigation';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class Home extends Component {
+class Home extends PureComponent {
   constructor(props) {
+    console.log('props', props);
     super(props);
     this.state = {
       latitude: '',
@@ -59,9 +59,8 @@ export class Home extends Component {
     this.lastNotificationId = 0;
   }
 
-  static getDerivedStateFromProps(props) {
-    console.log('props', props);
-    if (!props?.errors?.isLodaing) {
+  componentDidUpdate(props) {
+    if (!props?.errors?.isLoading) {
       return {
         isLoading: false,
       };
@@ -111,8 +110,6 @@ export class Home extends Component {
       }
     });
 
-    const checkingFirebaseConnection =
-      messaging().isDeviceRegisteredForRemoteMessages;
     // if (!checkingFirebaseConnection) {
     messaging()
       .getToken()
@@ -162,7 +159,7 @@ export class Home extends Component {
             await AsyncStorage.removeItem('longitude');
           }
         })
-        .catch(error => {
+        .catch(() => {
           // …
         });
     } else {
@@ -175,7 +172,7 @@ export class Home extends Component {
             await AsyncStorage.removeItem('longitude');
           }
         })
-        .catch(error => {
+        .catch(() => {
           // …
         });
     }
@@ -204,16 +201,21 @@ export class Home extends Component {
       this.props.getWhatsOnToday(parseInt(user_id));
     }
 
-    this.focusListener = this.props.navigation.addListener('willFocus', () => {
-      BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.back = BackHandler.addEventListener(
+        'hardwareBackPress',
+        this.handleBack,
+      );
     });
 
-    this.focusListener1 = this.props.navigation.addListener('willBlur', () => {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener1 = this.props.navigation.addListener('blur', () => {
+      if (this.back?.remove) {
+        this.back?.remove();
+      }
     });
 
     this.focusListener2 = this.props.navigation.addListener(
-      'didFocus',
+      'focus',
       async () => {
         let user_id = await AsyncStorage.getItem('user_id');
         this.props.getGymsRefresh();
@@ -230,7 +232,7 @@ export class Home extends Component {
   }
 
   handleBack = () => {
-    const {lang} = this.props.setting;
+    const lang = this.props?.setting?.lang;
     Alert.alert(
       I18n.t('exit', {locale: lang}),
       I18n.t('areYouExitApp', {locale: lang}),
@@ -283,7 +285,7 @@ export class Home extends Component {
     });
     let image;
 
-    const {lang} = this.props.setting;
+    const lang = this.props?.setting?.lang;
     const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
     const textAlign = lang === 'ar' ? 'right' : 'left';
     let className = lang === 'ar' ? name_ar : name;
@@ -417,7 +419,7 @@ export class Home extends Component {
   };
 
   renderItemGym = ({item}) => {
-    const {lang} = this.props.setting;
+    const lang = this.props?.setting?.lang;
     const textAlign = lang === 'ar' ? 'right' : 'left';
     const {id, name, name_ar, attachments, distance} = item;
     let image;
@@ -525,7 +527,7 @@ export class Home extends Component {
   };
   renderItemCategory = ({item}) => {
     const {name, name_ar, attachment, id} = item;
-    const {lang} = this.props.setting;
+    const lang = this.props?.setting?.lang;
     const textAlign = lang === 'ar' ? 'right' : 'left';
     let image;
     if (attachment) {
@@ -585,8 +587,6 @@ export class Home extends Component {
   };
   handleRefresh = async () => {
     this.setState({refreshing: true});
-    const latitude = await AsyncStorage.getItem('latitude');
-    const longitude = await AsyncStorage.getItem('longitude');
     let user_id = await AsyncStorage.getItem('user_id');
 
     this.props.getTodayClasses();
@@ -604,7 +604,7 @@ export class Home extends Component {
   };
   render() {
     const {isLoading, refreshing} = this.state;
-    const {lang} = this.props.setting;
+    const lang = this.props?.setting?.lang;
     const {categories, nearestGyms, todayClasses} = this.props.home;
     const {upcomingClassCount, completedClassCount} = this.props.subscription;
     let newGyms = nearestGyms;
@@ -632,7 +632,6 @@ export class Home extends Component {
                   marginHorizontal: normalize(16),
                   justifyContent: 'center',
                   marginTop: normalize(16),
-                  //flexDirection: flexDirection,
                 }}>
                 <Text
                   style={{
@@ -712,12 +711,6 @@ export class Home extends Component {
                       data={todayClasses}
                       renderItem={this.renderItem}
                       keyExtractor={item => item.id.toString()}
-                      contentContainerStyle={
-                        {
-                          //marginRight: lang === 'ar' ? 0 : normalize(16),
-                          //marginLeft: lang === 'ar' ? normalize(16) : 0,
-                        }
-                      }
                     />
                   ) : (
                     <View
@@ -910,13 +903,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-  home: state.home,
-  setting: state.setting,
-  subscription: state.subscription,
-  errors: state.errors,
-});
+const mapStateToProps = state => {
+  console.log('state', state);
+  return {
+    auth: state.auth,
+    home: state.home,
+    setting: state.setting,
+    subscription: state.subscription,
+    errors: state.errors,
+  };
+};
 
 export default connect(mapStateToProps, {
   getGyms,

@@ -23,11 +23,7 @@ class MobileOtp extends Component {
     this.otpTextInput = [];
   }
 
-  static getDerivedStateFromProps(props, state) {
-    if (props.auth.isAuthenticated) {
-      //props.history.push("/dashboard");
-    }
-
+  componentDidUpdate(props, state) {
     if (!isEmpty(props.errors.error)) {
       return {
         errors: {common: props.errors.error},

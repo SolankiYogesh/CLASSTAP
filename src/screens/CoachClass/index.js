@@ -3,7 +3,6 @@ import {Body, Button, Header, Icon} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
-  Dimensions,
   FlatList,
   Image,
   Platform,
@@ -25,7 +24,7 @@ import ReviewShow from '../Review/ReviewShow';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class CoachClass extends Component {
+class CoachClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,11 +37,16 @@ export class CoachClass extends Component {
     analytics().logEvent(Const.ANALYTICS_EVENT.COACH_CLASS_SCREEN);
     const id = await this.props.navigation.getParam('id');
     this.props.getCoachClasses(id);
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   renderItem = ({item}) => {

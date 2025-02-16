@@ -1,15 +1,16 @@
-import {Body, Button, Header, Icon, Left, Text} from 'native-base';
+import { Button,    Text} from 'native-base';
 import React, {Component} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
   Modal,
-  Platform,
   SafeAreaView,
   StyleSheet,
   // Text,
   View,
 } from 'react-native';
+import FIcon from 'react-native-vector-icons/FontAwesome6';
+
 import normalize from 'react-native-normalize';
 import {connect} from 'react-redux';
 
@@ -24,7 +25,7 @@ moment.tz.setDefault('Asia/Qatar');
 
 import {WebView} from 'react-native-webview';
 
-export class Term extends Component {
+class Term extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,11 +49,7 @@ export class Term extends Component {
   };
   render() {
     const {lang} = this.props.setting;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
-    const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
 
-    const {user} = this.props.auth;
     return (
       <Modal
         visible={this.props.isShowTermUrl}
@@ -62,12 +59,10 @@ export class Term extends Component {
           this.handleBack();
         }}>
         <SafeAreaView style={styles.modalContent}>
-          <Header style={styles.headerContainer}>
-            <Left>
-              <Button transparent onPress={this.handleBack}>
+          <View style={styles.headerContainer}>
+          <Button backgroundColor={"transparent"} onPress={this.handleBack}>
                 <View style={styles.backButtonContainer}>
-                  <Icon
-                    type="FontAwesome"
+                  <FIcon
                     name="angle-left"
                     style={styles.backButtonIcon}
                   />
@@ -76,13 +71,11 @@ export class Term extends Component {
                   </Text>
                 </View>
               </Button>
-            </Left>
-            <Body />
-          </Header>
+            <View />
+          </View>
           <WebView
             onLoad={() => this.hideSpinner()}
             source={{uri: this.props.url}}
-            // onNavigationStateChange={this._onNavigationStateChange.bind(this)}
           />
           {this.state.visible && (
             <ActivityIndicator
@@ -110,12 +103,12 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: '#22242A',
     fontSize: normalize(12),
-
-    top: Platform.OS === 'ios' ? normalize(3) : normalize(3.3),
   },
   headerContainer: {
-    backgroundColor: '#ffffff',
     borderBottomWidth: 0,
+    width:"100%",
+    alignItems:"flex-start",
+    backgroundColor:"#ffffff"
   },
   modalContent: {
     flex: 1,

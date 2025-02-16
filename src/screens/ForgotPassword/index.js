@@ -1,7 +1,8 @@
-import {Container, Form, Input, Item} from 'native-base';
+import {  FormControl, Input} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,7 +21,8 @@ import {forgotPasswordValidation} from '../../validation/validation';
 import Loading from '../Loading';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-export class ForgotPassword extends Component {
+
+class ForgotPassword extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +31,7 @@ export class ForgotPassword extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
+  componentDidUpdate(props, state) {
     if (!isEmpty(props.errors.error)) {
       return {
         errors: {common: props.errors.error},
@@ -78,13 +80,18 @@ export class ForgotPassword extends Component {
   componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.FORGOT_PASSWORD);
     this.props.clearErrors();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
   componentWillUnmount() {
     this.props.clearErrors();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
-  handleBack = async back => {
+  handleBack = async () => {
     this.props.navigation.goBack();
     return true;
   };
@@ -99,7 +106,10 @@ export class ForgotPassword extends Component {
         {isLodaing ? (
           <Loading />
         ) : (
-          <Container>
+          <SafeAreaView style={{
+            flex:1,
+            backgroundColor:"#ffffff"
+          }}>
             <HeaderComponent navigation={this.props.navigation} />
             <View style={styles.contentContainer}>
               <View style={styles.titleContainer}>
@@ -112,15 +122,20 @@ export class ForgotPassword extends Component {
               </View>
 
               <View style={styles.formContainer}>
-                <Form>
+                <FormControl>
                   <View>
-                    <Item
+                    <View
                       error={errors.isMobile ? true : false}
                       style={[
                         styles.formInputText,
                         {flexDirection: flexDirection},
                       ]}>
-                      <PhoneIcon
+                   
+                      {/* <FIcon name="phone" size={18} /> */}
+                      <Input
+                      variant="underlined"
+                      width={"100%"}
+                      InputLeftElement={   <PhoneIcon
                         width={normalize(20)}
                         height={normalize(20)}
                         style={{
@@ -128,9 +143,7 @@ export class ForgotPassword extends Component {
                             {rotate: lang === 'ar' ? '270deg' : '0deg'},
                           ],
                         }}
-                      />
-                      {/* <FIcon name="phone" size={18} /> */}
-                      <Input
+                      />}
                         placeholderTextColor="#8A8A8F"
                         minLength={8}
                         maxLength={8}
@@ -146,7 +159,7 @@ export class ForgotPassword extends Component {
                         value={mobile}
                         keyboardType="numeric"
                       />
-                    </Item>
+                    </View>
                     {errors.mobile ? (
                       <Text
                         style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -154,7 +167,7 @@ export class ForgotPassword extends Component {
                       </Text>
                     ) : null}
                   </View>
-                </Form>
+                </FormControl>
                 {errors.common ? (
                   <Text style={[styles.errorMessage, {textAlign: textAlign}]}>
                     {errors.common}
@@ -169,7 +182,7 @@ export class ForgotPassword extends Component {
                 </TouchableOpacity>
               </View>
             </View>
-          </Container>
+          </SafeAreaView>
         )}
       </>
     );
@@ -239,7 +252,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: '10%',
     marginRight: '10%',
-    //alignItems: 'center',
   },
   titleText: {
     fontFamily: 'arial',

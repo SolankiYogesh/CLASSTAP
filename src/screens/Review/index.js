@@ -31,7 +31,7 @@ import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
-export class Review extends Component {
+class Review extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -58,11 +58,16 @@ export class Review extends Component {
       .catch(err => {
         console.log(err);
       });
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back) {
+      this.back?.remove(0);
+    }
   }
 
   handleReviews = review => {

@@ -25,10 +25,10 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import {contactValidation} from '../../validation/validation';
 import Loading from '../Loading';
-
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-export class ContactUs extends Component {
+
+class ContactUs extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,10 +40,8 @@ export class ContactUs extends Component {
       isEnablrdScroll: false,
     };
   }
-  static getDerivedStateFromProps(props, state) {
-    if (props.auth.isAuthenticated) {
-      //props.history.push("/dashboard");
-    }
+  
+  componentDidUpdate(props, state) {
 
     if (!isEmpty(props.errors.error)) {
       return {
@@ -137,12 +135,17 @@ export class ContactUs extends Component {
   componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.CONTACT_US_SCREEN);
     this.props.clearErrors();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
     this.props.clearErrors();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   handleBack = async () => {

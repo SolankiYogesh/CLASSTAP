@@ -29,7 +29,7 @@ import {UtilsParserReviews} from '../../utils/regExp';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class WriteReview extends Component {
+class WriteReview extends Component {
   constructor(props) {
     super(props);
     this.state = {

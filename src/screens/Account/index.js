@@ -38,7 +38,7 @@ import Loading from '../Loading';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class Account extends Component {
+class Account extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -58,7 +58,9 @@ export class Account extends Component {
       attachId: '',
     };
   }
-  static getDerivedStateFromProps(props, state) {
+
+  
+  componentDidUpdate(props, state) {
     if (props.auth.isUpdateUser) {
       toast.show(
         I18n.t('accountUpdatedSucessfully', {locale: props.setting.lang}),
@@ -90,7 +92,7 @@ export class Account extends Component {
   componentWillUnmount() {
     this.props.clearErrors();
     this.props.clearUpdateUser();
-    this.focusListener2.remove();
+    this.focusListener2();
   }
   async componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.ACCOUNT_SCREEN);
@@ -99,7 +101,7 @@ export class Account extends Component {
       'hardwareBackPress',
       this.handleBackButtonClick,
     );
-    this.focusListener2 = this.props.navigation.addListener('didFocus', () => {
+    this.focusListener2 = this.props.navigation.addListener('focus', () => {
       this.setState({
         mobile: this.props.auth.user.mobile,
       });

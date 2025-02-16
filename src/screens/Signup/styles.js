@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   formContainer: {
-    flex: 10,
+    flex: 1,
     justifyContent: 'space-evenly',
   },
   formInput: {

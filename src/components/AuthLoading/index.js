@@ -18,7 +18,6 @@ class AuthLoading extends Component {
   }
   _loadData = async () => {
     const lang = await AsyncStorage.getItem('lang');
-    const isLanguage = await AsyncStorage.getItem('isLanguage');
     const classTabToken = await AsyncStorage.getItem('classTabToken');
     const latitude = await AsyncStorage.getItem('latitude');
     const longitude = await AsyncStorage.getItem('longitude');
@@ -32,15 +31,11 @@ class AuthLoading extends Component {
       setAuthToken(classTabToken);
       this.props.currentUser();
     }
-    this.props.navigation.navigate(
-      classTabToken ? 'Main' : 'Auth', //isLanguage === '1' ? 'Auth' : 'Language',
-    );
-
-    // this.props.navigation.navigate(classTabToken ? 'Main' : 'Auth');
+    this.props.navigation.navigate(classTabToken ? 'Main' : 'Auth');
   };
 
   handleLocation = async () => {
-    await Geolocation.getCurrentPosition(
+    Geolocation.getCurrentPosition(
       async position => {
         await AsyncStorage.setItem(
           'latitude',
@@ -56,11 +51,8 @@ class AuthLoading extends Component {
           position.coords.longitude,
         );
         return true;
-        //this.setState({position: {longitude: position.longitude, latitude: position.latitude}});
       },
-      error => {
-        //Alert.alert(JSON.stringify(error));
-      },
+      () => {},
       {
         enableHighAccuracy: false,
         timeout: 20000,
@@ -81,22 +73,18 @@ class AuthLoading extends Component {
             await this.handleLocation();
           }
         })
-        .catch(error => {
-          // …
-        });
+        .catch(() => {});
     } else {
-      await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-        .then(async result => {
+      await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(
+        async result => {
           if (result === 'denied') {
             await AsyncStorage.removeItem('latitude');
             await AsyncStorage.removeItem('longitude');
           } else if (result === 'granted') {
             await this.handleLocation();
           }
-        })
-        .catch(error => {
-          // …
-        });
+        },
+      );
     }
 
     setTimeout(() => {
@@ -105,19 +93,7 @@ class AuthLoading extends Component {
     }, 100);
   }
   render() {
-    return (
-      <View style={styles.container}>
-        {/* <Image
-          source={require('../../assets/img/logo.png')}
-          style={{
-            width: normalize(134.3),
-            height: normalize(117.2),
-            //resizeMode: 'contain',
-          }}
-        />
-        <StatusBar barStyle="default" /> */}
-      </View>
-    );
+    return <View style={styles.container}></View>;
   }
 }
 

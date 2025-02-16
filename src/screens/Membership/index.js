@@ -31,7 +31,7 @@ import Loading from '../Loading';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class Membership extends Component {
+class Membership extends Component {
   constructor(props) {
     super(props);
     this.state = {

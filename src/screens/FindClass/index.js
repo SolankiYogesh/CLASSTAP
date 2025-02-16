@@ -1,6 +1,6 @@
 import FastImage from '@d11/react-native-fast-image';
 import moment from 'moment-timezone';
-import {Icon, Input, Item} from 'native-base';
+import {Icon, Input} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
@@ -41,7 +41,7 @@ import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
-export class FindClass extends Component {
+class FindClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -74,7 +74,7 @@ export class FindClass extends Component {
     this.props.getPopularGyms();
     //this.props.getFindClasses();
     BackHandler.addEventListener('hardwareBackPress', this.handleBack);
-    this.focusListener2 = this.props.navigation.addListener('didFocus', () => {
+    this.focusListener2 = this.props.navigation.addListener('focus', () => {
       this.props.getPopularGyms();
       const {
         selectedDate,
@@ -186,15 +186,16 @@ export class FindClass extends Component {
     });
   };
 
-  handleBack = async back => {
-    //BackHandler.exitApp();
+  handleBack = async () => {
     this.props.navigation.navigate('Home');
     return true;
   };
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
-    this.focusListener2.remove();
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
+    this.focusListener2();
   }
   searchSubmit = e => {
     e.preventDefault();
@@ -646,7 +647,6 @@ export class FindClass extends Component {
     }
   };
   handleSelectTime = e => {
-    const {lang} = this.props.setting;
     if (!isEmpty(e)) {
       const {start_time, end_time, selectedDate, search} = this.state;
       let date = new Date(selectedDate);
@@ -748,12 +748,10 @@ export class FindClass extends Component {
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
       .split('T')[0];
-    const {popularGyms, findClasses} = this.props.findClass;
+    const {findClasses} = this.props.findClass;
     const {lang} = this.props.setting;
-    const {isLodaing} = this.props.errors;
     const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
     const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#ffffff'}}>
         <ScrollView
@@ -786,24 +784,29 @@ export class FindClass extends Component {
               marginHorizontal: normalize(16),
               flexDirection: flexDirection,
             }}>
-            <Item
+            <View
               style={{
                 backgroundColor: '#EFEFF4',
-                width: normalize(263),
                 height: normalize(36),
                 borderRadius: normalize(10),
                 paddingLeft: normalize(10),
                 borderBottomWidth: 0,
                 flexDirection: flexDirection,
+                alignItems:"center",
+                flex:1
               }}>
               <FilterSearchIcon width={normalize(20)} height={normalize(20)} />
               <Input
                 placeholder={I18n.t('search', {locale: lang})}
                 placeholderTextColor="#8A8A8F"
+                width={'90%'}
+                borderWidth={0}
                 style={{
                   fontSize: normalize(14),
                   textAlign: textAlign,
                   flexDirection: 'row',
+                  outlineWidth:0,
+                  borderWidth:0
                 }}
                 returnKeyLabel="Search"
                 returnKeyType="search"
@@ -811,10 +814,10 @@ export class FindClass extends Component {
                 value={search}
                 onChangeText={val => this.handleChangeText('search', val)}
               />
-            </Item>
+            </View>
             <View
               style={{
-                // marginLeft: normalize(16),
+     
                 flexDirection: flexDirection,
                 justifyContent: 'space-evenly',
                 alignItems: 'center',

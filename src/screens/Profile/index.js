@@ -48,7 +48,7 @@ import Const from '../../utils/Const';
 const {width} = Dimensions.get('window');
 const {height} = Dimensions.get('window');
 
-export class Profile extends Component {
+class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -82,15 +82,20 @@ export class Profile extends Component {
       }
     }
     // BackHandler.addEventListener('hardwareBackPress', this.handleBack);
-    this.focusListener = this.props.navigation.addListener('willFocus', () => {
-      BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.back = BackHandler.addEventListener(
+        'hardwareBackPress',
+        this.handleBack,
+      );
     });
 
-    this.focusListener1 = this.props.navigation.addListener('willBlur', () => {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener1 = this.props.navigation.addListener('blur', () => {
+      if (this.back?.remove) {
+        this.back?.remove();
+      }
     });
     this.focusListener2 = this.props.navigation.addListener(
-      'didFocus',
+      'focus',
       async () => {
         const {user} = this.props.auth;
         if (user.subscription_validity) {
@@ -151,9 +156,9 @@ export class Profile extends Component {
   };
 
   componentWillUnmount() {
-    this.focusListener.remove();
-    this.focusListener1.remove();
-    this.focusListener2.remove();
+    this.focusListener();
+    this.focusListener1();
+    this.focusListener2();
   }
 
   handleChoosePlanBooking = async e => {

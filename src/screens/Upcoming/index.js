@@ -31,7 +31,7 @@ import FastImage from '@d11/react-native-fast-image';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class Upcoming extends Component {
+class Upcoming extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,46 +40,22 @@ export class Upcoming extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
-    /*  if (!isEmpty(props.subscription.upcomingClasses)) {
-      return {
-        upcomingClasses: props.subscription.upcomingClasses,
-        isLoading: false,
-      };
-    } */
-    return null;
-  }
-
   async componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.UPCOMING_GYM_EVENT_SCREEN);
     const {upcomingClasses} = this.props.subscription;
     this.setState({upcomingClasses: upcomingClasses, isLoading: false});
-    /* const {id} = await this.props.auth.user;
-    let url = `${API_URI}/booking_classes?filter={"where": {"user_id": ${id}}}`;
-    await axios
-      .get(url)
-      .then(res => {
-        if (res.data.error.code) {
-        } else {
-          const {data} = res.data;
-          this.setState({upcomingClasses: data, isLoading: false});
-          return true;
-        }
-      })
-      .catch(err => {
-        this.setState({isLoading: false});
-      }); */
 
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
-
-  /* componentDidMount() {
-    this.props.getUpcomingClasses();
-  } */
 
   handleCancelClass = async (e, id, item) => {
     e.preventDefault();

@@ -20,7 +20,8 @@ import {forgotPasswordValidation} from '../../validation/validation';
 import Loading from '../Loading';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-export class ChangeMobile extends Component {
+
+class ChangeMobile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +30,7 @@ export class ChangeMobile extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
+  componentDidUpdate(props, state) {
     if (!isEmpty(props.errors.error)) {
       return {
         errors: {common: props.errors.error},
@@ -82,13 +83,18 @@ export class ChangeMobile extends Component {
   componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.CHANGE_MOBILE_SCREEN);
     this.props.clearErrors();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
   componentWillUnmount() {
     this.props.clearErrors();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
-  handleBack = async back => {
+  handleBack = () => {
     this.props.navigation.goBack();
     return true;
   };

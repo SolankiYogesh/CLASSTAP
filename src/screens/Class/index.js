@@ -57,7 +57,7 @@ import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
-export class GymClass extends Component {
+class GymClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -80,17 +80,9 @@ export class GymClass extends Component {
     };
   }
 
-  /*  static getDerivedStateFromProps(props, state) {
-    if (props.navigation.state.params.id == state.class.id) return null;
-    let gymClass = {...props.home.class};
-    return {
-      class: gymClass,
-    };
-  } */
-
   async componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.GYN_CLASS_SCREEN);
-    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
       this.handleRefresh();
     });
     const id = await this.props.navigation.getParam('id');
@@ -282,36 +274,18 @@ export class GymClass extends Component {
         this.setState({isLoading: false});
       });
 
-    /*      if (latitude && longitude) {
-      this.props.getClassLocation(id);
-      //this.props.getClassesLocation();
-    } else {
-      this.props.getClass(id);
-      //this.props.getClasses();
-    }*/
     this.props.getSubscriptions();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
-  /*   async componentDidMount() {
-    const id = await this.props.navigation.getParam('id');
-    const latitude = await AsyncStorage.getItem('latitude');
-    const longitude = await AsyncStorage.getItem('longitude');
-
-    if (latitude && longitude) {
-      this.props.getClassLocation(id);
-      //this.props.getClassesLocation();
-    } else {
-      this.props.getClass(id);
-      //this.props.getClasses();
-    }
-
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
-  } */
-
   componentWillUnmount() {
-    this.focusListener.remove();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener();
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   handleBack = async () => {

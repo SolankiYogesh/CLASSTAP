@@ -33,7 +33,7 @@ moment.tz.setDefault('Asia/Qatar');
 import Toast from 'react-native-toast-notifications';
 
 import PaymentWeb from '../../components/PaymentWeb';
-export class ConfirmBooking extends Component {
+class ConfirmBooking extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -379,7 +379,7 @@ export class ConfirmBooking extends Component {
       selectedScheduleIds: selectedScheduleIds,
       credits,
     });
-    this.focusListener2 = this.props.navigation.addListener('didFocus', () => {
+    this.focusListener2 = this.props.navigation.addListener('focus', () => {
       let selectedScheduleIds = [];
       selectedScheduleIds.push(schedule_date_id);
       this.setState({
@@ -416,24 +416,21 @@ export class ConfirmBooking extends Component {
         selectedScheduleIds: selectedScheduleIds,
         credits,
       });
-      this.focusListener2 = this.props.navigation.addListener(
-        'didFocus',
-        () => {
-          let selectedScheduleIds = [];
-          selectedScheduleIds.push(schedule_date_id);
-          this.setState({
-            session_id: class_schedule_id,
-            selectedScheduleIds: selectedScheduleIds,
-            credits,
-          });
-        },
-      );
+      this.focusListener2 = this.props.navigation.addListener('focus', () => {
+        let selectedScheduleIds = [];
+        selectedScheduleIds.push(schedule_date_id);
+        this.setState({
+          session_id: class_schedule_id,
+          selectedScheduleIds: selectedScheduleIds,
+          credits,
+        });
+      });
     }
   };
 
   componentWillUnmount() {
     this.props.clearErrors();
-    this.focusListener2.remove();
+    this.focusListener2();
   }
   handleSelectSession = id => {
     let selectedDates = {...this.state.selectedDates};

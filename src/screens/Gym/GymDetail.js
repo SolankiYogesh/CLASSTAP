@@ -52,7 +52,7 @@ import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
-export class GymDetail extends Component {
+class GymDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,14 +64,6 @@ export class GymDetail extends Component {
       refreshing: false,
     };
   }
-
-  /* static getDerivedStateFromProps(props, state) {
-    if (props.navigation.state.params.id == state.gym.id) return null;
-    let gym = {...props.home.gym};
-    return {
-      gym: gym,
-    };
-  } */
 
   async componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.GYM_DETAIL_SCREEN);
@@ -95,43 +87,27 @@ export class GymDetail extends Component {
           return true;
         }
       })
-      .catch(err => {
+      .catch(() => {
         this.setState({isLoading: false});
       });
-
-    /*  if (latitude && longitude) {
-      this.props.getGymLocation(id);
-    } else {
-      this.props.getGym(id);
-    } */
-
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
-    //this.setState({gym: {}});
-    //this.props.clearGym();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   renderItem = ({item}) => {
-    const {
-      id,
-      name,
-      name_ar,
-      attachments,
-      credits,
-      start_time,
-      end_time,
-      distance,
-      class_schedules,
-    } = item;
-    ///const {distance} = this.state.gym;
+    const {id, name, name_ar, attachments, distance, class_schedules} = item;
 
     const {lang} = this.props.setting;
     const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
     const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let image;
 
     if (attachments && attachments.length > 0) {
@@ -363,9 +339,7 @@ export class GymDetail extends Component {
     const {lang} = this.props.setting;
     const {id} = this.state.gym;
     const {attachments, name, name_ar, distance} = item;
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
     const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let image;
 
     if (attachments && attachments.length > 0) {
@@ -485,7 +459,6 @@ export class GymDetail extends Component {
     const {lang} = this.props.setting;
     const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
     const textAlign = lang === 'ar' ? 'right' : 'left';
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     let image;
 
     if (!isEmpty(attachment)) {
@@ -639,7 +612,7 @@ export class GymDetail extends Component {
             );
           }
         })
-        .catch(err => {
+        .catch(() => {
           /* if (err.response.data.error) {
         
         } */
@@ -696,7 +669,7 @@ export class GymDetail extends Component {
             );
           }
         })
-        .catch(err => {
+        .catch(() => {
           /*  if (err.response.data.error) {
             
           } */
@@ -839,14 +812,14 @@ export class GymDetail extends Component {
           return true;
         }
       })
-      .catch(err => {});
+      .catch(() => {});
     setTimeout(() => {
       this.setState({refreshing: false});
     }, 2000);
   };
 
   render() {
-    const {isShowWriteReview, isShowAbout, refreshing} = this.state;
+    const {isShowWriteReview, refreshing} = this.state;
     const {lang} = this.props.setting;
     //const {isLodaing} = this.props.errors;
     const {isLoading} = this.state;

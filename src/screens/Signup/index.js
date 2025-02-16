@@ -2,12 +2,13 @@ import appleAuth, {
   AppleAuthRequestOperation,
   AppleAuthRequestScope,
 } from '@invertase/react-native-apple-authentication';
-import {CheckBox, Container, Form, Input, Item} from 'native-base';
+import {Checkbox,   FormControl, Input} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
   Keyboard,
   Platform,
+  SafeAreaView,
   Switch,
   Text,
   TouchableOpacity,
@@ -35,7 +36,7 @@ import styles from './styles';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class Signup extends Component {
+class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,7 +54,8 @@ export class Signup extends Component {
       is_newsletter: true,
     };
   }
-  static getDerivedStateFromProps(props, state) {
+  
+  componentDidUpdate(props, state) {
     if (props.auth.isAuthenticated) {
       //props.history.push("/dashboard");
     }
@@ -151,12 +153,17 @@ export class Signup extends Component {
   componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.SIGN_UP);
     this.props.clearErrors();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
     this.props.clearErrors();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back) {
+      this.back?.remove();
+    }
   }
 
   handleBack = async back => {
@@ -327,7 +334,10 @@ export class Signup extends Component {
         {isLodaing ? (
           <Loading />
         ) : (
-          <Container>
+          <SafeAreaView style={{
+            flex:1,
+            backgroundColor: '#ffffff',
+          }}>
             <HeaderComponent navigation={this.props.navigation} />
             <View style={styles.contentContainer}>
               <View style={styles.titleContainer}>
@@ -345,27 +355,31 @@ export class Signup extends Component {
                 scrollEnabled={isEnablrdScroll}
                 enableAutomaticScroll={isEnablrdScroll}>
                 <View style={styles.formContainer}>
-                  <Form>
+                  <FormControl style={{
+                    rowGap: normalize(10),
+                  }}>
                     <View
                       style={{
-                        //display: 'flex',
                         flexDirection: flexDirection,
-                        //justifyContent: 'space-between',
+               
                       }}>
                       <View style={{flex: 1}}>
-                        <Item
-                          error={errors.isFirstName ? true : false}
+                        <View
+                       
                           style={{
                             flex: 1,
                             marginLeft: normalize(40),
                             flexDirection: flexDirection,
                           }}>
-                          <UserIcon
+                         
+                          <Input
+                          variant="underlined"
+                          width={"100%"}
+                          InputLeftElement={ <UserIcon
                             width={normalize(20)}
                             height={normalize(20)}
                           />
-
-                          <Input
+}
                             placeholderTextColor="#8A8A8F"
                             placeholder={I18n.t('firstName', {locale: lang})}
                             style={{
@@ -382,7 +396,7 @@ export class Signup extends Component {
                             returnKeyType="done"
                             onSubmitEditing={Keyboard.dismiss}
                           />
-                        </Item>
+                        </View>
                         {errors.firstName ? (
                           <Text
                             style={[
@@ -394,7 +408,7 @@ export class Signup extends Component {
                         ) : null}
                       </View>
                       <View style={{flex: 1}}>
-                        <Item
+                        <View
                           error={errors.isLastName ? true : false}
                           style={{
                             flex: 1,
@@ -403,6 +417,8 @@ export class Signup extends Component {
                             flexDirection: flexDirection,
                           }}>
                           <Input
+                          variant="underlined"
+                          width={"100%"}
                             placeholderTextColor="#8A8A8F"
                             placeholder={I18n.t('lastName', {locale: lang})}
                             style={{
@@ -418,7 +434,7 @@ export class Signup extends Component {
                             returnKeyType="done"
                             onSubmitEditing={Keyboard.dismiss}
                           />
-                        </Item>
+                        </View>
                         {errors.lastName ? (
                           <Text
                             style={[
@@ -432,18 +448,20 @@ export class Signup extends Component {
                     </View>
 
                     <View style={{display: 'flex'}}>
-                      <Item
+                      <View
                         error={errors.isEmail ? true : false}
                         style={[
                           styles.formInputText,
                           {flexDirection: flexDirection},
                         ]}>
-                        <MailIcon
+                     
+                        <Input
+                        InputLeftElement={   <MailIcon
                           width={normalize(20)}
                           height={normalize(20)}
-                        />
-                        {/*  <FIcon name="envelope" size={18} /> */}
-                        <Input
+                        />}
+                        variant="underlined"
+                        width={"100%"}
                           autoCapitalize="none"
                           placeholderTextColor="#8A8A8F"
                           placeholder={I18n.t('email', {locale: lang})}
@@ -460,7 +478,7 @@ export class Signup extends Component {
                           returnKeyType="done"
                           onSubmitEditing={Keyboard.dismiss}
                         />
-                      </Item>
+                      </View>
                       {errors.email ? (
                         <Text
                           style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -469,14 +487,17 @@ export class Signup extends Component {
                       ) : null}
                     </View>
                     <View style={{display: 'flex'}}>
-                      <Item
+                      <View
                         error={errors.isMobile ? true : false}
                         style={[
                           styles.formInputText,
                           {flexDirection: flexDirection},
                         ]}>
-                        {/*  <FIcon name="phone" size={18} /> */}
-                        <PhoneIcon
+                    
+                        <Input
+                        variant="underlined"
+                        width={"100%"}
+                        InputLeftElement={   <PhoneIcon
                           width={normalize(20)}
                           height={normalize(20)}
                           style={{
@@ -484,8 +505,7 @@ export class Signup extends Component {
                               {rotate: lang === 'ar' ? '270deg' : '0deg'},
                             ],
                           }}
-                        />
-                        <Input
+                        />}
                           placeholderTextColor="#8A8A8F"
                           minLength={8}
                           maxLength={13}
@@ -504,7 +524,7 @@ export class Signup extends Component {
                           returnKeyType="done"
                           onSubmitEditing={Keyboard.dismiss}
                         />
-                      </Item>
+                      </View>
                       {errors.mobile ? (
                         <Text
                           style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -513,24 +533,20 @@ export class Signup extends Component {
                       ) : null}
                     </View>
                     <View style={{display: 'flex'}}>
-                      <Item
+                      <View
                         error={errors.isPassword ? true : false}
                         style={[
                           styles.formInputText,
                           {flexDirection: flexDirection},
                         ]}>
-                        <LockIcon
+                   
+                        <Input
+                        InputLeftElement={     <LockIcon
                           width={normalize(20)}
                           height={normalize(20)}
-                        />
-                        {/*  <FIcon
-                        name={isSecure ? 'lock' : 'unlock-alt'}
-                        size={24}
-                        style={{
-                          flexDirection: flexDirection,
-                        }}
-                      /> */}
-                        <Input
+                        />}
+                        variant="underlined"
+                        width={"100%"}
                           onEndEditing={val => this.handlePasswordVal(val)}
                           placeholderTextColor="#8A8A8F"
                           placeholder={I18n.t('password', {locale: lang})}
@@ -546,17 +562,18 @@ export class Signup extends Component {
                           value={password}
                           returnKeyLabel="Done"
                           returnKeyType="done"
-                          onSubmitEditing={Keyboard.dismiss}
-                        />
-                        <TouchableOpacity onPress={this.handleShowPassword}>
+                          InputRightElement={  <TouchableOpacity onPress={this.handleShowPassword}>
                           <Text
                             style={{fontSize: normalize(11), color: '#666666'}}>
                             {isSecure
                               ? I18n.t('show', {locale: lang})
                               : I18n.t('hide', {locale: lang})}
                           </Text>
-                        </TouchableOpacity>
-                      </Item>
+                        </TouchableOpacity>}
+                          onSubmitEditing={Keyboard.dismiss}
+                        />
+                      
+                      </View>
                       {errors.password ? (
                         <Text
                           style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -574,7 +591,6 @@ export class Signup extends Component {
                       <View>
                         <Switch
                           style={{
-                            //transform: [{scaleX: 0.8}, {scaleY: 0.8}],
                             display: 'flex',
                             alignSelf: 'flex-start',
                             borderColor: '#FE9800',
@@ -631,18 +647,16 @@ export class Signup extends Component {
                           alignItems: 'center',
                           marginBottom: normalize(10),
                         }}>
-                        <CheckBox
-                          checked={isTerm}
-                          color={'#FE9800'}
+                        <Checkbox
+                          isChecked={isTerm}
+                          colorScheme={"primary"}
+                          borderColor={'#FE9800'}
                           onPress={this.handleIsTerm}
                           style={{
                             width: normalize(25),
                             height: normalize(25),
-                            left: normalize(2),
                             borderRadius: 0,
                             borderWidth: 2,
-                            alignItems: 'flex-start',
-                            justifyContent: 'flex-start',
                           }}
                         />
                         <TouchableOpacity
@@ -660,7 +674,7 @@ export class Signup extends Component {
                         {errors.isTerm}
                       </Text>
                     ) : null}
-                  </Form>
+                  </FormControl>
                 </View>
                 {errors.common ? (
                   <Text style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -719,7 +733,7 @@ export class Signup extends Component {
               navigation={this.props.navigation}
               url={'https://www.classtap.com/terms'}
             />
-          </Container>
+          </SafeAreaView>
         )}
       </>
     );

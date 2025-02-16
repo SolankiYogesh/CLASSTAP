@@ -7,7 +7,8 @@ import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import HeaderComponent from '../../components/Header';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
-export class Map extends Component {
+
+class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {};

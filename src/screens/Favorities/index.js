@@ -36,7 +36,7 @@ import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
-export class Favorities extends Component {
+class Favorities extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,19 +49,20 @@ export class Favorities extends Component {
     if (!isEmpty(this.props.auth.user)) {
       const {id} = this.props.auth.user;
       this.props.getFavorites(id);
-      //this.props.getGyms();
-      //this.props.getClasses();
-    } else {
-      //this.props.navigation.navigate('Login');
     }
-    this.focusListener = this.props.navigation.addListener('willFocus', () => {
-      BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.back = BackHandler.addEventListener(
+        'hardwareBackPress',
+        this.handleBack,
+      );
     });
 
-    this.focusListener1 = this.props.navigation.addListener('willBlur', () => {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener1 = this.props.navigation.addListener('blur', () => {
+      if (this.back?.remove) {
+        this.back?.remove();
+      }
     });
-    this.focusListener2 = this.props.navigation.addListener('didFocus', () => {
+    this.focusListener2 = this.props.navigation.addListener('focus', () => {
       // do something
       const {lang} = this.props.setting;
       if (isEmpty(this.props.auth.user)) {
@@ -96,10 +97,9 @@ export class Favorities extends Component {
   };
 
   componentWillUnmount() {
-    //BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
-    this.focusListener.remove();
-    this.focusListener1.remove();
-    this.focusListener2.remove();
+    this.focusListener();
+    this.focusListener1();
+    this.focusListener2();
   }
 
   renderItem = ({item}) => {

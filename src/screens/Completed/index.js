@@ -25,7 +25,7 @@ import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 moment.tz.setDefault('Asia/Qatar');
 
-export class Completed extends Component {
+class Completed extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,7 +34,7 @@ export class Completed extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
+  componentDidUpdate(props) {
     if (!isEmpty(props.subscription.completedClasses)) {
       return {
         completedClasses: props.subscription.completedClasses,
@@ -48,28 +48,16 @@ export class Completed extends Component {
     analytics().logEvent(Const.ANALYTICS_EVENT.COMPLETED_EVENT_SCREEN);
     const {completedClasses} = this.props.subscription;
     this.setState({completedClasses: completedClasses, isLoading: false});
-    /*  const {id} = await this.props.auth.user;
-    let url = `${API_URI}/booking_classes?filter={"where": {"user_id": ${id}}}`;
-
-    await axios
-      .get(url)
-      .then(res => {
-        if (res.data.error.code) {
-        } else {
-          const {data} = res.data;
-          this.setState({completedClasses: data, isLoading: false});
-          return true;
-        }
-      })
-      .catch(err => {
-        this.setState({isLoading: false});
-      }); */
-
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   handleNavigateCompletedClass = (e, id, isCoachRev) => {

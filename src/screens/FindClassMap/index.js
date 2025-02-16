@@ -38,7 +38,7 @@ import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
-export class FindClassMap extends Component {
+class FindClassMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,11 +53,16 @@ export class FindClassMap extends Component {
     this.props.getGyms();
     this.props.getClasses();
     this.requestLocationPermission();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   handleBack = async () => {

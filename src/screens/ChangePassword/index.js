@@ -8,7 +8,7 @@ import {registerUser} from '../../actions/authActions';
 import HeaderComponent from '../../components/Header';
 import I18n from '../../utils/i18n';
 
-export class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {

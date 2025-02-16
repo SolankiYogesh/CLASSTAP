@@ -53,7 +53,7 @@ import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
-export class Gym extends Component {
+class Gym extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -69,17 +69,10 @@ export class Gym extends Component {
     };
   }
 
-  /*  static getDerivedStateFromProps(props, state) {
-    if (props.navigation.state.params.id == state.gym.id) return null;
-    let gym = {...props.home.gym};
-    return {
-      gym: gym,
-    };
-  } */
 
   async componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.GYM_SCREEN);
-    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
       this.handleRefresh();
     });
 
@@ -107,26 +100,17 @@ export class Gym extends Component {
         this.setState({isLoading: false});
       });
 
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
-  /*  async componentDidMount() {
-    const id = await this.props.navigation.getParam('id');
-    const latitude = await AsyncStorage.getItem('latitude');
-    const longitude = await AsyncStorage.getItem('longitude');
-
-    if (latitude && longitude) {
-      this.props.getGymLocation(id);
-    } else {
-      this.props.getGym(id);
-    }
-
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
-  } */
-
   componentWillUnmount() {
-    this.focusListener.remove();
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener();
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   handleNavigateGymClass = (e, id) => {

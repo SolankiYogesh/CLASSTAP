@@ -1,17 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import moment from 'moment';
-import {Button, Icon} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
-  Dimensions,
   FlatList,
   Image,
-  Linking,
-  Platform,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -31,9 +25,8 @@ import ReviewShow from '../Review/ReviewShow';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-const {width} = Dimensions.get('window');
 
-export class CategoryClass extends Component {
+ class CategoryClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -76,11 +69,16 @@ export class CategoryClass extends Component {
         this.setState({isLoading: false});
       });
 
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
   }
 
   handleNavigateGymCategoryClass = (e, id) => {

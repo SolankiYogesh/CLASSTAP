@@ -25,7 +25,7 @@ import {WebView} from 'react-native-webview';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const.js';
 
-export class PaymentWeb extends Component {
+class PaymentWeb extends Component {
   constructor(props) {
     super(props);
     this.state = {

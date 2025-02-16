@@ -27,7 +27,7 @@ import {getWhatsOnToday} from '../../actions/subscriptionActions';
 import {API_URI} from '../../utils/config';
 import I18n from '../../utils/i18n';
 
-export class WriteCoachReview extends Component {
+class WriteCoachReview extends Component {
   constructor(props) {
     super(props);
     this.state = {

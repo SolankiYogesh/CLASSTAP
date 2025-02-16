@@ -26,7 +26,7 @@ import I18n from '../../utils/i18n';
 import analytics from '@react-native-firebase/analytics';
 import Const from '../../utils/Const';
 
-export class Setting extends Component {
+class Setting extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,7 +40,10 @@ export class Setting extends Component {
 
   async componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.SETTING_SCREEN);
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.back = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBack,
+    );
     this.setState({
       isNotification: this.props.auth.user.is_notification,
       isNewsletter: this.props.auth.user.is_newsletter,
@@ -112,7 +115,9 @@ export class Setting extends Component {
     this.setState({isInitial: false});
   };
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    if (this.back?.remove) {
+      this.back?.remove();
+    }
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
