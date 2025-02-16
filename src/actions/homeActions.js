@@ -40,7 +40,7 @@ export const clearLoading = () => {
 }
 
 // Get Nearest gyms
-export const getGyms = () => async (dispatch, getState) => {
+export const getGyms = () => async (dispatch) => {
   const latitude = await AsyncStorage.getItem('latitude')
   const longitude = await AsyncStorage.getItem('longitude')
 

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Container, Content, Input, Item} from 'native-base'
+import {Container,  Input, Item} from 'native-base'
 import React, {Component} from 'react'
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {Col, Grid} from 'react-native-easy-grid'

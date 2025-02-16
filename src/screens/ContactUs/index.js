@@ -1,28 +1,20 @@
 import axios from 'axios'
 import {
-  CheckBox,
   Container,
   Form,
-  Icon,
   Input,
   Item,
-  Label,
   Textarea
 } from 'native-base'
 import React, {Component} from 'react'
 import {
   BackHandler,
-  I18nManager,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   StyleSheet,
-  Switch,
   Text,
   TouchableOpacity,
   View
 } from 'react-native'
-import {Col, Grid} from 'react-native-easy-grid'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import normalize from 'react-native-normalize'
 import Toast from 'react-native-toast-notifications'
@@ -30,7 +22,6 @@ import {connect} from 'react-redux'
 
 import {registerUser} from '../../actions/authActions'
 import {clearErrors} from '../../actions/errorAction'
-import LockIcon from '../../assets/img/lock.svg'
 import MailIcon from '../../assets/img/mail.svg'
 import PhoneIcon from '../../assets/img/phone.svg'
 import UserIcon from '../../assets/img/user.svg'
