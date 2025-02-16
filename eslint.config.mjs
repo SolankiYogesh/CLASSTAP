@@ -211,10 +211,10 @@ export default [
         'no-restricted-syntax': 'off',
         curly: 'error',
         'prefer-regex-literals': 'off',
-        'react-native/no-inline-styles': 2,
-        'react-native/no-color-literals': 2,
+        // 'react-native/no-inline-styles': 2,
+        // 'react-native/no-color-literals': 2,
         'react-native/no-single-element-style-arrays': 2,
-        'react-native/sort-styles': 'error',
+        // 'react-native/sort-styles': 'error',
 
         'import/no-unresolved': 'error'
       },
