@@ -1,6 +1,6 @@
-import moment from 'moment-timezone'
-import {Body, Button, Container, Header, Icon, Left} from 'native-base'
-import React, {Component} from 'react'
+import moment from 'moment-timezone';
+import {Body, Button, Container, Header, Icon, Left} from 'native-base';
+import React, {Component} from 'react';
 import {
   BackHandler,
   Platform,
@@ -8,34 +8,34 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
-import {connect} from 'react-redux'
-import RangeSlider from 'rn-range-slider'
+  View,
+} from 'react-native';
+import normalize from 'react-native-normalize';
+import {connect} from 'react-redux';
+import RangeSlider from 'rn-range-slider';
 
-import {clearErrors} from '../../actions/errorAction'
-import CalendarStrip from '../../react-native-slideable-calendar-strip'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-moment.tz.setDefault('Asia/Qatar')
+import {clearErrors} from '../../actions/errorAction';
+import CalendarStrip from '../../react-native-slideable-calendar-strip';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+moment.tz.setDefault('Asia/Qatar');
 
 //import {getCategories} from '../../actions/homeActions';
 import {
   getCategories,
   getFilterFindClassCount,
-  getFilterFindClasses
-} from '../../actions/findClassActions'
+  getFilterFindClasses,
+} from '../../actions/findClassActions';
 
 const genders = [
   {id: 1, name: 'Male', name_ar: 'الذكر'},
   {id: 2, name: 'Female', name_ar: 'أنثى'},
-  {id: 3, name: 'Mixed', name_ar: 'مختلط'}
-]
+  {id: 3, name: 'Mixed', name_ar: 'مختلط'},
+];
 
 export class Membership extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       selectedDate: new Date(),
       rangeLow: 18000000,
@@ -46,54 +46,54 @@ export class Membership extends Component {
       creditRangeHigh: 50,
       gender_id: [],
       category_id: [],
-      category_type_id: []
-    }
+      category_type_id: [],
+    };
   }
   async componentDidMount() {
-    this.handleSearchFilterCount()
+    this.handleSearchFilterCount();
     //this.props.clearErrors();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack)
-    this.props.getCategories()
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.props.getCategories();
   }
 
   handleBack = async back => {
-    this.props.navigation.goBack()
-    return true
-  }
+    this.props.navigation.goBack();
+    return true;
+  };
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack)
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
   }
 
   handleSelectDate = date => {
-    const {selectedDate} = this.state
+    const {selectedDate} = this.state;
 
     //this.setState({selectedDate: date});
     this.setState(
       {
-        selectedDate: selectedDate !== date ? date : 0
+        selectedDate: selectedDate !== date ? date : 0,
       },
       () => {
-        this.handleSearchFilterCount()
+        this.handleSearchFilterCount();
       },
-    )
-  }
+    );
+  };
 
   handleSelectTime = e => {
     if (!isEmpty(e)) {
       // e.preventDefault();
-      const {lang} = this.props.setting
-      const {selectedDate} = this.state
-      this.handleSearchFilterCount()
+      const {lang} = this.props.setting;
+      const {selectedDate} = this.state;
+      this.handleSearchFilterCount();
     }
-  }
+  };
 
   handleSelectCredit = e => {
     if (!isEmpty(e)) {
-      e.preventDefault()
-      this.handleSearchFilterCount()
+      e.preventDefault();
+      this.handleSearchFilterCount();
     }
-  }
+  };
 
   handleSearchFilterCount = () => {
     const {
@@ -104,49 +104,49 @@ export class Membership extends Component {
       creditRangeHigh,
       gender_id,
       category_id,
-      category_type_id
-    } = this.state
-    let filter
-    let whereFilter = ''
-    let inClass = ''
-    let inClassCategory = ''
-    let date = new Date(selectedDate)
+      category_type_id,
+    } = this.state;
+    let filter;
+    let whereFilter = '';
+    let inClass = '';
+    let inClassCategory = '';
+    let date = new Date(selectedDate);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split('T')[0]
+      .split('T')[0];
 
     if (!isEmpty(gender_id)) {
-      inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`
+      inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
     }
 
     if (selectedDate && !isEmpty(category_type_id)) {
-      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}],"is_virtual":{"$in":[${category_type_id}]}},"inScheduleDates": { "date": "${dateString}" }`
+      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}],"is_virtual":{"$in":[${category_type_id}]}},"inScheduleDates": { "date": "${dateString}" }`;
     } else if (selectedDate) {
-      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}]},"inScheduleDates": { "date": "${dateString}" }`
+      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}]},"inScheduleDates": { "date": "${dateString}" }`;
     } else if (!isEmpty(category_type_id)) {
-      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]},"is_virtual":{"$in":[${category_type_id}]}}`
+      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]},"is_virtual":{"$in":[${category_type_id}]}}`;
     } else {
-      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]}}`
+      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]}}`;
     }
 
     if (!isEmpty(category_id)) {
-      inClassCategory = `"inClassCategory": {"category_id": {"$in":[${category_id}]}}`
+      inClassCategory = `"inClassCategory": {"category_id": {"$in":[${category_id}]}}`;
     }
     if (!isEmpty(inClass) && !isEmpty(inClassCategory)) {
-      filter = `{${inClass},${whereFilter},${inClassCategory}}`
+      filter = `{${inClass},${whereFilter},${inClassCategory}}`;
     } else if (!isEmpty(inClass)) {
-      filter = `{${inClass},${whereFilter}}`
+      filter = `{${inClass},${whereFilter}}`;
     } else if (!isEmpty(inClassCategory)) {
-      filter = `{"inClass":{"is_active": 1},${whereFilter},${inClassCategory}}`
+      filter = `{"inClass":{"is_active": 1},${whereFilter},${inClassCategory}}`;
     } else {
-      filter = `{"inClass":{"is_active": 1},${whereFilter}}`
+      filter = `{"inClass":{"is_active": 1},${whereFilter}}`;
     }
 
-    this.props.getFilterFindClassCount(filter)
-  }
+    this.props.getFilterFindClassCount(filter);
+  };
 
   handleSearchFilter = e => {
-    e.preventDefault()
+    e.preventDefault();
     const {
       start_time,
       end_time,
@@ -157,42 +157,42 @@ export class Membership extends Component {
       category_id,
       category_type_id,
       rangeLow,
-      rangeHigh
-    } = this.state
-    let filter
-    let whereFilter = ''
-    let inClass = ''
-    let inClassCategory = ''
-    let date = new Date(selectedDate)
+      rangeHigh,
+    } = this.state;
+    let filter;
+    let whereFilter = '';
+    let inClass = '';
+    let inClassCategory = '';
+    let date = new Date(selectedDate);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split('T')[0]
+      .split('T')[0];
     if (!isEmpty(gender_id)) {
-      inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`
+      inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
     }
 
     if (selectedDate && !isEmpty(category_type_id)) {
-      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}],"is_virtual":{"$in":[${category_type_id}]}},"inScheduleDates": { "date": "${dateString}" }`
+      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}],"is_virtual":{"$in":[${category_type_id}]}},"inScheduleDates": { "date": "${dateString}" }`;
     } else if (selectedDate) {
-      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}]},"inScheduleDates": { "date": "${dateString}" }`
+      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}]},"inScheduleDates": { "date": "${dateString}" }`;
     } else if (!isEmpty(category_type_id)) {
-      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]},"is_virtual":{"$in":[${category_type_id}]}}`
+      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]},"is_virtual":{"$in":[${category_type_id}]}}`;
     } else {
-      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]}}`
+      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]}}`;
     }
 
     if (!isEmpty(category_id)) {
-      inClassCategory = `"inClassCategory": {"category_id": {"$in":[${category_id}]}}`
+      inClassCategory = `"inClassCategory": {"category_id": {"$in":[${category_id}]}}`;
     }
 
     if (!isEmpty(inClass) && !isEmpty(inClassCategory)) {
-      filter = `{${inClass},${whereFilter},${inClassCategory}}`
+      filter = `{${inClass},${whereFilter},${inClassCategory}}`;
     } else if (!isEmpty(inClass)) {
-      filter = `{${inClass},${whereFilter}}`
+      filter = `{${inClass},${whereFilter}}`;
     } else if (!isEmpty(inClassCategory)) {
-      filter = `{"inClass":{"is_active": 1},${whereFilter},${inClassCategory}}`
+      filter = `{"inClass":{"is_active": 1},${whereFilter},${inClassCategory}}`;
     } else {
-      filter = `{"inClass":{"is_active": 1},${whereFilter}}`
+      filter = `{"inClass":{"is_active": 1},${whereFilter}}`;
     }
 
     this.props.getFilterFindClasses(filter, this.props.navigation, {
@@ -205,72 +205,72 @@ export class Membership extends Component {
       category_id,
       category_type_id,
       rangeLow,
-      rangeHigh
-    })
-  }
+      rangeHigh,
+    });
+  };
 
   handleGender = id => {
-    let gender_id = [...this.state.gender_id]
+    let gender_id = [...this.state.gender_id];
     if (gender_id.indexOf(id) > -1) {
-      gender_id = gender_id.filter(genId => genId !== id)
+      gender_id = gender_id.filter(genId => genId !== id);
     } else {
-      gender_id.push(id)
+      gender_id.push(id);
     }
     this.setState(
       {
-        gender_id
+        gender_id,
       },
       () => {
-        this.handleSearchFilterCount()
+        this.handleSearchFilterCount();
       },
-    )
+    );
     //this.setState({gender_id: id});
-  }
+  };
   handleCategory = id => {
-    let category_id = [...this.state.category_id]
+    let category_id = [...this.state.category_id];
     if (category_id.indexOf(id) > -1) {
-      category_id = category_id.filter(catId => catId !== id)
+      category_id = category_id.filter(catId => catId !== id);
     } else {
-      category_id.push(id)
+      category_id.push(id);
     }
     this.setState(
       {
-        category_id
+        category_id,
       },
       () => {
-        this.handleSearchFilterCount()
+        this.handleSearchFilterCount();
       },
-    )
+    );
     //this.setState({category_id: id});
-  }
+  };
   handleCategoryType = id => {
-    let category_type_id = [...this.state.category_type_id]
+    let category_type_id = [...this.state.category_type_id];
     if (category_type_id.indexOf(id) > -1) {
-      category_type_id = category_type_id.filter(catId => catId !== id)
+      category_type_id = category_type_id.filter(catId => catId !== id);
     } else {
-      category_type_id.push(id)
+      category_type_id.push(id);
     }
     this.setState(
       {
-        category_type_id
+        category_type_id,
       },
       () => {
-        this.handleSearchFilterCount()
+        this.handleSearchFilterCount();
       },
-    )
-  }
+    );
+  };
   render() {
-    const {gym_count, class_count, categories} = this.props.findClass
-    const {lang} = this.props.setting
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
+    const {gym_count, class_count, categories} = this.props.findClass;
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     /// const {categories} = this.props.home;
-    const {selectedDate} = this.state
-    let date = new Date(selectedDate)
+    const {selectedDate} = this.state;
+    let date = new Date(selectedDate);
     let dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
-      .split('T')[0]
+      .split('T')[0];
     return (
       <Container style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <Header style={styles.headerContainer}>
@@ -294,14 +294,14 @@ export class Membership extends Component {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View
               style={{
-                marginHorizontal: normalize(16)
+                marginHorizontal: normalize(16),
               }}>
               <Text
                 style={{
                   color: '#231F20',
                   fontSize: normalize(40),
                   fontWeight: 'bold',
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {I18n.t('filter', {locale: lang})}
               </Text>
@@ -312,7 +312,7 @@ export class Membership extends Component {
                 marginTop: normalize(24),
                 display: 'flex',
                 flexDirection: flexDirection,
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
               }}>
               <View
                 style={{
@@ -321,7 +321,7 @@ export class Membership extends Component {
                   backgroundColor: '#EBEBEB',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderRadius: normalize(14)
+                  borderRadius: normalize(14),
                 }}>
                 <Text style={{color: '#22242A', fontSize: normalize(16)}}>
                   {I18n.t('gyms', {locale: lang})} ({gym_count ? gym_count : 0})
@@ -334,7 +334,7 @@ export class Membership extends Component {
                   backgroundColor: '#EBEBEB',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderRadius: normalize(14)
+                  borderRadius: normalize(14),
                 }}>
                 <Text style={{color: '#22242A', fontSize: normalize(16)}}>
                   {I18n.t('classes', {locale: lang})} (
@@ -347,14 +347,14 @@ export class Membership extends Component {
                 marginTop: normalize(24),
                 marginHorizontal: normalize(16),
                 flexDirection: flexDirection,
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
               }}>
               <Text
                 style={{
                   fontSize: normalize(20),
                   fontWeight: 'bold',
                   color: '#231F20',
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {I18n.t('dateTime', {locale: lang})}
               </Text>
@@ -366,7 +366,7 @@ export class Membership extends Component {
               style={{
                 marginTop: normalize(16),
                 //marginHorizontal: normalize(16),
-                flexDirection: 'row'
+                flexDirection: 'row',
               }}>
               <CalendarStrip
                 selectedDate={this.state.selectedDate}
@@ -381,7 +381,7 @@ export class Membership extends Component {
             </View>
             <View
               style={{
-                marginHorizontal: normalize(16)
+                marginHorizontal: normalize(16),
               }}>
               <View
                 style={{
@@ -390,7 +390,7 @@ export class Membership extends Component {
                   marginBottom: normalize(15),
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
                 }}>
                 <Text style={{fontSize: normalize(16), color: '#22242A'}}>
                   {moment.utc(this.state.rangeLow).format('hh:mm A')}
@@ -403,7 +403,7 @@ export class Membership extends Component {
                 style={{
                   flex: 1,
                   //width: normalize(343),
-                  height: 70
+                  height: 70,
                   // top: normalize(-30),
                 }}
                 gravity={'center'}
@@ -424,9 +424,9 @@ export class Membership extends Component {
                         borderRadius: 20,
                         backgroundColor: '#fff',
                         borderColor: '#FE9800',
-                        borderWidth: 5
+                        borderWidth: 5,
                       }}></View>
-                  )
+                  );
                 }}
                 renderRail={() => {
                   return (
@@ -435,9 +435,9 @@ export class Membership extends Component {
                         flex: 1,
                         height: 6,
                         borderRadius: 2,
-                        backgroundColor: '#EBEBEB'
+                        backgroundColor: '#EBEBEB',
                       }}></View>
-                  )
+                  );
                 }}
                 renderRailSelected={() => {
                   return (
@@ -445,9 +445,9 @@ export class Membership extends Component {
                       style={{
                         height: 6,
                         backgroundColor: '#FE9800',
-                        borderRadius: 2
+                        borderRadius: 2,
                       }}></View>
-                  )
+                  );
                 }}
                 onValueChanged={(low, high, fromUser) => {
                   if (fromUser) {
@@ -455,8 +455,8 @@ export class Membership extends Component {
                       rangeLow: low,
                       rangeHigh: high,
                       start_time: moment.utc(low).format('HH:mm:ss'),
-                      end_time: moment.utc(high).format('HH:mm:ss')
-                    })
+                      end_time: moment.utc(high).format('HH:mm:ss'),
+                    });
                   }
                 }}
                 low={this.state.rangeLow}
@@ -504,14 +504,14 @@ export class Membership extends Component {
             <View
               style={{
                 marginHorizontal: normalize(16),
-                marginTop: normalize(-20)
+                marginTop: normalize(-20),
               }}>
               <Text
                 style={{
                   fontSize: normalize(20),
                   fontWeight: 'bold',
                   color: '#231F20',
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {I18n.t('numberOfCreditsPerClass', {locale: lang})}
               </Text>
@@ -523,7 +523,7 @@ export class Membership extends Component {
                   marginTop: normalize(10),
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
                 }}>
                 <Text style={{fontSize: normalize(16), color: '#22242A'}}>
                   {this.state.creditRangeLow}
@@ -536,7 +536,7 @@ export class Membership extends Component {
                 style={{
                   flex: 1,
                   //width: normalize(343),
-                  height: 70
+                  height: 70,
                   // top: normalize(-30),
                 }}
                 gravity={'center'}
@@ -556,9 +556,9 @@ export class Membership extends Component {
                         borderRadius: 20,
                         backgroundColor: '#fff',
                         borderColor: '#FE9800',
-                        borderWidth: 5
+                        borderWidth: 5,
                       }}></View>
-                  )
+                  );
                 }}
                 renderRail={() => {
                   return (
@@ -567,9 +567,9 @@ export class Membership extends Component {
                         flex: 1,
                         height: 6,
                         borderRadius: 2,
-                        backgroundColor: '#EBEBEB'
+                        backgroundColor: '#EBEBEB',
                       }}></View>
-                  )
+                  );
                 }}
                 renderRailSelected={() => {
                   return (
@@ -577,16 +577,16 @@ export class Membership extends Component {
                       style={{
                         height: 6,
                         backgroundColor: '#FE9800',
-                        borderRadius: 2
+                        borderRadius: 2,
                       }}></View>
-                  )
+                  );
                 }}
                 onValueChanged={(low, high, fromUser) => {
                   if (fromUser) {
                     this.setState({
                       creditRangeLow: low,
-                      creditRangeHigh: high
-                    })
+                      creditRangeHigh: high,
+                    });
                   }
                 }}
                 initialLowValue={0}
@@ -647,7 +647,7 @@ export class Membership extends Component {
             <View
               style={{
                 marginHorizontal: normalize(16),
-                marginTop: normalize(16)
+                marginTop: normalize(16),
               }}>
               <View style={{marginBottom: normalize(16)}}>
                 <Text
@@ -655,7 +655,7 @@ export class Membership extends Component {
                     fontSize: normalize(20),
                     fontWeight: 'bold',
                     color: '#231F20',
-                    textAlign: textAlign
+                    textAlign: textAlign,
                   }}>
                   {I18n.t('gender', {locale: lang})}
                 </Text>
@@ -675,7 +675,7 @@ export class Membership extends Component {
                           ? '#FE9800'
                           : '#F9F9F9',
                       borderRadius: normalize(16),
-                      margin: normalize(5)
+                      margin: normalize(5),
                     }}>
                     <Text
                       style={{
@@ -683,7 +683,7 @@ export class Membership extends Component {
                         color:
                           this.state.gender_id.indexOf(gender.id) > -1
                             ? '#ffffff'
-                            : '#8A8A8F'
+                            : '#8A8A8F',
                       }}>
                       {lang === 'ar' ? gender.name_ar : gender.name}
                     </Text>
@@ -694,7 +694,7 @@ export class Membership extends Component {
             <View
               style={{
                 marginHorizontal: normalize(16),
-                marginTop: normalize(16)
+                marginTop: normalize(16),
               }}>
               <View style={{marginBottom: normalize(16)}}>
                 <Text
@@ -702,7 +702,7 @@ export class Membership extends Component {
                     fontSize: normalize(20),
                     fontWeight: 'bold',
                     color: '#231F20',
-                    textAlign: textAlign
+                    textAlign: textAlign,
                   }}>
                   {I18n.t('classType', {locale: lang})}
                 </Text>
@@ -722,7 +722,7 @@ export class Membership extends Component {
                           ? '#FE9800'
                           : '#F9F9F9',
                       borderRadius: normalize(16),
-                      margin: normalize(5)
+                      margin: normalize(5),
                     }}>
                     <Text
                       style={{
@@ -730,7 +730,7 @@ export class Membership extends Component {
                         color:
                           this.state.category_id.indexOf(category.id) > -1
                             ? '#ffffff'
-                            : '#8A8A8F'
+                            : '#8A8A8F',
                       }}>
                       {lang === 'ar' ? category.name_ar : category.name}
                     </Text>
@@ -742,7 +742,7 @@ export class Membership extends Component {
             <View
               style={{
                 marginHorizontal: normalize(16),
-                marginTop: normalize(16)
+                marginTop: normalize(16),
               }}>
               <View style={{marginBottom: normalize(16)}}>
                 <Text
@@ -750,7 +750,7 @@ export class Membership extends Component {
                     fontSize: normalize(20),
                     fontWeight: 'bold',
                     color: '#231F20',
-                    textAlign: textAlign
+                    textAlign: textAlign,
                   }}>
                   {I18n.t('category', {locale: lang})}
                 </Text>
@@ -768,7 +768,7 @@ export class Membership extends Component {
                         ? '#FE9800'
                         : '#F9F9F9',
                     borderRadius: normalize(16),
-                    margin: normalize(5)
+                    margin: normalize(5),
                   }}>
                   <Text
                     style={{
@@ -776,7 +776,7 @@ export class Membership extends Component {
                       color:
                         this.state.category_type_id.indexOf(1) > -1
                           ? '#ffffff'
-                          : '#8A8A8F'
+                          : '#8A8A8F',
                     }}>
                     {I18n.t('virtual', {locale: lang})}
                   </Text>
@@ -792,7 +792,7 @@ export class Membership extends Component {
                         ? '#FE9800'
                         : '#F9F9F9',
                     borderRadius: normalize(16),
-                    margin: normalize(5)
+                    margin: normalize(5),
                   }}>
                   <Text
                     style={{
@@ -800,7 +800,7 @@ export class Membership extends Component {
                       color:
                         this.state.category_type_id.indexOf(0) > -1
                           ? '#ffffff'
-                          : '#8A8A8F'
+                          : '#8A8A8F',
                     }}>
                     {I18n.t('offline', {locale: lang})}
                   </Text>
@@ -818,13 +818,13 @@ export class Membership extends Component {
                 backgroundColor: '#FE9800',
                 justifyContent: 'center',
                 alignItems: 'center',
-                borderRadius: normalize(24)
+                borderRadius: normalize(24),
               }}>
               <Text
                 style={{
                   color: '#ffffff',
                   fontSize: normalize(16),
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
                 }}>
                 {I18n.t('showMeResults', {locale: lang})}
               </Text>
@@ -832,7 +832,7 @@ export class Membership extends Component {
           </ScrollView>
         </View>
       </Container>
-    )
+    );
   }
 }
 
@@ -840,36 +840,36 @@ const styles = StyleSheet.create({
   backButtonContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   backButtonIcon: {
     color: '#22242A',
     fontSize: normalize(18),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   backButtonText: {
     color: '#22242A',
     fontSize: normalize(12),
 
-    top: Platform.OS === 'ios' ? normalize(3) : normalize(3.3)
+    top: Platform.OS === 'ios' ? normalize(3) : normalize(3.3),
   },
   headerContainer: {
     backgroundColor: '#FFFFFF',
-    borderBottomWidth: 0
-  }
-})
+    borderBottomWidth: 0,
+  },
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   findClass: state.findClass,
   setting: state.setting,
   home: state.home,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   clearErrors,
   getCategories,
   getFilterFindClasses,
-  getFilterFindClassCount
-})(Membership)
+  getFilterFindClassCount,
+})(Membership);

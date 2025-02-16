@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native'
-import normalize from 'react-native-normalize'
+import {StyleSheet} from 'react-native';
+import normalize from 'react-native-normalize';
 
 const styles = StyleSheet.create({
   accountButton: {
@@ -7,26 +7,26 @@ const styles = StyleSheet.create({
     borderRadius: normalize(23),
     height: normalize(46),
     justifyContent: 'center',
-    marginHorizontal: normalize(40)
+    marginHorizontal: normalize(40),
     //marginVertical: 10,
   },
   accountButtonText: {
     color: '#ffffff',
     fontSize: normalize(15),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   alreadyAccount: {
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   alreadyAccountText: {
     fontSize: normalize(13),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   alreadyAccountTextLogin: {
     color: '#FE9800',
     fontSize: normalize(13),
     marginLeft: normalize(5),
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
   appleButton: {
     alignItems: 'center',
@@ -35,36 +35,36 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: normalize(46),
     justifyContent: 'center',
-    marginHorizontal: normalize(40)
+    marginHorizontal: normalize(40),
   },
   appleButtonText: {
     color: '#000000',
     fontSize: normalize(15),
     marginHorizontal: normalize(10),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   buttonContainer: {
     flex: 3,
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   container: {
     backgroundColor: '#ffffff',
-    flex: 1
+    flex: 1,
   },
   contentContainer: {
     flex: 2,
     //height: 60,
-    justifyContent: 'center'
+    justifyContent: 'center',
     //marginVertical: 30,
   },
   contentSmallTitle: {
     fontSize: normalize(16),
-    marginHorizontal: '5%'
+    marginHorizontal: '5%',
   },
   contentTitle: {
     fontSize: normalize(40),
     fontWeight: 'bold',
-    marginHorizontal: '5%'
+    marginHorizontal: '5%',
   },
   facebookButton: {
     alignItems: 'center',
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: normalize(46),
     justifyContent: 'center',
-    marginHorizontal: normalize(40)
+    marginHorizontal: normalize(40),
     //flexDirection: 'row',
     //marginVertical: 10,
   },
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     color: '#3578E5',
     fontSize: normalize(15),
     marginHorizontal: normalize(10),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   guestAccount: {
     //marginVertical: 20,
@@ -89,30 +89,30 @@ const styles = StyleSheet.create({
   guestAccountText: {
     fontSize: normalize(16),
     fontWeight: '500',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   imageContainer: {
     flex: 4,
     // width: width,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
     //height: 250,
   },
   titleContainer: {
     flex: 1,
     //height: 80,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   titleText: {
     fontSize: normalize(30),
-    letterSpacing: normalize(4.74)
+    letterSpacing: normalize(4.74),
   },
   welcomeImage: {
     backgroundColor: 'red',
     flex: 1,
     height: 100,
-    width: 200
-  }
-})
+    width: 200,
+  },
+});
 
-export default styles
+export default styles;

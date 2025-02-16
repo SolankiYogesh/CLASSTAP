@@ -204,6 +204,7 @@ export default [
             object: true
           }
         ],
+        "import/no-named-as-default-member":"off",
         'jsx-a11y/label-has-associated-control': 'off',
         'react/require-default-props': 'off',
         'react/jsx-no-constructed-context-values': 'error',

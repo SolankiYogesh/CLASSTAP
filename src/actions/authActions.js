@@ -1,9 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-import {API_URI} from '../utils/config'
-import I18n from '../utils/i18n'
-import setAuthToken from '../utils/setAuthToken'
+import {API_URI} from '../utils/config';
+import I18n from '../utils/i18n';
+import setAuthToken from '../utils/setAuthToken';
 import {
   CLEAR_CURRENT_USER,
   CLEAR_LOADING,
@@ -18,47 +18,47 @@ import {
   LOADING,
   RESET_PASSWORD,
   SET_CURRENT_USER,
-  SET_UPDATE_USER
-} from './types'
+  SET_UPDATE_USER,
+} from './types';
 
 // Register User
 export const registerUser = (userData, navigation) => dispatch => {
   //alert('come');
   dispatch({
-    type: LOADING
-  })
+    type: LOADING,
+  });
   axios
     .post(`${API_URI}/users/register`, userData)
     .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error.message
-        })
+          payload: res.data.error.message,
+        });
       } else {
-        dispatch(clearLoading())
-        const {mobile, mobile_code} = userData
+        dispatch(clearLoading());
+        const {mobile, mobile_code} = userData;
 
-        navigation.navigate('Otp', {mobile, mobile_code})
+        navigation.navigate('Otp', {mobile, mobile_code});
       }
     })
     .catch(err => {
       if (err.response.data.error) {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         dispatch({
           type: GET_ERRORS,
-          payload: err.response.data.error.message
-        })
+          payload: err.response.data.error.message,
+        });
       }
-    })
-}
+    });
+};
 
 // Verify Otp
 export const verifyOtp = (userData, navigation) => (dispatch, getState) => {
-  let {lang} = getState().setting
+  let {lang} = getState().setting;
   dispatch({
-    type: LOADING
-  })
+    type: LOADING,
+  });
   //alert('come');
   //navigation.navigate('Main');
   axios
@@ -67,35 +67,35 @@ export const verifyOtp = (userData, navigation) => (dispatch, getState) => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error.message
-        })
+          payload: res.data.error.message,
+        });
       } else {
         if (userData.is_forget) {
-          dispatch(clearLoading())
+          dispatch(clearLoading());
           navigation.navigate('ResetPassword', {
             mobile: userData.mobile,
-            otp: userData.otp
-          })
+            otp: userData.otp,
+          });
         } else {
-          const {token, data} = res.data
+          const {token, data} = res.data;
           // Set token to ls
-          await AsyncStorage.setItem('classTabToken', token)
-          await AsyncStorage.setItem('user_id', data.id.toString())
-          await AsyncStorage.setItem('pre_user_id', data.id.toString())
+          await AsyncStorage.setItem('classTabToken', token);
+          await AsyncStorage.setItem('user_id', data.id.toString());
+          await AsyncStorage.setItem('pre_user_id', data.id.toString());
           // Set token to Auth header
-          setAuthToken(token)
+          setAuthToken(token);
           // Set current user
 
-          dispatch(setCurrentUser(data))
-          dispatch(clearLoading())
+          dispatch(setCurrentUser(data));
+          dispatch(clearLoading());
           navigation.navigate('Success', {
             text: I18n.t('wellDone', {locale: lang}),
             shortText: I18n.t('youHaveSuccessfullyCreateYourAccount', {
-              locale: lang
+              locale: lang,
             }),
             buttonText: I18n.t('startNow', {locale: lang}),
-            MoveScreenName: 'Main'
-          })
+            MoveScreenName: 'Main',
+          });
           //navigation.navigate('Main');
           //navigation.navigate('Otp', {mobile, mobile_code});
         }
@@ -105,102 +105,102 @@ export const verifyOtp = (userData, navigation) => (dispatch, getState) => {
     })
     .catch(err => {
       if (err.response.data.error) {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         dispatch({
           type: GET_ERRORS,
-          payload: err.response.data.error.message
-        })
+          payload: err.response.data.error.message,
+        });
       }
-    })
-}
+    });
+};
 
 // Login - Get User Token
 export const loginUser = (userData, navigation) => dispatch => {
   dispatch({
-    type: LOADING
-  })
+    type: LOADING,
+  });
   axios
     .post(`${API_URI}/users/login`, userData)
     .then(async res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error.message
-        })
+          payload: res.data.error.message,
+        });
       } else {
-        const {token, data} = res.data
+        const {token, data} = res.data;
         // Set token to ls
-        await AsyncStorage.setItem('classTabToken', token)
-        await AsyncStorage.setItem('user_id', data.id.toString())
-        await AsyncStorage.setItem('pre_user_id', data.id.toString())
+        await AsyncStorage.setItem('classTabToken', token);
+        await AsyncStorage.setItem('user_id', data.id.toString());
+        await AsyncStorage.setItem('pre_user_id', data.id.toString());
         // Set token to Auth header
-        setAuthToken(token)
+        setAuthToken(token);
         // Set current user
-        dispatch(setCurrentUser(data))
+        dispatch(setCurrentUser(data));
 
-        dispatch(clearLoading())
-        navigation.navigate('Main')
+        dispatch(clearLoading());
+        navigation.navigate('Main');
       }
     })
     .catch(err => {
       if (err.response.status === 421) {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         navigation.navigate('Otp', {
           mobile: userData.mobile,
-          mobile_code: '+974'
-        })
+          mobile_code: '+974',
+        });
       } else {
         if (err.response.data.error) {
-          dispatch(clearLoading())
+          dispatch(clearLoading());
           dispatch({
             type: GET_ERRORS,
-            payload: err.response.data.error.message
-          })
+            payload: err.response.data.error.message,
+          });
         }
       }
-    })
-}
+    });
+};
 
 // Forgot Password
 export const forgotPassword =
   (userData, navigation) => (dispatch, getState) => {
     dispatch({
-      type: LOADING
-    })
+      type: LOADING,
+    });
     axios
       .post(`${API_URI}/users/forgot_password`, userData)
       .then(res => {
         if (res.data.error.code) {
           dispatch({
             type: GET_ERRORS,
-            payload: res.data.error.message
-          })
+            payload: res.data.error.message,
+          });
         } else {
-          const {mobile, mobile_code} = userData
-          dispatch(clearLoading())
-          navigation.navigate('Otp', {mobile, mobile_code, is_forget: true})
+          const {mobile, mobile_code} = userData;
+          dispatch(clearLoading());
+          navigation.navigate('Otp', {mobile, mobile_code, is_forget: true});
         }
       })
       .catch(err => {
         if (err.response.data.error) {
-          dispatch(clearLoading())
+          dispatch(clearLoading());
           dispatch({
             type: GET_ERRORS,
-            payload: err.response.data.error.message
-          })
+            payload: err.response.data.error.message,
+          });
         }
-      })
-  }
+      });
+  };
 
 // Reset Password
 export const resetPassword = (userData, navigation) => (dispatch, getState) => {
   dispatch({
-    type: CLEAR_RESET_PASSWORD
-  })
+    type: CLEAR_RESET_PASSWORD,
+  });
 
   dispatch({
-    type: LOADING
-  })
+    type: LOADING,
+  });
 
   axios
     .post(`${API_URI}/users/reset_password`, userData)
@@ -208,69 +208,69 @@ export const resetPassword = (userData, navigation) => (dispatch, getState) => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error.message
-        })
+          payload: res.data.error.message,
+        });
       } else {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         dispatch({
-          type: RESET_PASSWORD
-        })
+          type: RESET_PASSWORD,
+        });
         //navigation.navigate('Login');
       }
     })
     .catch(err => {
       if (err.response.data.error) {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         dispatch({
           type: GET_ERRORS,
-          payload: err.response.data.error.message
-        })
+          payload: err.response.data.error.message,
+        });
       }
-    })
-}
+    });
+};
 
 export const clearResetPassword = () => dispatch => {
   dispatch({
-    type: CLEAR_RESET_PASSWORD
-  })
-}
+    type: CLEAR_RESET_PASSWORD,
+  });
+};
 
 // Log user out
 export const logoutUser = navigation => dispatch => {
   dispatch({
-    type: LOADING
-  })
+    type: LOADING,
+  });
   axios
     .get(`${API_URI}/users/logout`)
     .then(async res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error.message
-        })
+          payload: res.data.error.message,
+        });
       } else {
-        dispatch(clearLoading())
-        dispatch(setCurrentUser({}))
+        dispatch(clearLoading());
+        dispatch(setCurrentUser({}));
         // Remove token from localStorage
-        await AsyncStorage.removeItem('classTabToken')
-        await AsyncStorage.removeItem('user_id')
+        await AsyncStorage.removeItem('classTabToken');
+        await AsyncStorage.removeItem('user_id');
         // Remove auth header for future requests
-        setAuthToken(false)
+        setAuthToken(false);
         // Set current user
         //dispatch(clearCurrentProfile());
-        navigation.navigate('Auth')
+        navigation.navigate('Auth');
       }
     })
     .catch(err => {
       if (err.response.data.error) {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         dispatch({
           type: GET_ERRORS,
-          payload: err.response.data.error.message
-        })
+          payload: err.response.data.error.message,
+        });
       }
-    })
-}
+    });
+};
 
 //  Get User User
 export const currentUser = () => dispatch => {
@@ -282,12 +282,12 @@ export const currentUser = () => dispatch => {
     .then(res => {
       if (res.data.error.code) {
         // Remove token from localStorage
-        AsyncStorage.removeItem('classTabToken')
-        AsyncStorage.removeItem('user_id')
+        AsyncStorage.removeItem('classTabToken');
+        AsyncStorage.removeItem('user_id');
         // Remove auth header for future requests
-        setAuthToken(false)
+        setAuthToken(false);
         // Set current user
-        dispatch(clearCurrentProfile())
+        dispatch(clearCurrentProfile());
 
         /*  dispatch({
           type: GET_ERRORS,
@@ -300,11 +300,11 @@ export const currentUser = () => dispatch => {
         }); */
       } else {
         // Save to localStorage
-        const {data} = res.data
+        const {data} = res.data;
 
         // dispatch(clearLoading());
         // Set current user
-        dispatch(setCurrentUser(data))
+        dispatch(setCurrentUser(data));
       }
     })
     .catch(err => {
@@ -321,109 +321,109 @@ export const currentUser = () => dispatch => {
         type: GET_ERRORS,
         payload: err,
       }); */
-    })
-}
+    });
+};
 
 export const clearCurrentProfile = () => dispatch => {
   return {
     type: CLEAR_CURRENT_USER,
-    payload: {}
-  }
-}
+    payload: {},
+  };
+};
 
 // Set logged in user
 export const setCurrentUser = user => {
   return {
     type: SET_CURRENT_USER,
-    payload: user
-  }
-}
+    payload: user,
+  };
+};
 
 // Update User
 export const updateUser = (userData, id, navigation) => dispatch => {
-  dispatch(setLoading())
+  dispatch(setLoading());
   dispatch({
-    type: CLEAR_UPDATE_USER
-  })
+    type: CLEAR_UPDATE_USER,
+  });
   axios
     .put(`${API_URI}/users/${id}`, userData)
     .then(res => {
       if (res.data.error.code) {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error.message
-        })
+          payload: res.data.error.message,
+        });
       } else {
-        const {data} = res.data
-        dispatch(clearLoading())
+        const {data} = res.data;
+        dispatch(clearLoading());
         // Set current user
-        dispatch(setCurrentUser(data))
+        dispatch(setCurrentUser(data));
         dispatch({
-          type: SET_UPDATE_USER
-        })
+          type: SET_UPDATE_USER,
+        });
       }
     })
     .catch(err => {
       if (err.response.data.error) {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         dispatch({
           type: GET_ERRORS,
-          payload: err.response.data.error.message
-        })
+          payload: err.response.data.error.message,
+        });
       }
-    })
-}
+    });
+};
 
 export const clearUpdateUser = () => dispatch => {
   dispatch({
-    type: CLEAR_UPDATE_USER
-  })
-}
+    type: CLEAR_UPDATE_USER,
+  });
+};
 
 export const setLoading = () => {
   return {
-    type: LOADING
-  }
-}
+    type: LOADING,
+  };
+};
 
 export const clearLoading = () => {
   return {
-    type: CLEAR_LOADING
-  }
-}
+    type: CLEAR_LOADING,
+  };
+};
 
 // Get User
 export const getUser = id => dispatch => {
-  dispatch(setLoading())
+  dispatch(setLoading());
   axios
     .get(`${API_URI}/users/${id}`)
     .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error
-        })
+          payload: res.data.error,
+        });
       } else {
-        const {data} = res.data
-        dispatch(clearLoading())
+        const {data} = res.data;
+        dispatch(clearLoading());
         dispatch({
           type: GET_PRE_USER,
-          payload: data
-        })
+          payload: data,
+        });
         //dispatch(setCurrentUser(data));
       }
     })
     .catch(err => {
       if (err.response.data.error) {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         dispatch({
           type: GET_ERRORS,
-          payload: err.response.data.error.message
-        })
+          payload: err.response.data.error.message,
+        });
       }
-    })
-}
+    });
+};
 
 // Get all Users
 export const getAllUser = () => dispatch => {
@@ -434,23 +434,23 @@ export const getAllUser = () => dispatch => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error
-        })
+          payload: res.data.error,
+        });
       } else {
-        const {data} = res.data
+        const {data} = res.data;
         dispatch({
           type: GET_USERS,
-          payload: data
-        })
+          payload: data,
+        });
       }
     })
     .catch(err => {
       dispatch({
         type: GET_ERRORS,
-        payload: err
-      })
-    })
-}
+        payload: err,
+      });
+    });
+};
 
 // Get all Admins
 export const getAllAdmin = () => dispatch => {
@@ -462,23 +462,23 @@ export const getAllAdmin = () => dispatch => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error
-        })
+          payload: res.data.error,
+        });
       } else {
-        const {data} = res.data
+        const {data} = res.data;
         dispatch({
           type: GET_ADMIN_USERS,
-          payload: data
-        })
+          payload: data,
+        });
       }
     })
     .catch(err => {
       dispatch({
         type: GET_ERRORS,
-        payload: err
-      })
-    })
-}
+        payload: err,
+      });
+    });
+};
 
 export const getStats = () => dispatch => {
   axios
@@ -487,27 +487,27 @@ export const getStats = () => dispatch => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error
-        })
+          payload: res.data.error,
+        });
       } else {
-        const {data} = res
+        const {data} = res;
         dispatch({
           type: GET_STATS,
-          payload: data
-        })
+          payload: data,
+        });
       }
     })
     .catch(err => {
       dispatch({
         type: GET_ERRORS,
-        payload: err
-      })
-    })
-}
+        payload: err,
+      });
+    });
+};
 
 // Update Admin
 export const updateAdmin = (userData, id) => (dispatch, getState) => {
-  let admins = [...getState().auth.admins]
+  let admins = [...getState().auth.admins];
 
   axios
     .put(`${API_URI}/users/${id}`, userData)
@@ -515,33 +515,33 @@ export const updateAdmin = (userData, id) => (dispatch, getState) => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error
-        })
+          payload: res.data.error,
+        });
       } else {
-        const {data} = res.data
+        const {data} = res.data;
         admins = admins.map(user => {
           if (user.id === data.id) {
-            user = {...user, ...data}
+            user = {...user, ...data};
           }
-          return user
-        })
+          return user;
+        });
         dispatch({
           type: GET_ADMIN_USERS,
-          payload: admins
-        })
+          payload: admins,
+        });
       }
     })
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       }),
-    )
-}
+    );
+};
 
 // Delete User
 export const deleteUser = id => (dispatch, getState) => {
-  let users = [...getState().auth.users]
+  let users = [...getState().auth.users];
 
   axios
     .delete(`${API_URI}/users/${id}`)
@@ -549,27 +549,27 @@ export const deleteUser = id => (dispatch, getState) => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error
-        })
+          payload: res.data.error,
+        });
       } else {
-        users = users.filter(user => user.id !== id)
+        users = users.filter(user => user.id !== id);
         dispatch({
           type: GET_USERS,
-          payload: users
-        })
+          payload: users,
+        });
       }
     })
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       }),
-    )
-}
+    );
+};
 
 // Delete Admin
 export const deleteAdmin = id => (dispatch, getState) => {
-  let admins = [...getState().auth.admins]
+  let admins = [...getState().auth.admins];
 
   axios
     .delete(`${API_URI}/users/${id}`)
@@ -577,59 +577,59 @@ export const deleteAdmin = id => (dispatch, getState) => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error
-        })
+          payload: res.data.error,
+        });
       } else {
-        admins = admins.filter(user => user.id !== id)
+        admins = admins.filter(user => user.id !== id);
         dispatch({
           type: GET_ADMIN_USERS,
-          payload: admins
-        })
+          payload: admins,
+        });
       }
     })
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       }),
-    )
-}
+    );
+};
 
 // Add Admin
 export const addAdmin = userData => (dispatch, getState) => {
-  let admins = [...getState().auth.admins]
+  let admins = [...getState().auth.admins];
   axios
     .post(`${API_URI}/users`, userData)
     .then(res => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error
-        })
+          payload: res.data.error,
+        });
       } else {
-        const {data} = res.data
-        admins.push(data)
+        const {data} = res.data;
+        admins.push(data);
         dispatch({
           type: GET_ADMIN_USERS,
-          payload: admins
-        })
+          payload: admins,
+        });
       }
     })
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       }),
-    )
-}
+    );
+};
 
 // showandhide dropdown
 
 // Social Login - Get User Token
 export const socialLoginUser = (userData, navigation) => dispatch => {
   dispatch({
-    type: LOADING
-  })
+    type: LOADING,
+  });
 
   axios
     .post(`${API_URI}/users/social_login`, userData)
@@ -637,38 +637,38 @@ export const socialLoginUser = (userData, navigation) => dispatch => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERROR_SOCIAL,
-          payload: res.data.error.message
-        })
+          payload: res.data.error.message,
+        });
       } else {
-        const {token, data} = res.data
+        const {token, data} = res.data;
 
         // Set token to ls
-        await AsyncStorage.setItem('classTabToken', token)
-        await AsyncStorage.setItem('user_id', data.id.toString())
-        await AsyncStorage.setItem('pre_user_id', data.id.toString())
+        await AsyncStorage.setItem('classTabToken', token);
+        await AsyncStorage.setItem('user_id', data.id.toString());
+        await AsyncStorage.setItem('pre_user_id', data.id.toString());
         // Set token to Auth header
-        setAuthToken(token)
+        setAuthToken(token);
         // Set current user
-        dispatch(setCurrentUser(data))
+        dispatch(setCurrentUser(data));
 
-        dispatch(clearLoading())
-        navigation.navigate('Main')
+        dispatch(clearLoading());
+        navigation.navigate('Main');
       }
     })
     .catch(err => {
-      dispatch(clearLoading())
+      dispatch(clearLoading());
       if (err.response.data.error) {
         dispatch({
           type: GET_ERROR_SOCIAL,
-          payload: err.response.data.error.message
-        })
+          payload: err.response.data.error.message,
+        });
       }
-    })
-}
+    });
+};
 
 // Update User Device Token
 export const updateUserDeviceToken = async userData => {
-  const id = await AsyncStorage.get('user_id')
+  const id = await AsyncStorage.get('user_id');
 
   axios
     .put(`${API_URI}/users/${id}`, userData)
@@ -676,27 +676,27 @@ export const updateUserDeviceToken = async userData => {
       if (res.data.error.code) {
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error.message
-        })
+          payload: res.data.error.message,
+        });
       } else {
-        const {data} = res.data
+        const {data} = res.data;
 
         // Set current user
-        dispatch(setCurrentUser(data))
+        dispatch(setCurrentUser(data));
         dispatch({
-          type: SET_UPDATE_USER
-        })
+          type: SET_UPDATE_USER,
+        });
       }
     })
     .catch(err => {
       if (err.response.data.error) {
         dispatch({
           type: GET_ERRORS,
-          payload: err.response.data.error.message
-        })
+          payload: err.response.data.error.message,
+        });
       }
-    })
-}
+    });
+};
 
 // Delete attachment
 export const deleteAttachment = id => dispatch => {
@@ -704,34 +704,34 @@ export const deleteAttachment = id => dispatch => {
     .delete(`${API_URI}/attachments/${id}`)
     .then(res => {
       if (res.data.error.code) {
-        dispatch(clearLoading())
+        dispatch(clearLoading());
         dispatch({
           type: GET_ERRORS,
-          payload: res.data.error.message
-        })
+          payload: res.data.error.message,
+        });
       } else {
-        const {data} = res.data
+        const {data} = res.data;
 
         // Set current user
-        dispatch(currentUser())
+        dispatch(currentUser());
       }
     })
     .catch(err => {
       if (err.response.data.error) {
         dispatch({
           type: GET_ERRORS,
-          payload: err.response.data.error.message
-        })
+          payload: err.response.data.error.message,
+        });
       }
-    })
-}
+    });
+};
 
 // Change Mobile
 export const changeMobile =
   (userData, id, navigation) => (dispatch, getState) => {
     dispatch({
-      type: LOADING
-    })
+      type: LOADING,
+    });
 
     axios
       .put(`${API_URI}/users/update_mobile_no/${id}`, userData)
@@ -739,36 +739,36 @@ export const changeMobile =
         if (res.data.error.code) {
           dispatch({
             type: GET_ERRORS,
-            payload: res.data.error.message
-          })
+            payload: res.data.error.message,
+          });
         } else {
-          const {mobile, mobile_code} = userData
+          const {mobile, mobile_code} = userData;
 
-          dispatch(clearLoading())
+          dispatch(clearLoading());
           navigation.navigate('MobileOtp', {
             mobile,
-            mobile_code
-          })
+            mobile_code,
+          });
         }
       })
       .catch(err => {
         if (err.response.data.error) {
-          dispatch(clearLoading())
+          dispatch(clearLoading());
           dispatch({
             type: GET_ERRORS,
-            payload: err.response.data.error.message
-          })
+            payload: err.response.data.error.message,
+          });
         }
-      })
-  }
+      });
+  };
 
 // Verify Mobile Otp
 export const verifyMobileOtp =
   (userData, id, navigation) => (dispatch, getState) => {
-    let {lang} = getState().setting
+    let {lang} = getState().setting;
     dispatch({
-      type: LOADING
-    })
+      type: LOADING,
+    });
     //alert('come');
     //navigation.navigate('Main');
     axios
@@ -777,23 +777,23 @@ export const verifyMobileOtp =
         if (res.data.error.code) {
           dispatch({
             type: GET_ERRORS,
-            payload: res.data.error.message
-          })
+            payload: res.data.error.message,
+          });
         } else {
-          dispatch(clearLoading())
-          dispatch(currentUser())
-          navigation.navigate('Account')
+          dispatch(clearLoading());
+          dispatch(currentUser());
+          navigation.navigate('Account');
         }
 
         //navigation.navigate('Main');
       })
       .catch(err => {
         if (err.response.data.error) {
-          dispatch(clearLoading())
+          dispatch(clearLoading());
           dispatch({
             type: GET_ERRORS,
-            payload: err.response.data.error.message
-          })
+            payload: err.response.data.error.message,
+          });
         }
-      })
-  }
+      });
+  };

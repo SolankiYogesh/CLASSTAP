@@ -1,5 +1,5 @@
-import {ActionSheet, Form, Input, Item, Label} from 'native-base'
-import React, {Component} from 'react'
+import {ActionSheet, Form, Input, Item, Label} from 'native-base';
+import React, {Component} from 'react';
 import {
   Alert,
   BackHandler,
@@ -8,36 +8,36 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native'
-import {Col, Grid} from 'react-native-easy-grid'
-import ImagePicker from 'react-native-image-crop-picker'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import normalize from 'react-native-normalize'
-import Toast from 'react-native-toast-notifications'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import {Col, Grid} from 'react-native-easy-grid';
+import ImagePicker from 'react-native-image-crop-picker';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import normalize from 'react-native-normalize';
+import Toast from 'react-native-toast-notifications';
+import {connect} from 'react-redux';
 
 import {
   clearUpdateUser,
   currentUser,
   deleteAttachment,
-  updateUser
-} from '../../actions/authActions'
-import {clearErrors} from '../../actions/errorAction'
-import CameraIcon from '../../assets/img/add_photo.svg'
-import LockIcon from '../../assets/img/lock.svg'
-import MailIcon from '../../assets/img/mail.svg'
-import PhoneIcon from '../../assets/img/phone.svg'
-import UserIcon from '../../assets/img/user.svg'
-import HeaderComponent from '../../components/Header'
-import {IMAGE_URI} from '../../utils/config'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import {updateUserValidation} from '../../validation/validation'
-import Loading from '../Loading'
+  updateUser,
+} from '../../actions/authActions';
+import {clearErrors} from '../../actions/errorAction';
+import CameraIcon from '../../assets/img/add_photo.svg';
+import LockIcon from '../../assets/img/lock.svg';
+import MailIcon from '../../assets/img/mail.svg';
+import PhoneIcon from '../../assets/img/phone.svg';
+import UserIcon from '../../assets/img/user.svg';
+import HeaderComponent from '../../components/Header';
+import {IMAGE_URI} from '../../utils/config';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import {updateUserValidation} from '../../validation/validation';
+import Loading from '../Loading';
 export class Account extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       firstName: props.auth.user.first_name,
       lastName: props.auth.user.last_name,
@@ -52,8 +52,8 @@ export class Account extends Component {
       errors: {},
       isChangePassword: false,
       isEnablrdScroll: false,
-      attachId: ''
-    }
+      attachId: '',
+    };
   }
   static getDerivedStateFromProps(props, state) {
     if (props.auth.isUpdateUser) {
@@ -64,81 +64,81 @@ export class Account extends Component {
           placement: 'bottom',
           duration: 4000,
           offset: 30,
-          animationType: 'slide-in'
+          animationType: 'slide-in',
         },
-      )
+      );
 
-      props.clearUpdateUser()
+      props.clearUpdateUser();
     }
 
     if (!isEmpty(props.errors.error)) {
       return {
-        errors: {common: props.errors.error}
-      }
+        errors: {common: props.errors.error},
+      };
     } else {
       if (state.errors.common) {
-        delete state.errors.common
+        delete state.errors.common;
       }
     }
 
-    return null
+    return null;
   }
 
   componentWillUnmount() {
-    this.props.clearErrors()
-    this.props.clearUpdateUser()
-    this.focusListener2.remove()
+    this.props.clearErrors();
+    this.props.clearUpdateUser();
+    this.focusListener2.remove();
   }
   async componentDidMount() {
-    this.props.clearErrors()
+    this.props.clearErrors();
     BackHandler.addEventListener(
       'hardwareBackPress',
       this.handleBackButtonClick,
-    )
+    );
     this.focusListener2 = this.props.navigation.addListener('didFocus', () => {
       this.setState({
-        mobile: this.props.auth.user.mobile
-      })
-    })
+        mobile: this.props.auth.user.mobile,
+      });
+    });
   }
 
   handleBackButtonClick = () => {
-    this.props.navigation.goBack()
-    return true
-  }
+    this.props.navigation.goBack();
+    return true;
+  };
 
   handleChangeText = (name, value) => {
-    const {errors} = this.state
+    const {errors} = this.state;
     if (name === 'firstName' && errors.isFirstName) {
-      delete errors.isFirstName
+      delete errors.isFirstName;
     } else if (name === 'lastName' && errors.isLastName) {
-      delete errors.isLastName
+      delete errors.isLastName;
     } else if (name === 'email' && errors.isEmail) {
-      delete errors.isEmail
+      delete errors.isEmail;
     } else if (name === 'mobile' && errors.isMobile) {
-      delete errors.isMobile
+      delete errors.isMobile;
     } else if (name === 'password' && errors.isPassword) {
-      delete errors.isPassword
+      delete errors.isPassword;
     } else if (name === 'newPassword' && errors.isNewPassword) {
-      delete errors.isNewPassword
+      delete errors.isNewPassword;
     } else if (name === 'confirmPassword' && errors.isConfirmPassword) {
-      delete errors.isConfirmPassword
+      delete errors.isConfirmPassword;
     }
     if (errors[name]) {
-      delete errors[name]
+      delete errors[name];
 
       //delete errors.common;
     }
-    delete errors.common
-    this.props.clearErrors()
-    this.setState({[name]: value, errors})
-  }
+    delete errors.common;
+    this.props.clearErrors();
+    this.setState({[name]: value, errors});
+  };
   handleIsNotification = () => {
-    this.setState({isNotification: !this.state.isNotification})
-  }
+    this.setState({isNotification: !this.state.isNotification});
+  };
   handleShowPassword = () => {
-    this.setState({isSecure: !this.state.isSecure})
-  }
+    this.setState({isSecure: !this.state.isSecure});
+  };
   handleUpdateAccount = () => {
     const {
       firstName,
@@ -149,53 +149,53 @@ export class Account extends Component {
       password,
       newPassword,
       confirmPassword,
-      attachId
-    } = this.state
+      attachId,
+    } = this.state;
     const updateUserData = {
       first_name: firstName,
-      last_name: lastName
-    }
+      last_name: lastName,
+    };
 
     if (this.props.auth.user.email !== email) {
-      updateUserData.email = email
+      updateUserData.email = email;
     }
 
     if (isChangePassword) {
-      updateUserData.isChangePassword = isChangePassword
-      updateUserData.current_password = password
-      updateUserData.password = newPassword
-      updateUserData.confirm_password = confirmPassword
+      updateUserData.isChangePassword = isChangePassword;
+      updateUserData.current_password = password;
+      updateUserData.password = newPassword;
+      updateUserData.confirm_password = confirmPassword;
     }
-    const {lang} = this.props.setting
-    const {errors, isValid} = updateUserValidation(updateUserData, lang)
+    const {lang} = this.props.setting;
+    const {errors, isValid} = updateUserValidation(updateUserData, lang);
 
     if (isValid) {
       if (image_data) {
-        updateUserData.image_data = image_data
+        updateUserData.image_data = image_data;
       }
-      const {user} = this.props.auth
-      this.props.updateUser(updateUserData, user.id, this.props.navigation)
+      const {user} = this.props.auth;
+      this.props.updateUser(updateUserData, user.id, this.props.navigation);
       if (!isEmpty(attachId)) {
-        this.props.deleteAttachment(attachId)
+        this.props.deleteAttachment(attachId);
       }
       this.setState({
         isChangePassword: false,
         newPassword: '',
         confirmPassword: '',
-        attachId: ''
-      })
+        attachId: '',
+      });
     } else {
-      this.setState({errors})
+      this.setState({errors});
     }
-  }
-  handleFacebookAccount = () => {}
+  };
+  handleFacebookAccount = () => {};
 
   onSelectedImage = image => {
     //const source = {uri: image.path};
-    const image_data = `data:${image.mime};base64,${image.data}`
+    const image_data = `data:${image.mime};base64,${image.data}`;
 
-    this.setState({image_path: image.path, image_data})
-  }
+    this.setState({image_path: image.path, image_data});
+  };
 
   takePhotoFromCamera = () => {
     ImagePicker.openCamera({
@@ -203,11 +203,11 @@ export class Account extends Component {
       compressImageMaxWidth: 500,
       compressImageQuality: 0.7,
       includeBase64: true,
-      cropping: false
+      cropping: false,
     }).then(image => {
-      this.onSelectedImage(image)
-    })
-  }
+      this.onSelectedImage(image);
+    });
+  };
 
   choosePhotoFromLibrary = () => {
     ImagePicker.openPicker({
@@ -215,62 +215,62 @@ export class Account extends Component {
       compressImageMaxWidth: 500,
       ompressImageQuality: 0.7,
       includeBase64: true,
-      cropping: false
+      cropping: false,
     }).then(image => {
-      this.onSelectedImage(image)
-    })
-  }
+      this.onSelectedImage(image);
+    });
+  };
 
   handleRemovePhoto = () => {
-    const {user} = this.props.auth
+    const {user} = this.props.auth;
     if (user.attachment) {
-      this.setState({attachId: user.attachment.id, attachment: false})
+      this.setState({attachId: user.attachment.id, attachment: false});
       //this.props.deleteAttachment(user.attachment.id);
     } else {
-      Alert.alert('No profile photo available')
+      Alert.alert('No profile photo available');
     }
     //
-  }
+  };
 
   onClickAddImage = () => {
     const BUTTONS = [
       'Take Photo',
       'Choose Photo Library',
       'Remove Photo',
-      'Cancel'
-    ]
+      'Cancel',
+    ];
     ActionSheet.show(
       {options: BUTTONS, cancelButtonIndex: 3, title: 'Select a Photo'},
       buttonIndex => {
         switch (buttonIndex) {
           case 0:
-            this.takePhotoFromCamera()
-            break
+            this.takePhotoFromCamera();
+            break;
           case 1:
-            this.choosePhotoFromLibrary()
-            break
+            this.choosePhotoFromLibrary();
+            break;
           case 2:
-            this.handleRemovePhoto()
-            break
+            this.handleRemovePhoto();
+            break;
           default:
-            break
+            break;
         }
       },
-    )
-  }
+    );
+  };
   handleShowChangePassword = () => {
-    const {isChangePassword, password} = this.state
+    const {isChangePassword, password} = this.state;
     this.setState({
       password: !isChangePassword ? '' : 'password',
-      isChangePassword: !isChangePassword
-    })
-  }
+      isChangePassword: !isChangePassword,
+    });
+  };
   handleShowChangeMobile = () => {
-    this.props.navigation.navigate('ChangeMobile')
-  }
+    this.props.navigation.navigate('ChangeMobile');
+  };
   render() {
-    const {lang} = this.props.setting
-    const {user} = this.props.auth
+    const {lang} = this.props.setting;
+    const {user} = this.props.auth;
     const {
       firstName,
       lastName,
@@ -284,19 +284,19 @@ export class Account extends Component {
       confirmPassword,
       isChangePassword,
       isEnablrdScroll,
-      attachment
-    } = this.state
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
+      attachment,
+    } = this.state;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     const image = image_path
       ? {uri: image_path}
       : attachment
         ? {
-            uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`
+            uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
           }
-        : require('../../assets/img/avatar1.png')
-    const {isLodaing} = this.props.errors
+        : require('../../assets/img/avatar1.png');
+    const {isLodaing} = this.props.errors;
     return (
       <>
         {isLodaing ? (
@@ -329,20 +329,20 @@ export class Account extends Component {
                     <View
                       style={{
                         flexDirection: flexDirection,
-                        height: normalize(62, 'height')
+                        height: normalize(62, 'height'),
                       }}>
                       <Grid
                         style={{
                           flexDirection: flexDirection,
                           marginRight: lang === 'ar' ? '5%' : '5%',
-                          marginLeft: lang === 'ar' ? '0%' : '10%'
+                          marginLeft: lang === 'ar' ? '0%' : '10%',
                         }}>
                         <Col>
                           <View>
                             <View
                               style={[
                                 styles.formInputFirstContainer,
-                                {flexDirection: flexDirection}
+                                {flexDirection: flexDirection},
                               ]}>
                               <View style={styles.formInputIconContainer}>
                                 <UserIcon
@@ -357,8 +357,8 @@ export class Account extends Component {
                                   {
                                     borderBottomColor: errors.isFirstName
                                       ? 'red'
-                                      : 'rgba(0, 0, 0, 0.2)'
-                                  }
+                                      : 'rgba(0, 0, 0, 0.2)',
+                                  },
                                 ]}>
                                 <Item
                                   floatingLabel
@@ -371,7 +371,7 @@ export class Account extends Component {
                                   <Label
                                     style={{
                                       alignSelf: alignSelf,
-                                      fontSize: normalize(11)
+                                      fontSize: normalize(11),
                                     }}>
                                     {I18n.t('firstName', {locale: lang})}
                                   </Label>
@@ -381,8 +381,8 @@ export class Account extends Component {
                                       {
                                         flexDirection: 'row',
                                         textAlign:
-                                          lang === 'ar' ? 'right' : 'left'
-                                      }
+                                          lang === 'ar' ? 'right' : 'left',
+                                      },
                                     ]}
                                     onChangeText={val =>
                                       this.handleChangeText('firstName', val)
@@ -400,7 +400,7 @@ export class Account extends Component {
                               <Text
                                 style={[
                                   styles.errorMessage,
-                                  {textAlign: textAlign}
+                                  {textAlign: textAlign},
                                 ]}>
                                 {errors.firstName}
                               </Text>
@@ -411,12 +411,12 @@ export class Account extends Component {
                           <View
                             style={{
                               marginRight: lang === 'ar' ? '20%' : '0%',
-                              marginLeft: lang === 'ar' ? '0%' : '10%'
+                              marginLeft: lang === 'ar' ? '0%' : '10%',
                             }}>
                             <View
                               style={[
                                 styles.formInputLastContainer,
-                                {flexDirection: flexDirection}
+                                {flexDirection: flexDirection},
                               ]}>
                               <View
                                 style={[
@@ -424,8 +424,8 @@ export class Account extends Component {
                                   {
                                     borderBottomColor: errors.isLastName
                                       ? 'red'
-                                      : 'rgba(0, 0, 0, 0.2)'
-                                  }
+                                      : 'rgba(0, 0, 0, 0.2)',
+                                  },
                                 ]}>
                                 <Item
                                   floatingLabel
@@ -438,7 +438,7 @@ export class Account extends Component {
                                   <Label
                                     style={{
                                       alignSelf: alignSelf,
-                                      fontSize: normalize(11)
+                                      fontSize: normalize(11),
                                     }}>
                                     {I18n.t('lastName', {locale: lang})}
                                   </Label>
@@ -448,8 +448,8 @@ export class Account extends Component {
                                       {
                                         flexDirection: 'row',
                                         textAlign:
-                                          lang === 'ar' ? 'right' : 'left'
-                                      }
+                                          lang === 'ar' ? 'right' : 'left',
+                                      },
                                     ]}
                                     onChangeText={val =>
                                       this.handleChangeText('lastName', val)
@@ -467,7 +467,7 @@ export class Account extends Component {
                               <Text
                                 style={[
                                   styles.errorMessage,
-                                  {textAlign: textAlign}
+                                  {textAlign: textAlign},
                                 ]}>
                                 {errors.lastName}
                               </Text>
@@ -480,7 +480,7 @@ export class Account extends Component {
                       <View
                         style={[
                           styles.formInputMainContainer,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <View style={styles.formInputIconContainer}>
                           <MailIcon
@@ -495,8 +495,8 @@ export class Account extends Component {
                             {
                               borderBottomColor: errors.isEmail
                                 ? 'red'
-                                : 'rgba(0, 0, 0, 0.2)'
-                            }
+                                : 'rgba(0, 0, 0, 0.2)',
+                            },
                           ]}>
                           <Item
                             floatingLabel
@@ -509,7 +509,7 @@ export class Account extends Component {
                             <Label
                               style={{
                                 alignSelf: alignSelf,
-                                fontSize: normalize(11)
+                                fontSize: normalize(11),
                               }}>
                               {I18n.t('email', {locale: lang})}
                             </Label>
@@ -518,8 +518,8 @@ export class Account extends Component {
                                 styles.inputText,
                                 {
                                   flexDirection: 'row',
-                                  textAlign: lang === 'ar' ? 'right' : 'left'
-                                }
+                                  textAlign: lang === 'ar' ? 'right' : 'left',
+                                },
                               ]}
                               onChangeText={val =>
                                 this.handleChangeText('email', val)
@@ -544,7 +544,7 @@ export class Account extends Component {
                       <View
                         style={[
                           styles.formInputMainContainer,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <View style={styles.formInputIconContainer}>
                           <PhoneIcon
@@ -552,8 +552,8 @@ export class Account extends Component {
                             height={normalize(20)}
                             style={{
                               transform: [
-                                {rotate: lang === 'ar' ? '270deg' : '0deg'}
-                              ]
+                                {rotate: lang === 'ar' ? '270deg' : '0deg'},
+                              ],
                             }}
                           />
                         </View>
@@ -564,8 +564,8 @@ export class Account extends Component {
                             {
                               borderBottomColor: errors.isMobile
                                 ? 'red'
-                                : 'rgba(0, 0, 0, 0.2)'
-                            }
+                                : 'rgba(0, 0, 0, 0.2)',
+                            },
                           ]}>
                           <Item
                             floatingLabel
@@ -578,7 +578,7 @@ export class Account extends Component {
                             <Label
                               style={{
                                 alignSelf: alignSelf,
-                                fontSize: normalize(11)
+                                fontSize: normalize(11),
                               }}>
                               {I18n.t('phoneNumber', {locale: lang})}
                             </Label>
@@ -588,8 +588,8 @@ export class Account extends Component {
                                 styles.inputText,
                                 {
                                   flexDirection: 'row',
-                                  textAlign: lang === 'ar' ? 'right' : 'left'
-                                }
+                                  textAlign: lang === 'ar' ? 'right' : 'left',
+                                },
                               ]}
                               onChangeText={val =>
                                 this.handleChangeText('mobile', val)
@@ -607,12 +607,12 @@ export class Account extends Component {
                           style={{
                             position: 'absolute',
                             bottom: 10,
-                            right: 10
+                            right: 10,
                           }}>
                           <Text
                             style={{
                               fontSize: normalize(11),
-                              color: '#0053FE'
+                              color: '#0053FE',
                             }}>
                             {I18n.t('change', {locale: lang})}
                           </Text>
@@ -630,12 +630,12 @@ export class Account extends Component {
                       <View
                         style={{
                           height: normalize(62, 'height'),
-                          bottom: normalize(6)
+                          bottom: normalize(6),
                         }}>
                         <View
                           style={[
                             styles.formInputMainContainer,
-                            {flexDirection: flexDirection}
+                            {flexDirection: flexDirection},
                           ]}>
                           <View style={styles.formInputIconContainer}>
                             <LockIcon
@@ -650,8 +650,8 @@ export class Account extends Component {
                               {
                                 borderBottomColor: errors.isPassword
                                   ? 'red'
-                                  : 'rgba(0, 0, 0, 0.2)'
-                              }
+                                  : 'rgba(0, 0, 0, 0.2)',
+                              },
                             ]}>
                             <Item
                               floatingLabel
@@ -664,7 +664,7 @@ export class Account extends Component {
                               <Label
                                 style={{
                                   alignSelf: alignSelf,
-                                  fontSize: normalize(11)
+                                  fontSize: normalize(11),
                                 }}>
                                 {!isChangePassword
                                   ? I18n.t('password', {locale: lang})
@@ -677,8 +677,8 @@ export class Account extends Component {
                                   styles.inputText,
                                   {
                                     flexDirection: 'row',
-                                    textAlign: lang === 'ar' ? 'right' : 'left'
-                                  }
+                                    textAlign: lang === 'ar' ? 'right' : 'left',
+                                  },
                                 ]}
                                 onChangeText={val =>
                                   this.handleChangeText('password', val)
@@ -697,12 +697,12 @@ export class Account extends Component {
                             style={{
                               position: 'absolute',
                               bottom: 10,
-                              right: 10
+                              right: 10,
                             }}>
                             <Text
                               style={{
                                 fontSize: normalize(11),
-                                color: '#0053FE'
+                                color: '#0053FE',
                               }}>
                               {!isChangePassword
                                 ? I18n.t('change', {locale: lang})
@@ -715,7 +715,7 @@ export class Account extends Component {
                           <Text
                             style={[
                               styles.errorMessage,
-                              {textAlign: textAlign}
+                              {textAlign: textAlign},
                             ]}>
                             {errors.password}
                           </Text>
@@ -729,7 +729,7 @@ export class Account extends Component {
                           <View
                             style={[
                               styles.formInputMainContainer,
-                              {flexDirection: flexDirection}
+                              {flexDirection: flexDirection},
                             ]}>
                             <View style={styles.formInputIconContainer}>
                               <LockIcon
@@ -744,8 +744,8 @@ export class Account extends Component {
                                 {
                                   borderBottomColor: errors.isNewPassword
                                     ? 'red'
-                                    : 'rgba(0, 0, 0, 0.2)'
-                                }
+                                    : 'rgba(0, 0, 0, 0.2)',
+                                },
                               ]}>
                               <Item
                                 floatingLabel
@@ -758,7 +758,7 @@ export class Account extends Component {
                                 <Label
                                   style={{
                                     alignSelf: alignSelf,
-                                    fontSize: normalize(11)
+                                    fontSize: normalize(11),
                                   }}>
                                   {I18n.t('newPassword', {locale: lang})}
                                 </Label>
@@ -769,8 +769,8 @@ export class Account extends Component {
                                     {
                                       flexDirection: 'row',
                                       textAlign:
-                                        lang === 'ar' ? 'right' : 'left'
-                                    }
+                                        lang === 'ar' ? 'right' : 'left',
+                                    },
                                   ]}
                                   onChangeText={val =>
                                     this.handleChangeText('newPassword', val)
@@ -788,7 +788,7 @@ export class Account extends Component {
                             <Text
                               style={[
                                 styles.errorMessage,
-                                {textAlign: textAlign}
+                                {textAlign: textAlign},
                               ]}>
                               {errors.new_password}
                             </Text>
@@ -798,12 +798,12 @@ export class Account extends Component {
                         <View
                           style={{
                             //height: normalize(62, 'height'),
-                            bottom: normalize(6)
+                            bottom: normalize(6),
                           }}>
                           <View
                             style={[
                               styles.formInputMainContainer,
-                              {flexDirection: flexDirection}
+                              {flexDirection: flexDirection},
                             ]}>
                             <View style={styles.formInputIconContainer}>
                               <LockIcon
@@ -818,8 +818,8 @@ export class Account extends Component {
                                 {
                                   borderBottomColor: errors.isConfirmPassword
                                     ? 'red'
-                                    : 'rgba(0, 0, 0, 0.2)'
-                                }
+                                    : 'rgba(0, 0, 0, 0.2)',
+                                },
                               ]}>
                               <Item
                                 floatingLabel
@@ -832,7 +832,7 @@ export class Account extends Component {
                                 <Label
                                   style={{
                                     alignSelf: alignSelf,
-                                    fontSize: normalize(11)
+                                    fontSize: normalize(11),
                                   }}>
                                   {I18n.t('confirmPassword', {locale: lang})}
                                 </Label>
@@ -843,8 +843,8 @@ export class Account extends Component {
                                     {
                                       flexDirection: 'row',
                                       textAlign:
-                                        lang === 'ar' ? 'right' : 'left'
-                                    }
+                                        lang === 'ar' ? 'right' : 'left',
+                                    },
                                   ]}
                                   onChangeText={val =>
                                     this.handleChangeText(
@@ -865,7 +865,7 @@ export class Account extends Component {
                             <Text
                               style={[
                                 styles.errorMessage,
-                                {textAlign: textAlign}
+                                {textAlign: textAlign},
                               ]}>
                               {errors.confirm_password}
                             </Text>
@@ -897,7 +897,7 @@ export class Account extends Component {
         )}
         <Toast ref={ref => (global['toast'] = ref)} />
       </>
-    )
+    );
   }
 }
 
@@ -907,46 +907,46 @@ const styles = StyleSheet.create({
     borderRadius: normalize(23),
     height: normalize(46),
     justifyContent: 'center',
-    marginHorizontal: normalize(45)
+    marginHorizontal: normalize(45),
     //marginVertical: 10,
   },
   accountButtonText: {
     color: '#ffffff',
     fontSize: normalize(15),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   alreadyAccount: {
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   alreadyAccountText: {
     fontSize: normalize(13),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   buttonContainer: {
-    flex: 1
+    flex: 1,
 
     //justifyContent: 'space-evenly',
   },
   cameraIcon: {
     alignSelf: 'center',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   container: {
     backgroundColor: '#ffffff',
-    flex: 1
+    flex: 1,
   },
   contentContainer: {
     backgroundColor: '#ffffff',
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   errorMessage: {
     color: 'red',
     fontSize: normalize(12),
     marginLeft: '10%',
     marginRight: '10%',
-    marginTop: normalize(20)
+    marginTop: normalize(20),
   },
   facebookButton: {
     borderColor: '#0053FE',
@@ -954,15 +954,15 @@ const styles = StyleSheet.create({
     borderWidth: normalize(1),
     height: normalize(46),
     justifyContent: 'center',
-    marginHorizontal: normalize(45)
+    marginHorizontal: normalize(45),
     //marginVertical: 10,
   },
   facebookButtonText: {
     color: '#0053FE',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   formContainer: {
-    flex: 6
+    flex: 6,
 
     //justifyContent: 'space-evenly',
   },
@@ -970,7 +970,7 @@ const styles = StyleSheet.create({
     ///marginLeft: normalize(5),
     //marginTop: normalize(5),
     fontSize: normalize(13),
-    color: '#22242A'
+    color: '#22242A',
   },
   formInputArabic: {
     //marginLeft: normalize(5),
@@ -978,16 +978,16 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     // marginTop: normalize(5),
     fontSize: normalize(13),
-    color: '#22242A'
+    color: '#22242A',
   },
   formInputContainer: {
     borderBottomWidth: 0,
-    left: 20
+    left: 20,
   },
 
   formInputContainerArabic: {
     borderBottomWidth: 0,
-    right: 30
+    right: 30,
   },
 
   formInputFirstContainer: {
@@ -995,21 +995,21 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
     // marginLeft: '10%',
     //marginRight: '10%',
-    width: '80%'
+    width: '80%',
   },
 
   formInputIconContainer: {
-    top: normalize(30)
+    top: normalize(30),
   },
   formInputItemContainer: {
     width: '100%',
     borderBottomWidth: 1,
     //borderBottomColor: 'rgba(0, 0, 0, 0.2)',
-    left: normalize(-20)
+    left: normalize(-20),
   },
 
   formInputLastContainer: {
-    display: 'flex'
+    display: 'flex',
     // flexDirection: 'row',
     // marginRight: '10%',
     // marginLeft: '10%',
@@ -1017,11 +1017,11 @@ const styles = StyleSheet.create({
   },
   formInputLastNameContainer: {
     borderBottomWidth: 0,
-    right: 10
+    right: 10,
     //left: 20,
   },
   formInputLastNameContainerArabic: {
-    borderBottomWidth: 0
+    borderBottomWidth: 0,
     //right: 30,
   },
   formInputMainContainer: {
@@ -1029,63 +1029,63 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
     marginLeft: '10%',
     marginRight: '10%',
-    width: '80%'
+    width: '80%',
   },
   guestAccount: {
     //marginVertical: 20,
   },
   guestAccountText: {
     fontSize: normalize(12),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   headerContainer: {
     backgroundColor: '#ffffff',
-    borderBottomWidth: 0
+    borderBottomWidth: 0,
   },
   inputLabel: {
-    fontSize: normalize(14)
+    fontSize: normalize(14),
   },
 
   inputText: {
     color: '#22242A',
-    fontSize: normalize(13)
+    fontSize: normalize(13),
   },
   loginText: {
     fontSize: normalize(13),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   notificationContainer: {
     marginLeft: '10%',
     marginRight: '10%',
-    marginTop: '2%'
+    marginTop: '2%',
   },
   profileImage: {
     borderRadius: normalize(50),
     height: normalize(100),
-    width: normalize(100)
+    width: normalize(100),
   },
   titleText: {
     fontFamily: 'arial',
     fontSize: normalize(20),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   userImageContainer: {
     alignItems: 'center',
     flex: 2,
-    justifyContent: 'center'
-  }
-})
+    justifyContent: 'center',
+  },
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   updateUser,
   currentUser,
   clearErrors,
   clearUpdateUser,
-  deleteAttachment
-})(Account)
+  deleteAttachment,
+})(Account);

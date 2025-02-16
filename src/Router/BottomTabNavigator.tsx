@@ -1,21 +1,21 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import normalize from 'react-native-normalize'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import normalize from 'react-native-normalize';
 
-import FavoriteIcon from '../assets/img/favorite.svg'
-import FavoriteActiveIcon from '../assets/img/favorite-active.svg'
-import HomeIcon from '../assets/img/home.svg'
-import HomeActiveIcon from '../assets/img/home-active.svg'
-import ProfileIcon from '../assets/img/profile.svg'
-import ProfileActiveIcon from '../assets/img/profile-active.svg'
-import SearchIcon from '../assets/img/search.svg'
-import SearchActiveIcon from '../assets/img/search-active.svg'
-import I18n from '../utils/i18n'
-import FavoritieNavigator from './FavoritieNavigator'
-import FindClassNavigator from './FindClassNavigator'
-import HomeNavigator from './HomeNavigator'
-import ProfileNavigator from './ProfileNavigator'
+import FavoriteIcon from '../assets/img/favorite.svg';
+import FavoriteActiveIcon from '../assets/img/favorite-active.svg';
+import HomeIcon from '../assets/img/home.svg';
+import HomeActiveIcon from '../assets/img/home-active.svg';
+import ProfileIcon from '../assets/img/profile.svg';
+import ProfileActiveIcon from '../assets/img/profile-active.svg';
+import SearchIcon from '../assets/img/search.svg';
+import SearchActiveIcon from '../assets/img/search-active.svg';
+import I18n from '../utils/i18n';
+import FavoritieNavigator from './FavoritieNavigator';
+import FindClassNavigator from './FindClassNavigator';
+import HomeNavigator from './HomeNavigator';
+import ProfileNavigator from './ProfileNavigator';
 
-const Tab = createBottomTabNavigator()
+const Tab = createBottomTabNavigator();
 export default ({lang}: any) => (
   <Tab.Navigator
     initialRouteName="Home"
@@ -23,8 +23,8 @@ export default ({lang}: any) => (
       tabBarActiveTintColor: '#FE9800',
       tabBarShowLabel: false,
       tabBarStyle: {
-        borderTopColor: 'rgba(108, 123, 138, 0.1)'
-      }
+        borderTopColor: 'rgba(108, 123, 138, 0.1)',
+      },
     }}>
     {/* Home Tab */}
     <Tab.Screen
@@ -37,7 +37,7 @@ export default ({lang}: any) => (
             <HomeActiveIcon width={normalize(30)} height={normalize(30)} />
           ) : (
             <HomeIcon width={normalize(30)} height={normalize(30)} />
-          )
+          ),
       }}
     />
 
@@ -52,7 +52,7 @@ export default ({lang}: any) => (
             <SearchActiveIcon width={normalize(30)} height={normalize(30)} />
           ) : (
             <SearchIcon width={normalize(30)} height={normalize(30)} />
-          )
+          ),
       }}
     />
 
@@ -67,7 +67,7 @@ export default ({lang}: any) => (
             <FavoriteActiveIcon width={normalize(30)} height={normalize(30)} />
           ) : (
             <FavoriteIcon width={normalize(30)} height={normalize(30)} />
-          )
+          ),
       }}
     />
 
@@ -82,8 +82,8 @@ export default ({lang}: any) => (
             <ProfileActiveIcon width={normalize(30)} height={normalize(30)} />
           ) : (
             <ProfileIcon width={normalize(30)} height={normalize(30)} />
-          )
+          ),
       }}
     />
   </Tab.Navigator>
-)
+);

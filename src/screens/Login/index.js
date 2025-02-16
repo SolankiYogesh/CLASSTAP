@@ -1,11 +1,11 @@
-import FastImage from '@d11/react-native-fast-image'
+import FastImage from '@d11/react-native-fast-image';
 import appleAuth, {
   AppleAuthRequestOperation,
-  AppleAuthRequestScope
-} from '@invertase/react-native-apple-authentication'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import {Container, Form, Input, Item} from 'native-base'
-import React, {Component} from 'react'
+  AppleAuthRequestScope,
+} from '@invertase/react-native-apple-authentication';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Container, Form, Input, Item} from 'native-base';
+import React, {Component} from 'react';
 import {
   BackHandler,
   Image,
@@ -14,28 +14,28 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native'
-import {AccessToken, LoginManager} from 'react-native-fbsdk-next'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import normalize from 'react-native-normalize'
-import FIcon from 'react-native-vector-icons/FontAwesome6'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import normalize from 'react-native-normalize';
+import FIcon from 'react-native-vector-icons/FontAwesome6';
+import {connect} from 'react-redux';
 
-import {getUser, loginUser, socialLoginUser} from '../../actions/authActions'
-import {clearErrors} from '../../actions/errorAction'
-import LockIcon from '../../assets/img/lock.svg'
-import PhoneIcon from '../../assets/img/phone.svg'
-import HeaderComponent from '../../components/Header'
-import {IMAGE_URI} from '../../utils/config'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import {loginValidation} from '../../validation/validation'
-import Loading from '../Loading'
+import {getUser, loginUser, socialLoginUser} from '../../actions/authActions';
+import {clearErrors} from '../../actions/errorAction';
+import LockIcon from '../../assets/img/lock.svg';
+import PhoneIcon from '../../assets/img/phone.svg';
+import HeaderComponent from '../../components/Header';
+import {IMAGE_URI} from '../../utils/config';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import {loginValidation} from '../../validation/validation';
+import Loading from '../Loading';
 
 export class Login extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       isAlreadyLogin: false,
       mobile: '',
@@ -43,8 +43,8 @@ export class Login extends Component {
       isSecure: true,
       errors: {},
       isEnablrdScroll: false,
-      isLoading: true
-    }
+      isLoading: true,
+    };
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -54,78 +54,78 @@ export class Login extends Component {
 
     if (!isEmpty(props.errors.error)) {
       return {
-        errors: {common: props.errors.error}
-      }
+        errors: {common: props.errors.error},
+      };
     } else {
       if (state.errors.common) {
-        delete state.errors.common
+        delete state.errors.common;
       }
     }
-    return null
+    return null;
   }
   async componentDidMount() {
-    this.props.clearErrors()
-    const user_id = await AsyncStorage.getItem('pre_user_id')
+    this.props.clearErrors();
+    const user_id = await AsyncStorage.getItem('pre_user_id');
     if (user_id) {
-      this.props.getUser(user_id)
+      this.props.getUser(user_id);
     }
 
-    this.setState({isAlreadyLogin: user_id ? true : false, isLoading: false})
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack)
+    this.setState({isAlreadyLogin: user_id ? true : false, isLoading: false});
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }
 
   onKeyboarDidShow = () => {
-    this.setState({isEnablrdScroll: true})
-  }
+    this.setState({isEnablrdScroll: true});
+  };
 
   onKeyboardWillHide = () => {
-    this.setState({isEnablrdScroll: false})
-  }
+    this.setState({isEnablrdScroll: false});
+  };
 
   componentWillUnmount() {
-    this.props.clearErrors()
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack)
+    this.props.clearErrors();
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
   }
 
   handleBack = async back => {
-    this.props.navigation.goBack()
-    return true
-  }
+    this.props.navigation.goBack();
+    return true;
+  };
 
   handleChangeText = (name, value) => {
-    const {errors} = this.state
+    const {errors} = this.state;
     if (name === 'mobile' && errors.isMobile) {
-      delete errors.isMobile
+      delete errors.isMobile;
     } else if (name === 'password' && errors.isPassword) {
-      delete errors.isPassword
+      delete errors.isPassword;
     }
     if (errors[name]) {
-      delete errors[name]
+      delete errors[name];
 
       //delete errors.common;
     }
-    delete errors.common
-    this.props.clearErrors()
-    this.setState({[name]: value, errors})
-  }
+    delete errors.common;
+    this.props.clearErrors();
+    this.setState({[name]: value, errors});
+  };
   handleShowPassword = () => {
-    this.setState({isSecure: !this.state.isSecure})
-  }
+    this.setState({isSecure: !this.state.isSecure});
+  };
   handleLoginAccount = () => {
-    const {mobile, password} = this.state
+    const {mobile, password} = this.state;
     const addUserData = {
       mobile,
-      password
-    }
-    const {lang} = this.props.setting
-    const {errors, isValid} = loginValidation(addUserData, lang)
+      password,
+    };
+    const {lang} = this.props.setting;
+    const {errors, isValid} = loginValidation(addUserData, lang);
 
     if (isValid) {
-      this.props.loginUser(addUserData, this.props.navigation)
+      this.props.loginUser(addUserData, this.props.navigation);
     } else {
-      this.setState({errors})
+      this.setState({errors});
     }
-  }
+  };
 
   handleMoveSignUp = () => {
     this.setState({
@@ -134,11 +134,11 @@ export class Login extends Component {
       password: '',
       isSecure: true,
       errors: {},
-      isEnablrdScroll: false
-    })
-    this.props.clearErrors()
-    this.props.navigation.navigate('Signup')
-  }
+      isEnablrdScroll: false,
+    });
+    this.props.clearErrors();
+    this.props.navigation.navigate('Signup');
+  };
 
   handleMoveForgot = () => {
     this.setState({
@@ -147,35 +147,35 @@ export class Login extends Component {
       password: '',
       isSecure: true,
       errors: {},
-      isEnablrdScroll: false
-    })
-    this.props.clearErrors()
-    this.props.navigation.navigate('ForgotPassword')
-  }
+      isEnablrdScroll: false,
+    });
+    this.props.clearErrors();
+    this.props.navigation.navigate('ForgotPassword');
+  };
 
   handleFacebookLogin = async () => {
-    LoginManager.logOut()
+    LoginManager.logOut();
 
     if (Platform.OS === 'android') {
-      LoginManager.setLoginBehavior('browser')
+      LoginManager.setLoginBehavior('browser');
     }
     let data = await LoginManager.logInWithPermissions([
       'public_profile',
-      'email'
+      'email',
     ]).then(
       async function (result) {
         if (result.isCancelled) {
-          return false
+          return false;
         } else {
           let accessToken = await AccessToken.getCurrentAccessToken().then(
             async data => {
-              const {accessToken} = data
+              const {accessToken} = data;
 
-              return accessToken
+              return accessToken;
             },
-          )
+          );
 
-          let addUserData = await initUser(accessToken)
+          let addUserData = await initUser(accessToken);
 
           async function initUser(token) {
             let userData = await fetch(
@@ -193,25 +193,25 @@ export class Login extends Component {
                   is_notification: true,
                   is_social_login: true,
                   social_login_id: json.id,
-                  token: token
-                }
-                return addUserData
+                  token: token,
+                };
+                return addUserData;
               })
               .catch(() => {
-                reject('ERROR GETTING DATA FROM FACEBOOK')
-                return false
-              })
-            return userData
+                reject('ERROR GETTING DATA FROM FACEBOOK');
+                return false;
+              });
+            return userData;
           }
-          return addUserData
+          return addUserData;
         }
       },
       function (error) {},
-    )
+    );
     if (data) {
-      this.props.socialLoginUser(data, this.props.navigation)
+      this.props.socialLoginUser(data, this.props.navigation);
     }
-  }
+  };
 
   onAppleButtonPress = async () => {
     return appleAuth
@@ -219,11 +219,11 @@ export class Login extends Component {
         requestedOperation: AppleAuthRequestOperation.LOGIN,
         requestedScopes: [
           AppleAuthRequestScope.EMAIL,
-          AppleAuthRequestScope.FULL_NAME
-        ]
+          AppleAuthRequestScope.FULL_NAME,
+        ],
       })
       .then(appleAuthRequestResponse => {
-        let {email, fullName, identityToken, user} = appleAuthRequestResponse
+        let {email, fullName, identityToken, user} = appleAuthRequestResponse;
         const addUserData = {
           first_name: fullName.givenName || '',
           last_name: fullName.familyName || '',
@@ -231,14 +231,14 @@ export class Login extends Component {
           is_notification: true,
           is_social_login: true,
           social_login_id: user,
-          token: identityToken
-        }
-        this.props.socialLoginUser(addUserData, this.props.navigation)
-      })
-  }
+          token: identityToken,
+        };
+        this.props.socialLoginUser(addUserData, this.props.navigation);
+      });
+  };
 
   render() {
-    console.log(this.props.navigation, 'this.props.navigation')
+    console.log(this.props.navigation, 'this.props.navigation');
 
     const {
       isAlreadyLogin,
@@ -247,19 +247,19 @@ export class Login extends Component {
       password,
       isSecure,
       isEnablrdScroll,
-      isLoading
-    } = this.state
+      isLoading,
+    } = this.state;
 
-    const {lang} = this.props.setting
-    const {preUser: user} = this.props.auth
-    const {isLodaing} = this.props.errors
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
+    const {lang} = this.props.setting;
+    const {preUser: user} = this.props.auth;
+    const {isLodaing} = this.props.errors;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
     const image = user.attachment
       ? {
-          uri: `${IMAGE_URI}/${user.attachment.dir}/${user.attachment.file_name}`
+          uri: `${IMAGE_URI}/${user.attachment.dir}/${user.attachment.file_name}`,
         }
-      : require('../../assets/img/avatar1.png')
+      : require('../../assets/img/avatar1.png');
     // const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
     return (
       <>
@@ -284,11 +284,11 @@ export class Login extends Component {
                           style={{
                             width: normalize(100),
                             height: normalize(100),
-                            borderRadius: normalize(50)
+                            borderRadius: normalize(50),
                           }}
                           source={{
                             uri: image.url,
-                            priority: FastImage.priority.normal
+                            priority: FastImage.priority.normal,
                           }}
                           resizeMode={FastImage.resizeMode.contain}
                         />
@@ -298,7 +298,7 @@ export class Login extends Component {
                           style={{
                             width: normalize(100),
                             height: normalize(100),
-                            borderRadius: normalize(50)
+                            borderRadius: normalize(50),
                           }}
                         />
                       )}
@@ -334,7 +334,7 @@ export class Login extends Component {
                         error={errors.isMobile ? true : false}
                         style={[
                           styles.formInputText,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         {/* <FIcon name="phone" size={18} /> */}
                         <PhoneIcon
@@ -342,8 +342,8 @@ export class Login extends Component {
                           height={normalize(20)}
                           style={{
                             transform: [
-                              {rotate: lang === 'ar' ? '270deg' : '0deg'}
-                            ]
+                              {rotate: lang === 'ar' ? '270deg' : '0deg'},
+                            ],
                           }}
                         />
                         <Input
@@ -378,7 +378,7 @@ export class Login extends Component {
                         error={errors.isPassword ? true : false}
                         style={[
                           styles.formInputText,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         {/* <FIcon
                         name={isSecure ? 'lock' : 'unlock-alt'}
@@ -456,7 +456,7 @@ export class Login extends Component {
                       onPress={this.onAppleButtonPress}
                       style={[
                         styles.appleButton,
-                        {flexDirection: flexDirection}
+                        {flexDirection: flexDirection},
                       ]}>
                       <FIcon name="apple" size={18} color="#000000" />
                       <Text style={styles.appleButtonText}>
@@ -470,7 +470,7 @@ export class Login extends Component {
                 <View
                   style={[
                     styles.alreadyAccount,
-                    {flexDirection: flexDirection}
+                    {flexDirection: flexDirection},
                   ]}>
                   <Text style={styles.alreadyAccountText}>
                     {I18n.t('dontHaveAnAccount', {locale: lang})}{' '}
@@ -486,7 +486,7 @@ export class Login extends Component {
           </Container>
         )}
       </>
-    )
+    );
   }
 }
 
@@ -497,20 +497,20 @@ const styles = StyleSheet.create({
     height: normalize(46),
     justifyContent: 'center',
     marginHorizontal: normalize(45),
-    marginVertical: normalize(15)
+    marginVertical: normalize(15),
   },
   accountButtonText: {
     color: '#ffffff',
     fontSize: normalize(15),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   alreadyAccount: {
-    justifyContent: 'center'
+    justifyContent: 'center',
     //flexDirection: 'row',
   },
   alreadyAccountText: {
     fontSize: normalize(13),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   appleButton: {
     alignItems: 'center',
@@ -520,32 +520,32 @@ const styles = StyleSheet.create({
     height: normalize(46),
     justifyContent: 'center',
     marginHorizontal: normalize(45),
-    marginTop: normalize(10)
+    marginTop: normalize(10),
   },
   appleButtonText: {
     textAlign: 'center',
     color: '#000000',
     //fontSize: normalize(15),
-    marginHorizontal: normalize(10)
+    marginHorizontal: normalize(10),
   },
   buttonContainer: {
     flex: 1,
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   container: {
     backgroundColor: '#ffffff',
-    flex: 1
+    flex: 1,
   },
   contentContainer: {
     backgroundColor: '#ffffff',
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   errorMessage: {
     color: 'red',
     fontSize: normalize(12),
     marginLeft: '10%',
-    marginRight: '10%'
+    marginRight: '10%',
   },
   facebookButton: {
     borderColor: '#0053FE',
@@ -554,47 +554,47 @@ const styles = StyleSheet.create({
     height: normalize(46),
     justifyContent: 'center',
     marginHorizontal: normalize(45),
-    marginTop: 16
+    marginTop: 16,
   },
   facebookButtonText: {
     color: '#0053FE',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   forgotPasswordAccount: {
     //marginVertical: '1%',
   },
   forgotPasswordAccountText: {
     fontSize: normalize(13),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   formContainer: {
     flex: 6,
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   formInput: {
     fontSize: normalize(14),
-    marginLeft: normalize(5)
+    marginLeft: normalize(5),
   },
   formInputArabic: {
     flexDirection: 'row',
     fontSize: normalize(14),
     marginLeft: normalize(5),
-    textAlign: 'right'
+    textAlign: 'right',
   },
   formInputText: {
     //flex: 1,
     marginLeft: '10%',
     marginRight: '10%',
-    marginVertical: '2%'
+    marginVertical: '2%',
   },
 
   headerContainer: {
     backgroundColor: '#ffffff',
-    borderBottomWidth: 0
+    borderBottomWidth: 0,
   },
   signUpText: {
     fontSize: normalize(13),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   titleContainer: {
     flex: 1,
@@ -603,23 +603,23 @@ const styles = StyleSheet.create({
     marginLeft: '10%',
     marginRight: '10%',
     //alignItems: 'center',
-    marginBottom: normalize(35)
+    marginBottom: normalize(35),
   },
   titleText: {
     fontFamily: 'arial',
     fontSize: normalize(20),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   welcomeText: {
     fontSize: normalize(28),
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   welcomeTextSmall: {
     color: '#000000',
     fontSize: normalize(12),
     marginTop: normalize(5),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   welcomeUserContainer: {
     alignItems: 'center',
@@ -627,19 +627,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: normalize(35),
     marginLeft: '10%',
-    marginRight: '10%'
-  }
-})
+    marginRight: '10%',
+  },
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   loginUser,
   clearErrors,
   getUser,
-  socialLoginUser
-})(Login)
+  socialLoginUser,
+})(Login);

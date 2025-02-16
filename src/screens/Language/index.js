@@ -1,29 +1,28 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import Geolocation from '@react-native-community/geolocation'
-import {CheckBox, Left, ListItem, Right, Text} from 'native-base'
-import React, {Component} from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geolocation from '@react-native-community/geolocation';
+import {CheckBox, ListItem, Text} from 'native-base';
+import React, {Component} from 'react';
 import {
-  Alert,
   Platform,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
-import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions'
-import RNRestart from 'react-native-restart'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import normalize from 'react-native-normalize';
+import {check, PERMISSIONS, request} from 'react-native-permissions';
+import RNRestart from 'react-native-restart';
+import {connect} from 'react-redux';
 
-import {setLanguage, setLatLong} from '../../actions/settingActions'
-import I18n from '../../utils/i18n'
+import {setLanguage, setLatLong} from '../../actions/settingActions';
+import I18n from '../../utils/i18n';
 
 export class Language extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      selectLanguage: 'en'
-    }
+      selectLanguage: 'en',
+    };
   }
 
   handleLocation = async () => {
@@ -49,17 +48,17 @@ export class Language extends Component {
         await AsyncStorage.setItem(
           'latitude',
           position.coords.latitude.toString(),
-        )
+        );
         await AsyncStorage.setItem(
           'longitude',
           position.coords.longitude.toString(),
-        )
+        );
 
         await this.props.setLatLong(
           position.coords.latitude,
           position.coords.longitude,
-        )
-        return true
+        );
+        return true;
         //this.setState({position: {longitude: position.longitude, latitude: position.latitude}});
       },
       error => {
@@ -68,10 +67,10 @@ export class Language extends Component {
       {
         enableHighAccuracy: /* Platform.OS === 'ios' ? true : */ false,
         timeout: 20000,
-        maximumAge: 10000
+        maximumAge: 10000,
       },
-    )
-  }
+    );
+  };
 
   async componentDidMount() {
     if (Platform.OS === 'ios') {
@@ -81,17 +80,17 @@ export class Language extends Component {
             await request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(
               async result => {
                 if (result === 'granted') {
-                  await this.handleLocation()
+                  await this.handleLocation();
                 }
               },
-            )
+            );
           } else if (result === 'granted') {
-            await this.handleLocation()
+            await this.handleLocation();
           }
         })
         .catch(error => {
           // …
-        })
+        });
     } else {
       await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
         .then(async result => {
@@ -99,37 +98,37 @@ export class Language extends Component {
             await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(
               async result => {
                 if (result === 'granted') {
-                  await this.handleLocation()
+                  await this.handleLocation();
                 }
               },
-            )
+            );
           } else if (result === 'granted') {
             //alert(result);
-            await this.handleLocation()
+            await this.handleLocation();
           }
         })
         .catch(error => {
           // …
-        })
+        });
     }
   }
 
   handleSelectLanguage = val => {
-    this.setState({selectLanguage: val})
-  }
+    this.setState({selectLanguage: val});
+  };
   handleSelectLanguageStore = async () => {
-    const {selectLanguage} = this.state
+    const {selectLanguage} = this.state;
     await AsyncStorage.setItem('lang', selectLanguage, async () => {
-      await AsyncStorage.setItem('isLanguage', '1')
-      await this.props.setLanguage(selectLanguage)
+      await AsyncStorage.setItem('isLanguage', '1');
+      await this.props.setLanguage(selectLanguage);
 
-      setTimeout(() => RNRestart.Restart(), 100)
-      this.props.navigation.navigate('Auth')
-    })
-  }
+      setTimeout(() => RNRestart.Restart(), 100);
+      this.props.navigation.navigate('Auth');
+    });
+  };
   render() {
-    const {lang} = this.props.setting
-    const {selectLanguage} = this.state
+    const {lang} = this.props.setting;
+    const {selectLanguage} = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.titleContainer}>
@@ -148,7 +147,7 @@ export class Language extends Component {
               height: normalize(25),
               //left: normalize(2),
               borderRadius: 0,
-              borderWidth: 2
+              borderWidth: 2,
             }}
           />
 
@@ -169,7 +168,7 @@ export class Language extends Component {
               height: normalize(25),
               //left: normalize(2),
               borderRadius: 0,
-              borderWidth: 2
+              borderWidth: 2,
             }}
           />
 
@@ -185,7 +184,7 @@ export class Language extends Component {
           </Text>
         </TouchableOpacity>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -193,7 +192,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
     //marginLeft: normalize(16),
     //marginRight: normalize(25),
   },
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: normalize(12),
     marginLeft: '10%',
-    marginRight: '10%'
+    marginRight: '10%',
   },
   languageButton: {
     backgroundColor: '#FE9800',
@@ -209,30 +208,30 @@ const styles = StyleSheet.create({
     height: normalize(46),
     justifyContent: 'center',
     marginHorizontal: normalize(45),
-    marginVertical: normalize(20)
+    marginVertical: normalize(20),
     //marginVertical: 10,
   },
   languageButtonText: {
     color: '#ffffff',
     fontSize: normalize(15),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   titleContainer: {
     //flex: 1,
     height: 80,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   titleText: {
     fontSize: normalize(30),
-    letterSpacing: normalize(4.74)
-  }
-})
+    letterSpacing: normalize(4.74),
+  },
+});
 
 const mapStateToProps = state => ({
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
-export default connect(mapStateToProps, {setLanguage, setLatLong})(Language)
+export default connect(mapStateToProps, {setLanguage, setLatLong})(Language);

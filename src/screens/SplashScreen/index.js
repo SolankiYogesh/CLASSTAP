@@ -1,14 +1,13 @@
-import LottieView from 'lottie-react-native'
-import React, {useEffect} from 'react'
-import {View} from 'react-native'
-import {hide} from 'react-native-bootsplash'
-import {connect} from 'react-redux'
+import LottieView from 'lottie-react-native';
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
+import {hide} from 'react-native-bootsplash';
+import {connect} from 'react-redux';
 
 const Splash = props => {
   useEffect(() => {
-    hide({fade: false})
-  }, [])
-
+    hide({fade: false});
+  }, []);
 
   return (
     <View
@@ -21,29 +20,29 @@ const Splash = props => {
         left: 0,
         position: 'absolute',
         right: 0,
-        top: 0
+        top: 0,
       }}>
       <LottieView
         source={require('../../assets/splash.json')}
         autoPlay
         loop={false}
-        resizeMode='cover'
+        resizeMode="cover"
         duration={2000}
         onAnimationFinish={props.onAnimationFinish}
         style={{
-          width:200,
-          height:200
+          width: 200,
+          height: 200,
         }}
       />
     </View>
-  )
-}
+  );
+};
 
 // export default Splash;
 const mapStateToProps = state => ({
   home: state.home,
   errors: state.errors,
-  auth: state.auth
-})
+  auth: state.auth,
+});
 
-export default connect(mapStateToProps)(Splash)
+export default connect(mapStateToProps)(Splash);

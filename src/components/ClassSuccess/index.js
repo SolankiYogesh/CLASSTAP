@@ -1,20 +1,20 @@
-import React from 'react'
+import React from 'react';
 import {
   Image,
   Modal,
   SafeAreaView,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
+  View,
+} from 'react-native';
+import normalize from 'react-native-normalize';
 
 const handleMoveScreen = (screen, navigation, handleClassSuccess) => {
-  handleClassSuccess()
-  navigation.navigate(screen)
-}
+  handleClassSuccess();
+  navigation.navigate(screen);
+};
 const ClassSuccess = props => {
-  const {text, shortText, buttonText, MoveScreenName} = props
+  const {text, shortText, buttonText, MoveScreenName} = props;
   return (
     <Modal
       visible={props.isShowClassSuccess}
@@ -38,7 +38,7 @@ const ClassSuccess = props => {
                 fontSize: normalize(40),
                 color: '#231F20',
                 fontWeight: 'bold',
-                textAlign: 'center'
+                textAlign: 'center',
               }}>
               {text}
             </Text>
@@ -49,7 +49,7 @@ const ClassSuccess = props => {
               style={{
                 fontSize: normalize(13),
                 color: '#8A8A8F',
-                textAlign: 'center'
+                textAlign: 'center',
               }}>
               {shortText}
             </Text>
@@ -58,7 +58,7 @@ const ClassSuccess = props => {
             style={{
               marginTop: normalize(40),
               marginLeft: normalize(40),
-              marginRight: normalize(40)
+              marginRight: normalize(40),
             }}>
             <TouchableOpacity
               onPress={() =>
@@ -74,12 +74,12 @@ const ClassSuccess = props => {
                 backgroundColor: '#FE9800',
                 justifyContent: 'center',
                 alignItems: 'center',
-                borderRadius: normalize(23)
+                borderRadius: normalize(23),
               }}>
               <Text
                 style={{
                   color: '#ffffff',
-                  fontSize: normalize(15)
+                  fontSize: normalize(15),
                   ///fontWeight: 'bold',
                 }}>
                 {buttonText}
@@ -89,7 +89,7 @@ const ClassSuccess = props => {
         </View>
       </SafeAreaView>
     </Modal>
-  )
-}
+  );
+};
 
-export default ClassSuccess
+export default ClassSuccess;

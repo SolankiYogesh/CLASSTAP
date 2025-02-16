@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import notifee from '@notifee/react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {Root} from 'native-base'
+import {NativeBaseProvider} from 'native-base'
 import React, {useCallback, useEffect, useMemo,useState} from 'react'
 import {View} from 'react-native'
 import  { getModel } from 'react-native-device-info'
@@ -56,13 +56,13 @@ const App = () => {
 
   return   <Provider  store={store}>
   <ToastProvider>
-    <Root>
+    <NativeBaseProvider>
       <View style={{flex: 1, paddingBottom:isNeedStack? normalize(20):0}}>
         <AppNavigation
         
         />
       </View>
-    </Root>
+    </NativeBaseProvider>
     {!animationFinished && (
       <SplashScreen  onAnimationFinish={()=> {
         setAnimationFinished(true)

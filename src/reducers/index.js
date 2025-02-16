@@ -1,11 +1,11 @@
-import {combineReducers} from 'redux'
+import {combineReducers} from 'redux';
 
-import authReducer from './authReducer'
-import errorReducer from './errorReducer'
-import findClassReducer from './findClassReducer'
-import homeReducer from './homeReducer'
-import settingReducer from './settingReducer'
-import subscriptionReducer from './subscriptionReducer'
+import authReducer from './authReducer';
+import errorReducer from './errorReducer';
+import findClassReducer from './findClassReducer';
+import homeReducer from './homeReducer';
+import settingReducer from './settingReducer';
+import subscriptionReducer from './subscriptionReducer';
 
 export default combineReducers({
   auth: authReducer,
@@ -13,5 +13,5 @@ export default combineReducers({
   setting: settingReducer,
   home: homeReducer,
   subscription: subscriptionReducer,
-  findClass: findClassReducer
-})
+  findClass: findClassReducer,
+});

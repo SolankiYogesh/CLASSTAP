@@ -1,24 +1,24 @@
-import axios from 'axios'
-import {Container,  Input, Item} from 'native-base'
-import React, {Component} from 'react'
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import {Col, Grid} from 'react-native-easy-grid'
-import normalize from 'react-native-normalize'
-import Toast from 'react-native-toast-notifications'
-import {connect} from 'react-redux'
+import axios from 'axios';
+import {Container, Input, Item} from 'native-base';
+import React, {Component} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Col, Grid} from 'react-native-easy-grid';
+import normalize from 'react-native-normalize';
+import Toast from 'react-native-toast-notifications';
+import {connect} from 'react-redux';
 
-import {verifyMobileOtp} from '../../actions/authActions'
-import {clearErrors} from '../../actions/errorAction'
-import HeaderComponent from '../../components/Header'
-import {API_URI} from '../../utils/config'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import Loading from '../Loading'
+import {verifyMobileOtp} from '../../actions/authActions';
+import {clearErrors} from '../../actions/errorAction';
+import HeaderComponent from '../../components/Header';
+import {API_URI} from '../../utils/config';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import Loading from '../Loading';
 class MobileOtp extends Component {
   constructor(props) {
-    super(props)
-    this.state = {otp: [], timer: 30, errors: {}}
-    this.otpTextInput = []
+    super(props);
+    this.state = {otp: [], timer: 30, errors: {}};
+    this.otpTextInput = [];
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -28,30 +28,30 @@ class MobileOtp extends Component {
 
     if (!isEmpty(props.errors.error)) {
       return {
-        errors: {common: props.errors.error}
-      }
+        errors: {common: props.errors.error},
+      };
     } else {
       if (state.errors.common) {
-        delete state.errors.common
+        delete state.errors.common;
       }
     }
-    return null
+    return null;
   }
 
   componentDidMount() {
-    this.props.clearErrors()
+    this.props.clearErrors();
     //if (this.otpTextInput[0]) {
-    this.otpTextInput[0]._root.focus()
+    this.otpTextInput[0]._root.focus();
     this.interval = setInterval(
       () => this.setState(prevState => ({timer: prevState.timer - 1})),
       1000,
-    )
+    );
     //}
   }
 
   componentDidUpdate() {
     if (this.state.timer === 0) {
-      clearInterval(this.interval)
+      clearInterval(this.interval);
     } else if (this.state.timer === 30) {
       /* this.interval = setInterval(
         () => this.setState(prevState => ({timer: prevState.timer - 1})),
@@ -61,20 +61,20 @@ class MobileOtp extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval)
-    this.props.clearErrors()
+    clearInterval(this.interval);
+    this.props.clearErrors();
   }
 
   renderInputs() {
     //alert(this.state.otp.length);
-    const inputs = Array(4).fill(0)
+    const inputs = Array(4).fill(0);
     const txt = inputs.map((i, j) => {
       return (
         <Col key={j} style={styles.txtMargin}>
           <Item
             style={{
               borderColor: this.state.otp.length > j ? '#FE9800' : '#C8C7CC',
-              borderBottomWidth: this.state.otp.length > j ? 3 : 1
+              borderBottomWidth: this.state.otp.length > j ? 3 : 1,
             }}>
             <Input
               maxLength={1}
@@ -86,59 +86,59 @@ class MobileOtp extends Component {
             />
           </Item>
         </Col>
-      )
-    })
-    return txt
+      );
+    });
+    return txt;
   }
 
   focusPrevious(key, index) {
     if (key === 'Backspace' && index !== 0) {
-      this.otpTextInput[index - 1]._root.focus()
+      this.otpTextInput[index - 1]._root.focus();
     }
   }
 
   focusNext(index, value) {
     if (index < this.otpTextInput.length - 1 && value) {
-      this.otpTextInput[index + 1]._root.focus()
+      this.otpTextInput[index + 1]._root.focus();
     }
     if (index === this.otpTextInput.length - 1) {
-      this.otpTextInput[index]._root.blur()
+      this.otpTextInput[index]._root.blur();
     }
-    const {otp} = this.state
-    otp[index] = value
-    this.setState({otp})
+    const {otp} = this.state;
+    otp[index] = value;
+    this.setState({otp});
     if (otp.length === 4) {
       verifyOtpData = {
         mobile: this.props.navigation.getParam('mobile'),
         //mobile_code: this.props.navigation.getParam('mobile_code'),
 
-        otp: parseInt(otp.join(''))
-      }
+        otp: parseInt(otp.join('')),
+      };
       this.props.verifyMobileOtp(
         verifyOtpData,
         this.props.auth.user.id,
         this.props.navigation,
-      )
-      this.setState({otp: [], errors: {}})
-      this.otpTextInput = []
+      );
+      this.setState({otp: [], errors: {}});
+      this.otpTextInput = [];
     }
-    const {errors} = this.state
-    delete errors.common
-    this.props.clearErrors()
+    const {errors} = this.state;
+    delete errors.common;
+    this.props.clearErrors();
   }
 
   handleResendOtp = () => {
-    const {lang} = this.props.setting
-    const {id} = this.props.auth.user
-    this.setState({timer: 30})
+    const {lang} = this.props.setting;
+    const {id} = this.props.auth.user;
+    this.setState({timer: 30});
     this.interval = setInterval(
       () => this.setState(prevState => ({timer: prevState.timer - 1})),
       1000,
-    )
+    );
     const userData = {
       mobile: this.props.navigation.getParam('mobile'),
-      mobile_code: '+974'
-    }
+      mobile_code: '+974',
+    };
     axios
       .put(`${API_URI}/users/update_mobile_no/${id}`, userData)
       .then(res => {
@@ -146,30 +146,30 @@ class MobileOtp extends Component {
         } else {
           toast.show(
             I18n.t('resendOtpSendSuccessfully', {
-              locale: this.props.setting.lang
+              locale: this.props.setting.lang,
             }),
             {
               type: 'normal',
               placement: 'bottom',
               duration: 2000,
               offset: 30,
-              animationType: 'slide-in'
+              animationType: 'slide-in',
             },
-          )
+          );
         }
       })
       .catch(err => {
         if (err.response.data.error) {
         }
-      })
-  }
+      });
+  };
 
   render() {
-    const {timer, errors} = this.state
-    const {lang} = this.props.setting
-    const {isLodaing} = this.props.errors
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
+    const {timer, errors} = this.state;
+    const {lang} = this.props.setting;
+    const {isLodaing} = this.props.errors;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
     return (
       <>
         {isLodaing ? (
@@ -199,7 +199,7 @@ class MobileOtp extends Component {
               <View
                 style={[
                   styles.resendContainer,
-                  {flexDirection: flexDirection}
+                  {flexDirection: flexDirection},
                 ]}>
                 <TouchableOpacity
                   onPress={this.handleResendOtp}
@@ -219,7 +219,7 @@ class MobileOtp extends Component {
         )}
         <Toast ref={ref => (global['toast'] = ref)} />
       </>
-    )
+    );
   }
 }
 
@@ -227,13 +227,13 @@ const styles = StyleSheet.create({
   contentContainer: {
     backgroundColor: '#ffffff',
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   errorMessage: {
     color: 'red',
     fontSize: normalize(12),
     marginLeft: '10%',
-    marginRight: '10%'
+    marginRight: '10%',
   },
   gridPad: {flex: 4, marginHorizontal: '10%'},
   inputRadius: {
@@ -242,45 +242,45 @@ const styles = StyleSheet.create({
     fontSize: normalize(40),
     fontWeight: 'bold',
     padding: 0,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   resendContainer: {
     alignItems: 'center',
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   resendText: {
     color: '#0053FE',
-    fontSize: normalize(13)
+    fontSize: normalize(13),
   },
   timerText: {
     color: '#8A8A8F',
-    fontSize: normalize(13)
+    fontSize: normalize(13),
   },
   titleContainer: {
     flex: 3,
     //justifyContent: 'center',
     marginLeft: '5%',
     marginRight: '5%',
-    marginTop: '5%'
+    marginTop: '5%',
   },
   titleText: {
     fontSize: normalize(40),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   titleTextSmall: {
     color: '#8A8A8F',
-    fontSize: normalize(13)
+    fontSize: normalize(13),
   },
-  txtMargin: {margin: normalize(3)}
-})
+  txtMargin: {margin: normalize(3)},
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {verifyMobileOtp, clearErrors})(
   MobileOtp,
-)
+);

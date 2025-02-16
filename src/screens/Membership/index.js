@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import axios from 'axios'
-import {Body, Button, Container, Header, Icon, Left} from 'native-base'
-import React, {Component} from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {Body, Button, Container, Header, Icon, Left} from 'native-base';
+import React, {Component} from 'react';
 import {
   Alert,
   BackHandler,
@@ -9,29 +9,29 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
-import Toast from 'react-native-toast-notifications'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import normalize from 'react-native-normalize';
+import Toast from 'react-native-toast-notifications';
+import {connect} from 'react-redux';
 
-import {currentUser} from '../../actions/authActions'
-import {clearErrors} from '../../actions/errorAction'
+import {currentUser} from '../../actions/authActions';
+import {clearErrors} from '../../actions/errorAction';
 import {
   addUserSubscription,
-  getSubscriptions
-} from '../../actions/subscriptionActions'
-import PageSlider from '../../components/PageSlider'
-import PaymentSuccess from '../../components/PaymentSuccess'
-import PaymentWeb from '../../components/PaymentWeb'
-import {API_URI} from '../../utils/config'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import Loading from '../Loading'
+  getSubscriptions,
+} from '../../actions/subscriptionActions';
+import PageSlider from '../../components/PageSlider';
+import PaymentSuccess from '../../components/PaymentSuccess';
+import PaymentWeb from '../../components/PaymentWeb';
+import {API_URI} from '../../utils/config';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import Loading from '../Loading';
 
 export class Membership extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       selectPackage: '',
       activePackage: '',
@@ -46,120 +46,120 @@ export class Membership extends Component {
       count: 0,
       isLastPackage: false,
       lastPackageIndex: '',
-      isGo: false
-    }
+      isGo: false,
+    };
   }
   async componentDidMount() {
     //this.props.clearErrors();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack)
-    this.props.getSubscriptions()
-    const class_id = await this.props.navigation.getParam('class_id')
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    this.props.getSubscriptions();
+    const class_id = await this.props.navigation.getParam('class_id');
     const class_schedule_id =
-      await this.props.navigation.getParam('class_schedule_id')
+      await this.props.navigation.getParam('class_schedule_id');
     const schedule_dates_id =
-      await this.props.navigation.getParam('schedule_dates_id')
+      await this.props.navigation.getParam('schedule_dates_id');
     const subscription_id =
-      await this.props.navigation.getParam('subscription_id')
-    const credits = await this.props.navigation.getParam('credits')
-    const {subscriptions} = this.props.subscription
+      await this.props.navigation.getParam('subscription_id');
+    const credits = await this.props.navigation.getParam('credits');
+    const {subscriptions} = this.props.subscription;
 
     if (subscription_id) {
       let subscription = await subscriptions.find(
         sub => sub.id === subscription_id,
-      )
+      );
 
-      let {price} = subscription
+      let {price} = subscription;
       let newSubscriptions = await subscriptions.filter(
         sub => sub.price > price,
-      )
+      );
       if (!isEmpty(newSubscriptions)) {
         newSubscriptions = await newSubscriptions.sort(function (a, b) {
-          return a.price - b.price
-        })
+          return a.price - b.price;
+        });
         let index = await subscriptions.findIndex(
           sub => sub.id === newSubscriptions[0].id,
-        )
+        );
         this.setState({
           // selectPackage: newSubscriptions[0].id,
           selectIndex: index,
           class_id: class_id,
           isLastPackage: false,
-          lastPackageIndex: ''
-        })
+          lastPackageIndex: '',
+        });
       } else {
         let index = await subscriptions.findIndex(
           sub => sub.id === subscription.id,
-        )
+        );
         this.setState({
           // selectPackage: subscription.id,
           selectIndex: index,
           class_id: class_id,
           isLastPackage: true,
-          lastPackageIndex: index
-        })
+          lastPackageIndex: index,
+        });
       }
     } else {
-      let type = await this.props.navigation.getParam('type')
+      let type = await this.props.navigation.getParam('type');
       if (type === 'new') {
         this.setState({
-          class_id: class_id
-        })
+          class_id: class_id,
+        });
       } else {
-        const {user} = this.props.auth
+        const {user} = this.props.auth;
         let index = await subscriptions.findIndex(
           sub => sub.id === user.subscription_id,
-        )
-        let {price} = subscriptions[index]
+        );
+        let {price} = subscriptions[index];
         let newSubscriptions = await subscriptions.filter(
           sub => sub.price > price,
-        )
+        );
         if (!isEmpty(newSubscriptions)) {
           this.setState({
             //selectPackage: user.subscription_id,
             selectIndex: index,
             isGo: true,
-            isLastPackage: false
-          })
+            isLastPackage: false,
+          });
         } else {
           this.setState({
             // selectPackage: user.subscription_id,
             selectIndex: index,
             isGo: true,
             isLastPackage: true,
-            lastPackageIndex: index
-          })
+            lastPackageIndex: index,
+          });
         }
       }
     }
-    const {user} = this.props.auth
+    const {user} = this.props.auth;
     if (user.subscription_validity) {
-      let GivenDate = await user.subscription_validity
-      date = GivenDate.split(' ')
-      let CurrentDate = new Date()
-      GivenDate = new Date(date[0])
+      let GivenDate = await user.subscription_validity;
+      date = GivenDate.split(' ');
+      let CurrentDate = new Date();
+      GivenDate = new Date(date[0]);
       if (GivenDate < CurrentDate) {
-        this.setState({isShowRenew: true})
+        this.setState({isShowRenew: true});
       }
     }
   }
 
   handleBack = async back => {
-    this.props.navigation.goBack()
-    return true
-  }
+    this.props.navigation.goBack();
+    return true;
+  };
 
   handleBackButtonClick = () => {
-    this.props.navigation.goBack()
-    return true
-  }
+    this.props.navigation.goBack();
+    return true;
+  };
   handleUpgradePlanBooking = async e => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const {subscriptions} = this.props.subscription
-    const {lang} = this.props.setting
-    const {selectPackage} = this.state
-    const subscription = subscriptions.find(subc => subc.id === selectPackage)
-    const {user} = this.props.auth
+    const {subscriptions} = this.props.subscription;
+    const {lang} = this.props.setting;
+    const {selectPackage} = this.state;
+    const subscription = subscriptions.find(subc => subc.id === selectPackage);
+    const {user} = this.props.auth;
 
     if (!isEmpty(selectPackage)) {
       Alert.alert(
@@ -169,7 +169,7 @@ export class Membership extends Component {
           {
             text: I18n.t('no', {locale: lang}),
             onPress: () => console.log('come'),
-            style: 'cancel'
+            style: 'cancel',
           },
           {
             text: I18n.t('yes', {locale: lang}),
@@ -177,16 +177,16 @@ export class Membership extends Component {
               let addData = {
                 language: lang,
                 user_id: user.id,
-                subscription_id: selectPackage
-              }
-              this.setState({isLoading: true})
+                subscription_id: selectPackage,
+              };
+              this.setState({isLoading: true});
 
               axios
                 .post(`${API_URI}/user_subscriptions`, addData)
                 .then(res => {
                   if (res.data.error.code) {
                   } else {
-                    const {data} = res.data
+                    const {data} = res.data;
                     this.setState({
                       isShowPaymentWeb: true,
                       data: data,
@@ -194,25 +194,25 @@ export class Membership extends Component {
                         lang === 'ar'
                           ? subscription.name_ar
                           : subscription.name,
-                      isLoading: false
-                    })
+                      isLoading: false,
+                    });
                   }
                 })
                 .catch(err => {
-                  console.log(err)
+                  console.log(err);
                   if (err.response.data.error) {
                     this.setState({
-                      isLoading: false
-                    })
+                      isLoading: false,
+                    });
                   }
-                })
-            }
-          }
+                });
+            },
+          },
         ],
         {
-          cancelable: false
+          cancelable: false,
         },
-      )
+      );
 
       //this.props.addUserSubscription(addData, this.props.navigation);
     } else {
@@ -221,49 +221,49 @@ export class Membership extends Component {
         placement: 'bottom',
         duration: 4000,
         offset: 30,
-        animationType: 'slide-in'
-      })
+        animationType: 'slide-in',
+      });
     }
-  }
+  };
 
   handleChoosePlanBooking = async e => {
-    e.preventDefault()
-    const {subscriptions} = this.props.subscription
-    const {lang} = this.props.setting
-    const {selectPackage} = this.state
-    const subscription = subscriptions.find(subc => subc.id === selectPackage)
-    const {user} = this.props.auth
+    e.preventDefault();
+    const {subscriptions} = this.props.subscription;
+    const {lang} = this.props.setting;
+    const {selectPackage} = this.state;
+    const subscription = subscriptions.find(subc => subc.id === selectPackage);
+    const {user} = this.props.auth;
 
     if (!isEmpty(selectPackage)) {
       let addData = {
         language: lang,
         user_id: user.id,
-        subscription_id: selectPackage
-      }
-      this.setState({isLoading: true})
+        subscription_id: selectPackage,
+      };
+      this.setState({isLoading: true});
       axios
         .post(`${API_URI}/user_subscriptions`, addData)
         .then(res => {
           if (res.data.error.code) {
           } else {
-            const {data, payment_url} = res.data
+            const {data, payment_url} = res.data;
 
             this.setState({
               isShowPaymentWeb: true,
               url: payment_url,
               data: data,
               title: lang === 'ar' ? subscription.name_ar : subscription.name,
-              isLoading: false
-            })
+              isLoading: false,
+            });
           }
         })
         .catch(err => {
           if (err.response.data.error) {
             this.setState({
-              isLoading: false
-            })
+              isLoading: false,
+            });
           }
-        })
+        });
 
       //this.props.addUserSubscription(addData, this.props.navigation);
     } else {
@@ -272,14 +272,14 @@ export class Membership extends Component {
         placement: 'bottom',
         duration: 4000,
         offset: 30,
-        animationType: 'slide-in'
-      })
+        animationType: 'slide-in',
+      });
     }
-  }
+  };
   handleDowngradePlanBooking = async e => {
-    e.preventDefault()
-    const {lang} = this.props.setting
-    const {selectPackage} = this.state
+    e.preventDefault();
+    const {lang} = this.props.setting;
+    const {selectPackage} = this.state;
     if (!isEmpty(selectPackage)) {
       Alert.alert(
         I18n.t('message', {locale: lang}),
@@ -288,42 +288,42 @@ export class Membership extends Component {
           {
             text: I18n.t('no', {locale: lang}),
             onPress: () => console.log('come'),
-            style: 'cancel'
+            style: 'cancel',
           },
           {
             text: I18n.t('yes', {locale: lang}),
-            onPress: () => this.handleDowngradeBooking()
-          }
+            onPress: () => this.handleDowngradeBooking(),
+          },
         ],
         {
-          cancelable: false
+          cancelable: false,
         },
-      )
+      );
     } else {
       toast.show(I18n.t('selectPlan', {locale: lang}), {
         type: 'danger',
         placement: 'bottom',
         duration: 4000,
         offset: 30,
-        animationType: 'slide-in'
-      })
+        animationType: 'slide-in',
+      });
     }
-  }
+  };
 
   handleDowngradeBooking = () => {
-    const {subscriptions} = this.props.subscription
-    const {lang} = this.props.setting
-    const {selectPackage} = this.state
-    const subscription = subscriptions.find(subc => subc.id === selectPackage)
-    const {user} = this.props.auth
+    const {subscriptions} = this.props.subscription;
+    const {lang} = this.props.setting;
+    const {selectPackage} = this.state;
+    const subscription = subscriptions.find(subc => subc.id === selectPackage);
+    const {user} = this.props.auth;
     if (!isEmpty(selectPackage)) {
       let addData = {
         user_id: user.id,
         subscription_id: selectPackage,
         is_downgrade: true,
         language: lang,
-        is_downgrade: true
-      }
+        is_downgrade: true,
+      };
       // this.setState({isLoading: true});
       axios
         .post(`${API_URI}/user_subscriptions`, addData)
@@ -334,25 +334,25 @@ export class Membership extends Component {
               placement: 'bottom',
               duration: 4000,
               offset: 30,
-              animationType: 'slide-in'
-            })
+              animationType: 'slide-in',
+            });
           } else {
             toast.show(I18n.t('downgradePlanStatus', {locale: lang}), {
               type: 'normal',
               placement: 'bottom',
               duration: 4000,
               offset: 30,
-              animationType: 'slide-in'
-            })
+              animationType: 'slide-in',
+            });
           }
         })
         .catch(err => {
           if (err.response.data.error) {
             this.setState({
-              isLoading: false
-            })
+              isLoading: false,
+            });
           }
-        })
+        });
 
       //this.props.addUserSubscription(addData, this.props.navigation);
     } else {
@@ -361,50 +361,50 @@ export class Membership extends Component {
         placement: 'bottom',
         duration: 4000,
         offset: 30,
-        animationType: 'slide-in'
-      })
+        animationType: 'slide-in',
+      });
     }
-  }
+  };
 
   handleSelectPackage = id => {
-    this.setState({selectPackage: id})
-  }
+    this.setState({selectPackage: id});
+  };
   /* handleSelectIndex = (index, id) => {
     this.setState({selectIndex: index, selectPackage: id});
   }; */
   handleSelectIndex = index => {
-    this.setState({selectIndex: index, selectPackage: ''})
-  }
+    this.setState({selectIndex: index, selectPackage: ''});
+  };
   handlePaymentWeb = async (status = '', paymentID = '') => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     if (status === 'success') {
       this.setState({
         isShowPaymentWeb: false,
-        isLoading: true
-      })
+        isLoading: true,
+      });
 
       this.setState({
         isShowPaymentSuccess: !this.state.isShowPaymentSuccess,
-        isLoading: false
-      })
+        isLoading: false,
+      });
     } else if (status === 'failed') {
       toast.show(I18n.t('paymentFailed', {locale: lang}), {
         type: 'danger',
         placement: 'bottom',
         duration: 4000,
         offset: 30,
-        animationType: 'slide-in'
-      })
+        animationType: 'slide-in',
+      });
       this.setState({
         isShowPaymentWeb: false,
-        count: this.state.count + 1
-      })
+        count: this.state.count + 1,
+      });
     } else {
       this.setState({
         isShowPaymentWeb: false,
         count: this.state.count + 1,
-        isLoading: false
-      })
+        isLoading: false,
+      });
     }
 
     setTimeout(() => {
@@ -412,25 +412,25 @@ export class Membership extends Component {
         isShowPaymentWeb: false,
         count: this.state.count + 1,
         isLoading: false,
-        isShowPaymentSuccess: false
-      })
-    }, 2500)
-  }
+        isShowPaymentSuccess: false,
+      });
+    }, 2500);
+  };
 
   handlePaymentSuccess = () => {
     this.setState({
-      isShowPaymentSuccess: !this.state.isShowPaymentSuccess
-    })
-  }
+      isShowPaymentSuccess: !this.state.isShowPaymentSuccess,
+    });
+  };
 
   render() {
-    const {user} = this.props.auth
-    const {lang} = this.props.setting
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const {subscriptions} = this.props.subscription
+    const {user} = this.props.auth;
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const {subscriptions} = this.props.subscription;
 
-    const type = this.props.navigation.getParam('type')
+    const type = this.props.navigation.getParam('type');
     const {
       selectIndex,
       isShowPaymentWeb,
@@ -444,8 +444,8 @@ export class Membership extends Component {
       count,
       isLastPackage,
       lastPackageIndex,
-      isGo
-    } = this.state
+      isGo,
+    } = this.state;
 
     return (
       <Container style={{flex: 1, backgroundColor: '#F9F9F9'}}>
@@ -474,14 +474,14 @@ export class Membership extends Component {
               style={{
                 flex: 1,
                 marginHorizontal: normalize(16),
-                flexDirection: flexDirection
+                flexDirection: flexDirection,
               }}>
               <Text
                 style={{
                   color: '#22242A',
                   fontSize: normalize(40),
                   fontWeight: 'bold',
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {!isEmpty(user.subscription_id) &&
                 !isEmpty(subscriptions) &&
@@ -500,7 +500,7 @@ export class Membership extends Component {
             <View
               style={{
                 flex: 8,
-                marginTop: normalize(5)
+                marginTop: normalize(5),
               }}>
               <PageSlider
                 data={subscriptions}
@@ -522,7 +522,7 @@ export class Membership extends Component {
                 display: 'flex',
                 alignItems: 'flex-end',
                 justifyContent: 'flex-end',
-                marginBottom: normalize(15)
+                marginBottom: normalize(15),
               }}>
               {type === 'new' ||
               isEmpty(user.subscription) ||
@@ -531,14 +531,14 @@ export class Membership extends Component {
                 subscriptions[selectIndex].price < user.subscription.price) ? (
                 <TouchableOpacity
                   onPress={e => {
-                    console.log('user.subscription = ', user.subscription)
-                    console.log('user = ', user)
+                    console.log('user.subscription = ', user.subscription);
+                    console.log('user = ', user);
                     type === 'new' ||
                     isEmpty(user.subscription) ||
                     new Date(user.subscription_validity).getTime() <
                       new Date().getTime()
                       ? this.handleChoosePlanBooking(e)
-                      : this.handleDowngradePlanBooking(e)
+                      : this.handleDowngradePlanBooking(e);
                   }}
                   style={{
                     marginHorizontal: normalize(32),
@@ -549,13 +549,13 @@ export class Membership extends Component {
                     alignItems: 'center',
                     borderRadius: normalize(24),
                     display: 'flex',
-                    flexDirection: 'column-reverse'
+                    flexDirection: 'column-reverse',
                   }}>
                   <Text
                     style={{
                       color: '#ffffff',
                       fontSize: normalize(16),
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
                     }}>
                     {I18n.t('choosePlan', {locale: lang})}
                   </Text>
@@ -578,13 +578,13 @@ export class Membership extends Component {
                     alignItems: 'center',
                     borderRadius: normalize(24),
                     display: 'flex',
-                    flexDirection: 'column-reverse'
+                    flexDirection: 'column-reverse',
                   }}>
                   <Text
                     style={{
                       color: '#ffffff',
                       fontSize: normalize(16),
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
                     }}>
                     {I18n.t('upgradePlan', {locale: lang})}
                   </Text>
@@ -609,7 +609,7 @@ export class Membership extends Component {
           handlePaymentSuccess={this.handlePaymentSuccess}
           text={I18n.t('successful', {locale: lang})}
           shortText={`${I18n.t('youHaveSuccessfullySubscribedTo', {
-            locale: lang
+            locale: lang,
           })} ${title}`}
           buttonText={I18n.t('showMeSchedule', {locale: lang})}
           MoveScreenName={'Profile'}
@@ -619,7 +619,7 @@ export class Membership extends Component {
 
         <Toast ref={ref => (global['toast'] = ref)} />
       </Container>
-    )
+    );
   }
 }
 
@@ -627,35 +627,35 @@ const styles = StyleSheet.create({
   backButtonContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   backButtonIcon: {
     color: '#22242A',
     fontSize: normalize(18),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   backButtonText: {
     color: '#22242A',
     fontSize: normalize(12),
 
-    top: Platform.OS === 'ios' ? normalize(3) : normalize(3.3)
+    top: Platform.OS === 'ios' ? normalize(3) : normalize(3.3),
   },
   headerContainer: {
     backgroundColor: '#F9F9F9',
-    borderBottomWidth: 0
-  }
-})
+    borderBottomWidth: 0,
+  },
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
   subscription: state.subscription,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   clearErrors,
   getSubscriptions,
   addUserSubscription,
-  currentUser
-})(Membership)
+  currentUser,
+})(Membership);

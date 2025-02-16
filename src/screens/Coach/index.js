@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import moment from 'moment-timezone'
-import {Button, Icon, Text} from 'native-base'
-import React, {Component} from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment-timezone';
+import {Button, Icon, Text} from 'native-base';
+import React, {Component} from 'react';
 import {
   BackHandler,
   Dimensions,
@@ -13,11 +13,11 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
-import ReadMore from 'react-native-read-more-text'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import normalize from 'react-native-normalize';
+import ReadMore from 'react-native-read-more-text';
+import {connect} from 'react-redux';
 
 import {
   getCoach,
@@ -25,66 +25,66 @@ import {
   getCoachClasses,
   getCoachLocation,
   getCoachLocation1,
-  getRecommendedClasses
-} from '../../actions/homeActions'
-import {IMAGE_URI} from '../../utils/config'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import Loading from '../Loading'
-import ReviewShow from '../Review/ReviewShow'
-import WriteReview from '../WriteReview'
-moment.tz.setDefault('Asia/Qatar')
+  getRecommendedClasses,
+} from '../../actions/homeActions';
+import {IMAGE_URI} from '../../utils/config';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import Loading from '../Loading';
+import ReviewShow from '../Review/ReviewShow';
+import WriteReview from '../WriteReview';
+moment.tz.setDefault('Asia/Qatar');
 
-import WriteCoachReview from '../WriteCoachReview'
+import WriteCoachReview from '../WriteCoachReview';
 
-const {width} = Dimensions.get('window')
-const {height} = Dimensions.get('window')
+const {width} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 export class Coach extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       isShowWriteReview: false,
-      isCoachReviewRate: false
-    }
+      isCoachReviewRate: false,
+    };
   }
 
   async componentDidMount() {
-    let id = await this.props.navigation.getParam('id')
-    let latitude = await AsyncStorage.getItem('latitude')
-    let longitude = await AsyncStorage.getItem('longitude')
+    let id = await this.props.navigation.getParam('id');
+    let latitude = await AsyncStorage.getItem('latitude');
+    let longitude = await AsyncStorage.getItem('longitude');
 
     if (latitude && longitude) {
-      this.props.getCoachLocation(id)
+      this.props.getCoachLocation(id);
     } else {
-      this.props.getCoach(id)
+      this.props.getCoach(id);
     }
-    this.props.getCoachClasses(id)
+    this.props.getCoachClasses(id);
 
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack)
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     this.focusListener2 = this.props.navigation.addListener(
       'didFocus',
       async () => {
-        let id = await this.props.navigation.getParam('id')
-        let latitude = await AsyncStorage.getItem('latitude')
-        let longitude = await AsyncStorage.getItem('longitude')
+        let id = await this.props.navigation.getParam('id');
+        let latitude = await AsyncStorage.getItem('latitude');
+        let longitude = await AsyncStorage.getItem('longitude');
 
         if (latitude && longitude) {
-          this.props.getCoachLocation1(id)
+          this.props.getCoachLocation1(id);
         } else {
-          this.props.getCoach1(id)
+          this.props.getCoach1(id);
         }
       },
-    )
+    );
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack)
-    this.focusListener2.remove()
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    this.focusListener2.remove();
   }
 
   handleBack = async () => {
-    this.props.navigation.goBack()
+    this.props.navigation.goBack();
     /*     const back = await this.props.navigation.getParam('back');
     const back_id = await this.props.navigation.getParam('back_id');
 
@@ -104,33 +104,33 @@ export class Coach extends Component {
     } else {
       this.props.navigation.goBack();
     } */
-    return true
-  }
+    return true;
+  };
   renderItemGym = ({item}) => {
-    const {lang} = this.props.setting
-    const {attachments, name_ar, name} = item
+    const {lang} = this.props.setting;
+    const {attachments, name_ar, name} = item;
 
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
-    let classImage
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    let classImage;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
         newImage => newImage.is_primary === true,
-      )
+      );
 
       if (!isEmpty(primaryAttachment)) {
         classImage = {
-          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`
-        }
+          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`,
+        };
       } else {
         classImage = {
-          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`
-        }
+          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`,
+        };
       }
     } else {
-      classImage = require('../../assets/img/no_image_found.png')
+      classImage = require('../../assets/img/no_image_found.png');
     }
     return (
       <TouchableOpacity
@@ -140,21 +140,21 @@ export class Coach extends Component {
             params: {
               id: item.id,
               back: 'Coach',
-              back_id: item.coach_id
+              back_id: item.coach_id,
             },
-            key: `GymClass_${item.id}`
+            key: `GymClass_${item.id}`,
           })
         }
         style={{
           width: normalize(142),
           marginRight: normalize(10),
           height: normalize(171),
-          transform: [{scaleX: lang === 'ar' ? -1 : 1}]
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
         }}>
         <View
           style={{
             width: normalize(142),
-            height: normalize(142)
+            height: normalize(142),
             //borderRadius: 10,
           }}>
           <Image
@@ -163,7 +163,7 @@ export class Coach extends Component {
             style={{
               width: normalize(142),
               height: normalize(142),
-              borderRadius: normalize(10)
+              borderRadius: normalize(10),
             }}
           />
         </View>
@@ -173,78 +173,78 @@ export class Coach extends Component {
           </Text>
         </View>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   _renderTruncatedFooter = handlePress => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     return (
       <Text
         style={{
           color: '#0053FE',
           marginTop: 5,
           fontSize: normalize(12),
-          fontWeight: 'bold'
+          fontWeight: 'bold',
         }}
         onPress={handlePress}>
         {I18n.t('readMore', {locale: lang})}
       </Text>
-    )
-  }
+    );
+  };
 
   _renderRevealedFooter = handlePress => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     return (
       <Text
         style={{
           color: '#0053FE',
           marginTop: 5,
           fontSize: normalize(12),
-          fontWeight: 'bold'
+          fontWeight: 'bold',
         }}
         onPress={handlePress}>
         {I18n.t('showLess', {locale: lang})}
       </Text>
-    )
-  }
+    );
+  };
   handleWriteCoachReview = async () => {
-    const id = await this.props.navigation.getParam('id')
-    const latitude = await AsyncStorage.getItem('latitude')
-    const longitude = await AsyncStorage.getItem('longitude')
+    const id = await this.props.navigation.getParam('id');
+    const latitude = await AsyncStorage.getItem('latitude');
+    const longitude = await AsyncStorage.getItem('longitude');
 
     if (latitude && longitude) {
-      this.props.getCoachLocation(id)
+      this.props.getCoachLocation(id);
     } else {
-      this.props.getCoach(id)
+      this.props.getCoach(id);
     }
-    this.setState({isCoachReviewRate: false})
-  }
+    this.setState({isCoachReviewRate: false});
+  };
   renderReviewItem = ({item}) => {
-    const {lang} = this.props.setting
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
-    let image
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    let image;
 
     if (!isEmpty(item.user) && !isEmpty(item.user.attachment)) {
-      const {attachment} = item.user
+      const {attachment} = item.user;
       image = {
-        uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`
-      }
+        uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
+      };
     } else {
-      image = require('../../assets/img/NoPicture.png')
+      image = require('../../assets/img/NoPicture.png');
     }
     return (
       <>
         <View
           style={{
             marginTop: normalize(16),
-            marginHorizontal: normalize(16)
+            marginHorizontal: normalize(16),
           }}>
           <View
             style={{
               display: 'flex',
-              flexDirection: flexDirection
+              flexDirection: flexDirection,
             }}>
             <View style={{width: normalize(44)}}>
               <Image
@@ -252,7 +252,7 @@ export class Coach extends Component {
                 style={{
                   width: normalize(44),
                   height: normalize(44),
-                  borderRadius: normalize(22)
+                  borderRadius: normalize(22),
                 }}
               />
             </View>
@@ -260,14 +260,14 @@ export class Coach extends Component {
               style={{
                 marginLeft: lang === 'ar' ? 0 : normalize(16),
                 marginRight: lang === 'ar' ? normalize(16) : 0,
-                width: normalize(267)
+                width: normalize(267),
                 //marginHorizontal: normalize(16),
               }}>
               <Text
                 style={{
                   fontSize: normalize(15),
                   fontWeight: '700',
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {!isEmpty(item.user)
                   ? `${item.user.first_name} ${item.user.last_name}`
@@ -276,13 +276,13 @@ export class Coach extends Component {
               <View
                 style={[
                   styles.classRatingContainer,
-                  {flexDirection: flexDirection}
+                  {flexDirection: flexDirection},
                 ]}>
                 <ReviewShow
                   rating={item.rating}
                   style={{
                     fontSize: normalize(11),
-                    paddingRight: normalize(2.75)
+                    paddingRight: normalize(2.75),
                   }}
                 />
               </View>
@@ -290,7 +290,7 @@ export class Coach extends Component {
               <Text
                 style={{
                   fontSize: normalize(12),
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {item.description}
               </Text>
@@ -298,7 +298,7 @@ export class Coach extends Component {
                 style={{
                   fontSize: normalize(12),
                   color: '#8A8A8F',
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {moment(item.createdAt, 'YYYY-MM-DD hh:mm:ss')
                   .startOf('hour')
@@ -308,10 +308,10 @@ export class Coach extends Component {
           </View>
         </View>
       </>
-    )
-  }
+    );
+  };
   handleWriteReview = async () => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
         I18n.t('login', {locale: lang}),
@@ -320,24 +320,24 @@ export class Coach extends Component {
           {
             text: I18n.t('no', {locale: lang}),
             onPress: () => console.log('come'),
-            style: 'cancel'
+            style: 'cancel',
           },
           {
             text: I18n.t('yes', {locale: lang}),
-            onPress: () => this.props.navigation.navigate('Login')
-          }
+            onPress: () => this.props.navigation.navigate('Login'),
+          },
         ],
         {
-          cancelable: false
+          cancelable: false,
         },
-      )
+      );
     } else {
-      this.setState({isCoachReviewRate: true})
+      this.setState({isCoachReviewRate: true});
     }
-  }
+  };
   render() {
-    const {isCoachReviewRate} = this.state
-    const {coachClasses} = this.props.home
+    const {isCoachReviewRate} = this.state;
+    const {coachClasses} = this.props.home;
     const {
       id,
       name,
@@ -351,8 +351,8 @@ export class Coach extends Component {
       // classes,
       participants,
       class_schedules,
-      coach_reviews
-    } = this.props.home.coach
+      coach_reviews,
+    } = this.props.home.coach;
 
     /*  let classes = [];
     if (!isEmpty(class_schedules)) {
@@ -366,18 +366,18 @@ export class Coach extends Component {
       classes = uniqueArray;
     } */
 
-    const {lang} = this.props.setting
-    const {user} = this.props.auth
+    const {lang} = this.props.setting;
+    const {user} = this.props.auth;
 
     const image = attachment
       ? {
-          uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`
+          uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
         }
-      : require('../../assets/img/no_image_found.png')
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
-    const {isLodaing} = this.props.errors
+      : require('../../assets/img/no_image_found.png');
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    const {isLodaing} = this.props.errors;
     return (
       <>
         {isLodaing ? (
@@ -394,7 +394,7 @@ export class Coach extends Component {
                     position: 'absolute',
                     display: 'flex',
                     flexDirection: 'row',
-                    top: Platform.OS === 'ios' ? normalize(40) : normalize(10)
+                    top: Platform.OS === 'ios' ? normalize(40) : normalize(10),
                     ///left: normalize(10),
                   }}>
                   <TouchableOpacity
@@ -405,7 +405,7 @@ export class Coach extends Component {
                       name="angle-left"
                       style={{
                         fontSize: normalize(18),
-                        color: '#ffffff'
+                        color: '#ffffff',
                       }}
                       //style={styles.backButtonIcon}
                     />
@@ -413,7 +413,7 @@ export class Coach extends Component {
                       style={{
                         color: '#ffffff',
                         fontSize: normalize(14),
-                        marginLeft: normalize(10)
+                        marginLeft: normalize(10),
                       }}>
                       {I18n.t('back', {locale: lang})}
                     </Text>
@@ -427,19 +427,19 @@ export class Coach extends Component {
                   marginTop: normalize(-76),
                   backgroundColor: '#ffffff',
                   borderTopStartRadius: 16,
-                  borderTopEndRadius: 16
+                  borderTopEndRadius: 16,
                 }}>
                 <View
                   style={{
                     marginTop: normalize(30),
-                    marginHorizontal: normalize(16)
+                    marginHorizontal: normalize(16),
                   }}>
                   <Text
                     style={{
                       fontSize: normalize(40),
                       color: '#231F20',
                       fontWeight: 'bold',
-                      textAlign: textAlign
+                      textAlign: textAlign,
                     }}>
                     {lang === 'ar' ? name_ar : name}
                   </Text>
@@ -449,7 +449,7 @@ export class Coach extends Component {
                     marginTop: normalize(6),
                     marginHorizontal: normalize(16),
                     borderBottomWidth: 1,
-                    borderBottomColor: '#EFEFF4'
+                    borderBottomColor: '#EFEFF4',
                   }}
                 />
               </View>
@@ -459,14 +459,14 @@ export class Coach extends Component {
                   marginHorizontal: normalize(16),
                   display: 'flex',
                   flexDirection: flexDirection,
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
                 }}>
                 <TouchableOpacity
                   onPress={() =>
                     this.props.navigation.navigate('CoachClass', {
                       id,
                       back: 'Coach',
-                      back_id: id
+                      back_id: id,
                     })
                   }>
                   <Text style={{fontSize: normalize(12), color: '#8A8A8F'}}>
@@ -492,13 +492,13 @@ export class Coach extends Component {
                   <View
                     style={[
                       styles.classRatingContainer,
-                      {flexDirection: flexDirection}
+                      {flexDirection: flexDirection},
                     ]}>
                     <ReviewShow
                       rating={rating_avg}
                       style={{
                         fontSize: normalize(15),
-                        paddingRight: normalize(2.75)
+                        paddingRight: normalize(2.75),
                       }}
                     />
                   </View>
@@ -526,7 +526,7 @@ export class Coach extends Component {
                   <Text
                     style={[
                       styles.aboutContentContainerText,
-                      {textAlign: textAlign}
+                      {textAlign: textAlign},
                     ]}>
                     {lang === 'ar' ? description_ar : description}
                   </Text>
@@ -536,7 +536,7 @@ export class Coach extends Component {
                 style={{
                   marginTop: normalize(20),
                   marginHorizontal: normalize(16),
-                  flexDirection: flexDirection
+                  flexDirection: flexDirection,
                 }}>
                 <Text style={{fontSize: normalize(20), fontWeight: 'bold'}}>
                   {I18n.t('topCourses', {locale: lang})}
@@ -547,7 +547,7 @@ export class Coach extends Component {
                 style={{
                   marginLeft: normalize(16),
                   marginVertical: normalize(16),
-                  flexDirection: flexDirection
+                  flexDirection: flexDirection,
                 }}>
                 <ScrollView
                   horizontal={true}
@@ -556,7 +556,7 @@ export class Coach extends Component {
                     width: width,
                     height: normalize(171),
                     //scaleX: -1,
-                    transform: [{rotateY: lang === 'ar' ? '180deg' : '0deg'}]
+                    transform: [{rotateY: lang === 'ar' ? '180deg' : '0deg'}],
                     //flexDirection: flexDirection,
                   }}>
                   {coachClasses.length > 0 ? (
@@ -584,13 +584,13 @@ export class Coach extends Component {
                         backgroundColor: '#efefef',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        borderRadius: normalize(10)
+                        borderRadius: normalize(10),
                       }}>
                       <Text
                         style={{
                           fontSize: normalize(16),
                           color: '#8f8f8f',
-                          textAlign: 'center'
+                          textAlign: 'center',
                         }}>
                         {I18n.t('noTopCourses', {locale: lang})}
                       </Text>
@@ -604,7 +604,7 @@ export class Coach extends Component {
                   marginTop: normalize(6),
                   marginHorizontal: normalize(16),
                   borderBottomWidth: 1,
-                  borderBottomColor: '#EFEFF4'
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
               <View
@@ -614,14 +614,14 @@ export class Coach extends Component {
                   display: 'flex',
                   flex: 1,
                   flexDirection: flexDirection,
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
                 }}>
                 <View>
                   <Text
                     style={{
                       fontSize: normalize(20),
                       fontWeight: '700',
-                      color: '#22242A'
+                      color: '#22242A',
                     }}>
                     {rating_count} {I18n.t('reviews', {locale: lang})}
                   </Text>
@@ -631,7 +631,7 @@ export class Coach extends Component {
                     onPress={() =>
                       this.props.navigation.navigate('CoachReview', {
                         coach_id: id,
-                        handleReviews: data => this.handleAllReviews(data)
+                        handleReviews: data => this.handleAllReviews(data),
                       })
                     }>
                     <Text
@@ -639,7 +639,7 @@ export class Coach extends Component {
                         marginTop: normalize(7),
                         fontSize: normalize(13),
                         color: '#8A8A8F',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}>
                       {I18n.t('readAll', {locale: lang})}
                     </Text>
@@ -651,7 +651,7 @@ export class Coach extends Component {
                         marginTop: normalize(7),
                         fontSize: normalize(13),
                         color: '#0053FE',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}>
                       {I18n.t('writeReview', {locale: lang})}
                     </Text>
@@ -674,7 +674,7 @@ export class Coach extends Component {
                   marginTop: normalize(6),
                   marginHorizontal: normalize(16),
                   borderBottomWidth: 1,
-                  borderBottomColor: '#EFEFF4'
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
               {/* End Reviews */}
@@ -716,57 +716,57 @@ export class Coach extends Component {
           </View>
         )}
       </>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   aboutContainer: {
     marginHorizontal: normalize(16),
-    marginTop: normalize(20)
+    marginTop: normalize(20),
   },
   aboutContainerText: {
     marginTop: normalize(12),
     fontSize: normalize(14),
     //fontWeight: '700',
-    color: '#8A8A8F'
+    color: '#8A8A8F',
   },
   aboutContentContainer: {
     marginHorizontal: normalize(16),
-    marginTop: normalize(6)
+    marginTop: normalize(6),
   },
   aboutContentContainerText: {
-    fontSize: normalize(12)
+    fontSize: normalize(12),
     //color: '#8A8A8F',
   },
   classRatingContainer: {
-    display: 'flex'
+    display: 'flex',
     //flexDirection: 'row',
   },
   classStarIcon: {
     color: '#FE9800',
     fontSize: normalize(15),
-    paddingRight: normalize(2.75)
+    paddingRight: normalize(2.75),
   },
   imageContainer: {
     //flex: 2,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
     //height: 250,
   },
   welcomeImage: {
     //flex: 1,
     //height: normalize(height * 0.4),
     height: Platform.OS === 'ios' ? normalize(300) : normalize(260),
-    width: width
-  }
-})
+    width: width,
+  },
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   home: state.home,
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   getCoach,
@@ -774,5 +774,5 @@ export default connect(mapStateToProps, {
   getRecommendedClasses,
   getCoach1,
   getCoachLocation1,
-  getCoachClasses
-})(Coach)
+  getCoachClasses,
+})(Coach);

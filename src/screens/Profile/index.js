@@ -1,6 +1,6 @@
-import moment from 'moment-timezone'
-import {Body, Card, CardItem, Icon, Text} from 'native-base'
-import React, {Component} from 'react'
+import moment from 'moment-timezone';
+import {Body, Card, CardItem, Icon, Text} from 'native-base';
+import React, {Component} from 'react';
 import {
   Alert,
   BackHandler,
@@ -13,42 +13,42 @@ import {
   StatusBar,
   StyleSheet,
   TouchableOpacity,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import normalize from 'react-native-normalize';
+import {connect} from 'react-redux';
 
-import {currentUser, logoutUser, updateUser} from '../../actions/authActions'
-import {API_URI, IMAGE_URI} from '../../utils/config'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import Loading from '../Loading'
-moment.tz.setDefault('Asia/Qatar')
-import axios from 'axios'
-import Toast from 'react-native-toast-notifications'
+import {currentUser, logoutUser, updateUser} from '../../actions/authActions';
+import {API_URI, IMAGE_URI} from '../../utils/config';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import Loading from '../Loading';
+moment.tz.setDefault('Asia/Qatar');
+import axios from 'axios';
+import Toast from 'react-native-toast-notifications';
 
 import {
   addUserSubscription,
   getSubscriptions,
-  getSubscriptionsRefresh
-} from '../../actions/subscriptionActions'
-import AccountIcon from '../../assets/img/account_box.svg'
+  getSubscriptionsRefresh,
+} from '../../actions/subscriptionActions';
+import AccountIcon from '../../assets/img/account_box.svg';
 // Svg Icons
-import CalendarIcon from '../../assets/img/calendar.svg'
-import ContactIcon from '../../assets/img/contact.svg'
-import LogoutIcon from '../../assets/img/exit_to_app.svg'
-import FitnessIcon from '../../assets/img/fitness_center.svg'
-import PaymentIcon from '../../assets/img/payment.svg'
-import SettingIcon from '../../assets/img/settings.svg'
-import PaymentSuccess from '../../components/PaymentSuccess'
-import PaymentWeb from '../../components/PaymentWeb'
+import CalendarIcon from '../../assets/img/calendar.svg';
+import ContactIcon from '../../assets/img/contact.svg';
+import LogoutIcon from '../../assets/img/exit_to_app.svg';
+import FitnessIcon from '../../assets/img/fitness_center.svg';
+import PaymentIcon from '../../assets/img/payment.svg';
+import SettingIcon from '../../assets/img/settings.svg';
+import PaymentSuccess from '../../components/PaymentSuccess';
+import PaymentWeb from '../../components/PaymentWeb';
 
-const {width} = Dimensions.get('window')
-const {height} = Dimensions.get('window')
+const {width} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 export class Profile extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       isShowPaymentWeb: false,
       url: '',
@@ -57,52 +57,52 @@ export class Profile extends Component {
       isShowRenew: false,
       isLoading: false,
       refreshing: false,
-      isShowCancel: false
-    }
+      isShowCancel: false,
+    };
   }
 
   async componentDidMount() {
     /*  if (isEmpty(this.props.auth.user)) {
       this.props.navigation.navigate('Login');
     } */
-    this.props.getSubscriptions()
-    const {user} = this.props.auth
+    this.props.getSubscriptions();
+    const {user} = this.props.auth;
     if (user.subscription_validity) {
-      let GivenDate = await user.subscription_validity
-      date = GivenDate.split(' ')
-      let CurrentDate = new Date().getTime()
-      GivenDate = new Date(date[0]).getTime()
+      let GivenDate = await user.subscription_validity;
+      date = GivenDate.split(' ');
+      let CurrentDate = new Date().getTime();
+      GivenDate = new Date(date[0]).getTime();
       if (GivenDate < CurrentDate) {
-        this.setState({isShowRenew: true, isShowCancel: false})
+        this.setState({isShowRenew: true, isShowCancel: false});
       } else {
-        this.setState({isShowRenew: false, isShowCancel: true})
+        this.setState({isShowRenew: false, isShowCancel: true});
       }
     }
     // BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     this.focusListener = this.props.navigation.addListener('willFocus', () => {
-      BackHandler.addEventListener('hardwareBackPress', this.handleBack)
-    })
+      BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    });
 
     this.focusListener1 = this.props.navigation.addListener('willBlur', () => {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleBack)
-    })
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    });
     this.focusListener2 = this.props.navigation.addListener(
       'didFocus',
       async () => {
-        const {user} = this.props.auth
+        const {user} = this.props.auth;
         if (user.subscription_validity) {
-          let GivenDate = await user.subscription_validity
-          date = GivenDate.split(' ')
-          let CurrentDate = new Date().getTime()
-          GivenDate = new Date(date[0]).getTime()
+          let GivenDate = await user.subscription_validity;
+          date = GivenDate.split(' ');
+          let CurrentDate = new Date().getTime();
+          GivenDate = new Date(date[0]).getTime();
           if (GivenDate < CurrentDate) {
-            this.setState({isShowRenew: true, isShowCancel: false})
+            this.setState({isShowRenew: true, isShowCancel: false});
           } else {
-            this.setState({isShowRenew: false, isShowCancel: true})
+            this.setState({isShowRenew: false, isShowCancel: true});
           }
         }
         // do something
-        const {lang} = this.props.setting
+        const {lang} = this.props.setting;
         if (isEmpty(this.props.auth.user)) {
           Alert.alert(
             I18n.t('login', {locale: lang}),
@@ -111,121 +111,121 @@ export class Profile extends Component {
               {
                 text: I18n.t('no', {locale: lang}),
                 onPress: () => this.props.navigation.navigate('Home'),
-                style: 'cancel'
+                style: 'cancel',
               },
               {
                 text: I18n.t('yes', {locale: lang}),
-                onPress: () => this.props.navigation.navigate('Login')
-              }
+                onPress: () => this.props.navigation.navigate('Login'),
+              },
             ],
             {
-              cancelable: false
+              cancelable: false,
             },
-          )
+          );
         }
       },
-    )
+    );
   }
 
   async UNSAFE_componentWillReceiveProps(nextProps) {
-    const {user} = nextProps.auth
+    const {user} = nextProps.auth;
     if (user.subscription_validity) {
-      let GivenDate = await user.subscription_validity
-      date = GivenDate.split(' ')
-      let CurrentDate = new Date().getTime()
-      GivenDate = new Date(date[0]).getTime()
+      let GivenDate = await user.subscription_validity;
+      date = GivenDate.split(' ');
+      let CurrentDate = new Date().getTime();
+      GivenDate = new Date(date[0]).getTime();
       if (GivenDate < CurrentDate) {
-        this.setState({isShowRenew: true, isShowCancel: false})
+        this.setState({isShowRenew: true, isShowCancel: false});
       } else {
-        this.setState({isShowRenew: false, isShowCancel: true})
+        this.setState({isShowRenew: false, isShowCancel: true});
       }
     }
   }
 
   handleBack = async back => {
-    this.props.navigation.navigate('Home')
-    return true
-  }
+    this.props.navigation.navigate('Home');
+    return true;
+  };
 
   componentWillUnmount() {
-    this.focusListener.remove()
-    this.focusListener1.remove()
-    this.focusListener2.remove()
+    this.focusListener.remove();
+    this.focusListener1.remove();
+    this.focusListener2.remove();
   }
 
   handleChoosePlanBooking = async e => {
-    e.preventDefault()
-    const {subscriptions} = this.props.subscription
-    const {lang} = this.props.setting
-    const {user} = this.props.auth
+    e.preventDefault();
+    const {subscriptions} = this.props.subscription;
+    const {lang} = this.props.setting;
+    const {user} = this.props.auth;
     const subscription = subscriptions.find(
       subc => subc.id === user.subscription_id,
-    )
-    this.setState({isLoading: true})
+    );
+    this.setState({isLoading: true});
     if (!isEmpty(user.subscription_id)) {
       addData = {
         user_id: user.id,
         language: lang,
-        subscription_id: user.subscription_id
-      }
+        subscription_id: user.subscription_id,
+      };
 
       axios
         .post(`${API_URI}/user_subscriptions`, addData)
         .then(res => {
           if (res.data.error.code) {
           } else {
-            const {data, payment_url} = res.data
+            const {data, payment_url} = res.data;
 
             this.setState({
               isShowPaymentWeb: true,
               url: payment_url,
               data: data,
               title: lang === 'ar' ? subscription.name_ar : subscription.name,
-              isLoading: false
-            })
+              isLoading: false,
+            });
           }
         })
         .catch(err => {
           if (err.response.data.error) {
-            this.setState({isLoading: false})
+            this.setState({isLoading: false});
           }
-        })
-      this.props.addUserSubscription(addData, this.props.navigation)
+        });
+      this.props.addUserSubscription(addData, this.props.navigation);
     } else {
-      this.setState({isLoading: false})
+      this.setState({isLoading: false});
     }
-  }
+  };
 
   handlePaymentWeb = async (status = '') => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     if (status === 'success') {
       this.setState({
         isShowPaymentWeb: false,
-        isLoading: true
-      })
+        isLoading: true,
+      });
 
       this.setState({
         isShowPaymentSuccess: !this.state.isShowPaymentSuccess,
-        isLoading: false
-      })
+        isLoading: false,
+      });
     } else if (status === 'failed') {
       toast.show(I18n.t('paymentFailed', {locale: lang}), {
         type: 'danger',
         placement: 'bottom',
         duration: 2000,
         offset: 30,
-        animationType: 'slide-in'
-      })
+        animationType: 'slide-in',
+      });
       this.setState({
         isShowPaymentWeb: false,
-        count: this.state.count + 1
-      })
+        count: this.state.count + 1,
+      });
     } else {
       this.setState({
         isShowPaymentWeb: false,
         count: this.state.count + 1,
-        isLoading: false
-      })
+        isLoading: false,
+      });
     }
 
     setTimeout(() => {
@@ -233,40 +233,40 @@ export class Profile extends Component {
         isShowPaymentWeb: false,
         count: this.state.count + 1,
         isLoading: false,
-        isShowPaymentSuccess: false
-      })
-    }, 5000)
-  }
+        isShowPaymentSuccess: false,
+      });
+    }, 5000);
+  };
 
   handlePaymentSuccess = () => {
     this.setState({
-      isShowPaymentSuccess: !this.state.isShowPaymentSuccess
-    })
-  }
+      isShowPaymentSuccess: !this.state.isShowPaymentSuccess,
+    });
+  };
 
   handleRefresh = async () => {
-    await this.props.currentUser()
-    this.setState({refreshing: true})
-    this.props.getSubscriptionsRefresh()
-    const {user} = this.props.auth
+    await this.props.currentUser();
+    this.setState({refreshing: true});
+    this.props.getSubscriptionsRefresh();
+    const {user} = this.props.auth;
     if (user.subscription_validity) {
-      let GivenDate = await user.subscription_validity
-      date = GivenDate.split(' ')
-      let CurrentDate = new Date().getTime()
-      GivenDate = new Date(date[0]).getTime()
+      let GivenDate = await user.subscription_validity;
+      date = GivenDate.split(' ');
+      let CurrentDate = new Date().getTime();
+      GivenDate = new Date(date[0]).getTime();
       if (GivenDate < CurrentDate) {
-        this.setState({isShowRenew: true, isShowCancel: false})
+        this.setState({isShowRenew: true, isShowCancel: false});
       } else {
-        this.setState({isShowRenew: false, isShowCancel: true})
+        this.setState({isShowRenew: false, isShowCancel: true});
       }
     }
     setTimeout(() => {
-      this.setState({refreshing: false})
-    }, 2000)
-  }
+      this.setState({refreshing: false});
+    }, 2000);
+  };
 
   handleCancelPlanBooking = () => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
 
     Alert.alert(
       I18n.t('message', {locale: lang}),
@@ -275,26 +275,26 @@ export class Profile extends Component {
         {
           text: I18n.t('no', {locale: lang}),
           onPress: () => console.log('come'),
-          style: 'cancel'
+          style: 'cancel',
         },
         {
           text: I18n.t('yes', {locale: lang}),
-          onPress: () => this.handleCancelMembership()
-        }
+          onPress: () => this.handleCancelMembership(),
+        },
       ],
       {
-        cancelable: false
+        cancelable: false,
       },
-    )
-  }
+    );
+  };
 
   handleCancelMembership = () => {
-    const {user} = this.props.auth
+    const {user} = this.props.auth;
     const addData = {
-      is_subscribed: 0
-    }
-    this.props.updateUser(addData, user.id)
-  }
+      is_subscribed: 0,
+    };
+    this.props.updateUser(addData, user.id);
+  };
 
   render() {
     const {
@@ -306,20 +306,20 @@ export class Profile extends Component {
       isShowRenew,
       isLoading,
       refreshing,
-      isShowCancel
-    } = this.state
-    const {lang} = this.props.setting
-    const {user} = this.props.auth
+      isShowCancel,
+    } = this.state;
+    const {lang} = this.props.setting;
+    const {user} = this.props.auth;
     const image = user.attachment
       ? {
           uri: `${IMAGE_URI}/${user.attachment.dir}/${
             user.attachment.file_name
-          }`
+          }`,
         }
-      : require('../../assets/img/avatar1.png')
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const {isLodaing} = this.props.errors
+      : require('../../assets/img/avatar1.png');
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const {isLodaing} = this.props.errors;
     return (
       <>
         {isLodaing || isLoading ? (
@@ -328,7 +328,7 @@ export class Profile extends Component {
           <View
             style={{
               flex: 1,
-              backgroundColor: '#ffffff'
+              backgroundColor: '#ffffff',
             }}>
             <SafeAreaView style={{flex: 0, backgroundColor: '#FFFFFF'}} />
             <StatusBar /* hidden={true} */ />
@@ -348,7 +348,7 @@ export class Profile extends Component {
                   style={{
                     flex: 1,
                     justifyContent: 'flex-end',
-                    backgroundColor: 'rgba(0,0,0,0.5)'
+                    backgroundColor: 'rgba(0,0,0,0.5)',
                   }}>
                   {isShowRenew ? (
                     <TouchableOpacity
@@ -360,8 +360,8 @@ export class Profile extends Component {
                           marginTop:
                             Platform.OS === 'ios'
                               ? normalize(20)
-                              : normalize(20)
-                        }
+                              : normalize(20),
+                        },
                       ]}>
                       <Text style={{color: '#ffffff', fontSize: normalize(18)}}>
                         {I18n.t('renew', {locale: lang})}
@@ -377,8 +377,8 @@ export class Profile extends Component {
                           marginTop:
                             Platform.OS === 'ios'
                               ? normalize(45)
-                              : normalize(20)
-                        }
+                              : normalize(20),
+                        },
                       ]}>
                       <Text style={{color: '#ffffff', fontSize: normalize(18)}}>
                         {I18n.t('cancel', {locale: lang})}
@@ -391,7 +391,7 @@ export class Profile extends Component {
                       justifyContent: 'flex-end',
                       //marginTop: normalize(128),
                       marginHorizontal: normalize(17),
-                      marginVertical: normalize(60)
+                      marginVertical: normalize(60),
                     }}>
                     <View>
                       <Text
@@ -399,7 +399,7 @@ export class Profile extends Component {
                           fontSize: normalize(40),
                           fontWeight: 'bold',
                           color: '#ffffff',
-                          textAlign: textAlign
+                          textAlign: textAlign,
                         }}>
                         {`${user.first_name || ''} ${user.last_name || ''}`}
                       </Text>
@@ -407,13 +407,13 @@ export class Profile extends Component {
                     <View
                       style={[
                         styles.subscribtionContainer,
-                        {flexDirection: flexDirection}
+                        {flexDirection: flexDirection},
                       ]}>
                       <View>
                         <Text
                           style={[
                             styles.subscribtionValue,
-                            {textAlign: textAlign}
+                            {textAlign: textAlign},
                           ]}>
                           {user.credits_balance ? user.credits_balance : 0}
                         </Text>
@@ -425,7 +425,7 @@ export class Profile extends Component {
                         <Text
                           style={[
                             styles.subscribtionValue,
-                            {textAlign: textAlign}
+                            {textAlign: textAlign},
                           ]}>
                           {user.subscription
                             ? lang === 'ar'
@@ -441,7 +441,7 @@ export class Profile extends Component {
                         <Text
                           style={[
                             styles.subscribtionValue,
-                            {textAlign: textAlign}
+                            {textAlign: textAlign},
                           ]}>
                           {user.subscription_validity
                             ? moment(
@@ -464,7 +464,7 @@ export class Profile extends Component {
               <View
                 style={{
                   marginTop: normalize(-25),
-                  marginHorizontal: '5%'
+                  marginHorizontal: '5%',
                 }}>
                 <Card style={styles.cardContainer}>
                   <CardItem
@@ -477,14 +477,14 @@ export class Profile extends Component {
                       <Body
                         style={[
                           styles.cardItemBody,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <View
                           style={{
                             display: 'flex',
                             flexDirection: flexDirection,
                             alignItems: 'center',
-                            width: '80%'
+                            width: '80%',
                           }}>
                           <CalendarIcon
                             width={normalize(24)}
@@ -502,14 +502,14 @@ export class Profile extends Component {
                             display: 'flex',
                             flexDirection: flexDirection,
                             justifyContent: 'flex-end',
-                            width: '20%'
+                            width: '20%',
                           }}>
                           <Icon
                             type="FontAwesome"
                             name={lang === 'ar' ? 'angle-left' : 'angle-right'}
                             style={{
                               fontSize: normalize(24),
-                              color: '#CFCFCF'
+                              color: '#CFCFCF',
                             }}
                           />
                         </View>
@@ -526,14 +526,14 @@ export class Profile extends Component {
                       <Body
                         style={[
                           styles.cardItemBody,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <View
                           style={{
                             display: 'flex',
                             flexDirection: flexDirection,
                             alignItems: 'center',
-                            width: '80%'
+                            width: '80%',
                           }}>
                           <FitnessIcon
                             width={normalize(24)}
@@ -551,14 +551,14 @@ export class Profile extends Component {
                             display: 'flex',
                             flexDirection: flexDirection,
                             justifyContent: 'flex-end',
-                            width: '20%'
+                            width: '20%',
                           }}>
                           <Icon
                             type="FontAwesome"
                             name={lang === 'ar' ? 'angle-left' : 'angle-right'}
                             style={{
                               fontSize: normalize(24),
-                              color: '#CFCFCF'
+                              color: '#CFCFCF',
                             }}
                           />
                         </View>
@@ -578,14 +578,14 @@ export class Profile extends Component {
                       <Body
                         style={[
                           styles.cardItemBody,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <View
                           style={{
                             display: 'flex',
                             flexDirection: flexDirection,
                             alignItems: 'center',
-                            width: '80%'
+                            width: '80%',
                           }}>
                           <AccountIcon
                             width={normalize(24)}
@@ -603,14 +603,14 @@ export class Profile extends Component {
                             display: 'flex',
                             flexDirection: flexDirection,
                             justifyContent: 'flex-end',
-                            width: '20%'
+                            width: '20%',
                           }}>
                           <Icon
                             type="FontAwesome"
                             name={lang === 'ar' ? 'angle-left' : 'angle-right'}
                             style={{
                               fontSize: normalize(24),
-                              color: '#CFCFCF'
+                              color: '#CFCFCF',
                             }}
                           />
                         </View>
@@ -623,14 +623,14 @@ export class Profile extends Component {
                       <Body
                         style={[
                           styles.cardItemBody,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <View
                           style={{
                             display: 'flex',
                             flexDirection: flexDirection,
                             alignItems: 'center',
-                            width: '80%'
+                            width: '80%',
                           }}>
                           <SettingIcon
                             width={normalize(24)}
@@ -648,14 +648,14 @@ export class Profile extends Component {
                             display: 'flex',
                             flexDirection: flexDirection,
                             justifyContent: 'flex-end',
-                            width: '20%'
+                            width: '20%',
                           }}>
                           <Icon
                             type="FontAwesome"
                             name={lang === 'ar' ? 'angle-left' : 'angle-right'}
                             style={{
                               fontSize: normalize(24),
-                              color: '#CFCFCF'
+                              color: '#CFCFCF',
                             }}
                           />
                         </View>
@@ -670,14 +670,14 @@ export class Profile extends Component {
                       <Body
                         style={[
                           styles.cardItemBody,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <View
                           style={{
                             display: 'flex',
                             flexDirection: flexDirection,
                             alignItems: 'center',
-                            width: '80%'
+                            width: '80%',
                           }}>
                           <ContactIcon
                             width={normalize(24)}
@@ -695,14 +695,14 @@ export class Profile extends Component {
                             display: 'flex',
                             flexDirection: flexDirection,
                             justifyContent: 'flex-end',
-                            width: '20%'
+                            width: '20%',
                           }}>
                           <Icon
                             type="FontAwesome"
                             name={lang === 'ar' ? 'angle-left' : 'angle-right'}
                             style={{
                               fontSize: normalize(24),
-                              color: '#CFCFCF'
+                              color: '#CFCFCF',
                             }}
                           />
                         </View>
@@ -720,7 +720,7 @@ export class Profile extends Component {
                       <Body
                         style={[
                           styles.cardItemBody,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <LogoutIcon
                           width={normalize(24)}
@@ -731,8 +731,8 @@ export class Profile extends Component {
                           style={[
                             styles.cardItemText,
                             {
-                              flexDirection: flexDirection
-                            }
+                              flexDirection: flexDirection,
+                            },
                           ]}>
                           {I18n.t('logout', {locale: lang})}
                         </Text>
@@ -761,7 +761,7 @@ export class Profile extends Component {
               handlePaymentSuccess={this.handlePaymentSuccess}
               text={I18n.t('successful', {locale: lang})}
               shortText={`${I18n.t('youHaveSuccessfullySubscribedTo', {
-                locale: lang
+                locale: lang,
               })} ${title}`}
               buttonText={I18n.t('showMeSchedule', {locale: lang})}
               MoveScreenName={'Profile'}
@@ -771,14 +771,14 @@ export class Profile extends Component {
         )}
         <Toast ref={ref => (global['toast'] = ref)} />
       </>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#FFFFFF',
-    borderRadius: normalize(10)
+    borderRadius: normalize(10),
     /*     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -793,34 +793,34 @@ const styles = StyleSheet.create({
     display: 'flex',
     //flexDirection: 'row',
     // flexDirection: 'row-reverse',
-    alignItems: 'center'
+    alignItems: 'center',
     //paddingVertical: normalize(13),
   },
   cardItemContainer: {
     height: normalize(60),
-    marginHorizontal: normalize(15)
+    marginHorizontal: normalize(15),
   },
   cardItemEnd: {
     borderBottomLeftRadius: normalize(10),
-    borderBottomRightRadius: normalize(10)
+    borderBottomRightRadius: normalize(10),
   },
   cardItemIcon: {
     height: normalize(24),
-    width: normalize(24)
+    width: normalize(24),
     //paddingVertical: 17,
   },
   cardItemStart: {
     borderTopLeftRadius: normalize(10),
-    borderTopRightRadius: normalize(10)
+    borderTopRightRadius: normalize(10),
   },
   cardItemText: {
     //padding: 17,
     fontSize: normalize(12),
-    marginHorizontal: normalize(15)
+    marginHorizontal: normalize(15),
   },
   imageContainer: {
     //flex: 2,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
     //height: 250,
   },
   renewButton: {
@@ -831,37 +831,37 @@ const styles = StyleSheet.create({
     height: normalize(30),
     justifyContent: 'center',
     marginHorizontal: normalize(10),
-    width: normalize(80)
+    width: normalize(80),
   },
   subscribtionContainer: {
     display: 'flex',
     //flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: normalize(20)
+    marginTop: normalize(20),
   },
   subscribtionTitle: {
     color: '#ffffff',
-    fontSize: normalize(12)
+    fontSize: normalize(12),
   },
   subscribtionValue: {
     color: '#FE9800',
     fontSize: normalize(18.66),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   welcomeImage: {
     //flex: 1,
     //height: normalize(height * 0.4),
     height: normalize(333),
-    width: width
-  }
-})
+    width: width,
+  },
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
   subscription: state.subscription,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   logoutUser,
@@ -869,5 +869,5 @@ export default connect(mapStateToProps, {
   addUserSubscription,
   currentUser,
   getSubscriptionsRefresh,
-  updateUser
-})(Profile)
+  updateUser,
+})(Profile);

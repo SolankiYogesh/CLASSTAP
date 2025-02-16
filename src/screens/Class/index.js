@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import moment from 'moment-timezone'
-import {Button, Icon} from 'native-base'
-import React, {Component} from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment-timezone';
+import {Button, Icon} from 'native-base';
+import React, {Component} from 'react';
 import {
   Alert,
   BackHandler,
@@ -18,10 +18,10 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import normalize from 'react-native-normalize';
+import {connect} from 'react-redux';
 
 import {
   addFavorite,
@@ -31,33 +31,33 @@ import {
   getClassesLocation,
   getClassLocation,
   getFavorites,
-  removeFavorite
-} from '../../actions/homeActions'
-import CarouselSlider from '../../components/CarouselSlider'
-import {API_URI, IMAGE_URI} from '../../utils/config'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import Loading from '../Loading'
-import ReviewShow from '../Review/ReviewShow'
-import WriteReview from '../WriteReview'
-moment.tz.setDefault('Asia/Qatar')
-import axios from 'axios'
-import ReadMore from 'react-native-read-more-text'
-import Toast from 'react-native-toast-notifications'
+  removeFavorite,
+} from '../../actions/homeActions';
+import CarouselSlider from '../../components/CarouselSlider';
+import {API_URI, IMAGE_URI} from '../../utils/config';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import Loading from '../Loading';
+import ReviewShow from '../Review/ReviewShow';
+import WriteReview from '../WriteReview';
+moment.tz.setDefault('Asia/Qatar');
+import axios from 'axios';
+import ReadMore from 'react-native-read-more-text';
+import Toast from 'react-native-toast-notifications';
 
-import {getSubscriptions} from '../../actions/subscriptionActions'
-import CallIcon from '../../assets/img/call.svg'
-import FavoriteGreyIcon from '../../assets/img/favorite-grey.svg'
-import FavoriteRedIcon from '../../assets/img/favorite-red.svg'
-import MapIcon from '../../assets/img/map.svg'
-import ClassSuccess from '../../components/ClassSuccess'
-import ConfirmBooking from '../ConfirmBooking'
+import {getSubscriptions} from '../../actions/subscriptionActions';
+import CallIcon from '../../assets/img/call.svg';
+import FavoriteGreyIcon from '../../assets/img/favorite-grey.svg';
+import FavoriteRedIcon from '../../assets/img/favorite-red.svg';
+import MapIcon from '../../assets/img/map.svg';
+import ClassSuccess from '../../components/ClassSuccess';
+import ConfirmBooking from '../ConfirmBooking';
 
-const {width} = Dimensions.get('window')
+const {width} = Dimensions.get('window');
 
 export class GymClass extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       isShowWriteReview: false,
       isShowConfirmBooking: false,
@@ -74,8 +74,8 @@ export class GymClass extends Component {
       isShowClassSuccess: false,
       is_virtual: false,
       refreshing: false,
-      showModal: false
-    }
+      showModal: false,
+    };
   }
 
   /*  static getDerivedStateFromProps(props, state) {
@@ -88,35 +88,35 @@ export class GymClass extends Component {
 
   async componentDidMount() {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      this.handleRefresh()
-    })
-    const id = await this.props.navigation.getParam('id')
-    const date = await this.props.navigation.getParam('date')
-    const start_time = await this.props.navigation.getParam('start_time')
-    const end_time = await this.props.navigation.getParam('end_time')
-    const category_id = await this.props.navigation.getParam('category_id')
+      this.handleRefresh();
+    });
+    const id = await this.props.navigation.getParam('id');
+    const date = await this.props.navigation.getParam('date');
+    const start_time = await this.props.navigation.getParam('start_time');
+    const end_time = await this.props.navigation.getParam('end_time');
+    const category_id = await this.props.navigation.getParam('category_id');
     const category_type_id =
-      await this.props.navigation.getParam('category_type_id')
+      await this.props.navigation.getParam('category_type_id');
     const creditRangeHigh =
-      await this.props.navigation.getParam('creditRangeHigh')
+      await this.props.navigation.getParam('creditRangeHigh');
     const creditRangeLow =
-      await this.props.navigation.getParam('creditRangeLow')
-    const gender_id = await this.props.navigation.getParam('gender_id')
-    const latitude = await AsyncStorage.getItem('latitude')
-    const longitude = await AsyncStorage.getItem('longitude')
-    let url
+      await this.props.navigation.getParam('creditRangeLow');
+    const gender_id = await this.props.navigation.getParam('gender_id');
+    const latitude = await AsyncStorage.getItem('latitude');
+    const longitude = await AsyncStorage.getItem('longitude');
+    let url;
     if (latitude && longitude) {
-      url = `${API_URI}/classes/${id}?latitude=${latitude}&longitude=${longitude}`
+      url = `${API_URI}/classes/${id}?latitude=${latitude}&longitude=${longitude}`;
     } else {
-      url = `${API_URI}/classes/${id}`
+      url = `${API_URI}/classes/${id}`;
     }
 
-    let filter
-    let whereFilter = ''
-    let inClass = ''
-    let inClassCategory = ''
+    let filter;
+    let whereFilter = '';
+    let inClass = '';
+    let inClassCategory = '';
     if (!isEmpty(gender_id)) {
-      inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`
+      inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
     }
 
     if (
@@ -127,7 +127,7 @@ export class GymClass extends Component {
       !isEmpty(creditRangeLow) &&
       !isEmpty(creditRangeHigh)
     ) {
-      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}],"is_virtual":{"$in":[${category_type_id}]}},"inScheduleDates": { "date": "${date}" }`
+      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}],"is_virtual":{"$in":[${category_type_id}]}},"inScheduleDates": { "date": "${date}" }`;
     } else if (
       !isEmpty(date) &&
       !isEmpty(start_time) &&
@@ -135,21 +135,21 @@ export class GymClass extends Component {
       !isEmpty(creditRangeLow) &&
       !isEmpty(creditRangeHigh)
     ) {
-      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}]},"inScheduleDates": { "date": "${date}" }`
+      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}]},"inScheduleDates": { "date": "${date}" }`;
     } else if (!isEmpty(date) && !isEmpty(start_time) && !isEmpty(end_time)) {
-      whereFilter = `"inClassSchedule": {"$and":[{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},"inScheduleDates":{"date":"${date}"}`
+      whereFilter = `"inClassSchedule": {"$and":[{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},"inScheduleDates":{"date":"${date}"}`;
     } else if (
       !isEmpty(category_type_id) &&
       !isEmpty(creditRangeLow) &&
       !isEmpty(creditRangeHigh)
     ) {
-      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]},"is_virtual":{"$in":[${category_type_id}]}}`
+      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]},"is_virtual":{"$in":[${category_type_id}]}}`;
     } else if (!isEmpty(date)) {
-      whereFilter = `"inScheduleDates":{"date":"${date}"}`
+      whereFilter = `"inScheduleDates":{"date":"${date}"}`;
     }
 
     if (!isEmpty(category_id)) {
-      inClassCategory = `"inClassCategory": {"category_id": {"$in":[${category_id}]}}`
+      inClassCategory = `"inClassCategory": {"category_id": {"$in":[${category_id}]}}`;
     }
 
     if (
@@ -157,21 +157,21 @@ export class GymClass extends Component {
       !isEmpty(inClassCategory) &&
       !isEmpty(whereFilter)
     ) {
-      filter = `{${inClass},${whereFilter},${inClassCategory}}`
+      filter = `{${inClass},${whereFilter},${inClassCategory}}`;
     } else if (!isEmpty(inClass) && !isEmpty(whereFilter)) {
-      filter = `{${inClass},${whereFilter}}`
+      filter = `{${inClass},${whereFilter}}`;
     } else if (!isEmpty(inClassCategory) && !isEmpty(whereFilter)) {
-      filter = `{"inClass":{"is_active": 1},${whereFilter},${inClassCategory}}`
+      filter = `{"inClass":{"is_active": 1},${whereFilter},${inClassCategory}}`;
     } else if (!isEmpty(whereFilter)) {
-      filter = `{"inClass":{"is_active": 1},${whereFilter}}`
+      filter = `{"inClass":{"is_active": 1},${whereFilter}}`;
     } else {
-      filter = `{"inClass":{"is_active": 1}}`
+      filter = `{"inClass":{"is_active": 1}}`;
     }
 
     if (url.indexOf('?') > 0) {
-      url = `${url}&filter=${filter}`
+      url = `${url}&filter=${filter}`;
     } else {
-      url = `${url}?filter=${filter}`
+      url = `${url}?filter=${filter}`;
     }
 
     await axios
@@ -179,85 +179,85 @@ export class GymClass extends Component {
       .then(async res => {
         if (res.data.error.code) {
         } else {
-          const {data} = res.data
+          const {data} = res.data;
           data.class_schedules = await data.class_schedules.sort((a, b) =>
             a.start_time < b.start_time
               ? -1
               : a.start_time > b.start_time
                 ? 1
                 : 0,
-          )
-          let class_schedule_id
-          let schedule_date_id
-          let class_start_time
-          let class_end_time
-          let class_date
-          let credits
-          let coaches
-          let is_virtual
+          );
+          let class_schedule_id;
+          let schedule_date_id;
+          let class_start_time;
+          let class_end_time;
+          let class_date;
+          let credits;
+          let coaches;
+          let is_virtual;
           if (!isEmpty(date)) {
-            class_date = date
+            class_date = date;
             class_schedule_id = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].id
-              : ''
+              : '';
             class_start_time = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].start_time
-              : ''
+              : '';
             class_end_time = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].end_time
-              : ''
+              : '';
             schedule_date_id =
               !isEmpty(data.class_schedules) &&
               !isEmpty(data.class_schedules[0].schedule_dates)
                 ? data.class_schedules[0].schedule_dates[0].id
-                : ''
+                : '';
             credits = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].credits
-              : 0
+              : 0;
             coaches = !isEmpty(data.class_schedules)
               ? [data.class_schedules[0].coach]
-              : []
+              : [];
             is_virtual = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].is_virtual
-              : false
+              : false;
           } else {
-            let scheduleDates = []
+            let scheduleDates = [];
             await data.class_schedules.map(schedule => {
               if (!isEmpty(schedule.schedule_dates)) {
-                schedule.schedule_dates[0].dateTime = `${schedule.schedule_dates[0].date}T${schedule.start_time}`
-                schedule.schedule_dates[0].start_time = schedule.start_time
-                schedule.schedule_dates[0].end_time = schedule.end_time
-                schedule.schedule_dates[0].credits = schedule.credits
-                schedule.schedule_dates[0].coach = schedule.coach
-                schedule.schedule_dates[0].is_virtual = schedule.is_virtual
-                scheduleDates.push(schedule.schedule_dates[0])
+                schedule.schedule_dates[0].dateTime = `${schedule.schedule_dates[0].date}T${schedule.start_time}`;
+                schedule.schedule_dates[0].start_time = schedule.start_time;
+                schedule.schedule_dates[0].end_time = schedule.end_time;
+                schedule.schedule_dates[0].credits = schedule.credits;
+                schedule.schedule_dates[0].coach = schedule.coach;
+                schedule.schedule_dates[0].is_virtual = schedule.is_virtual;
+                scheduleDates.push(schedule.schedule_dates[0]);
               }
-              return schedule
-            })
+              return schedule;
+            });
             scheduleDates = await scheduleDates.sort(function (a, b) {
-              let aa = new Date(a.dateTime).getTime()
-              let bb = new Date(b.dateTime).getTime()
+              let aa = new Date(a.dateTime).getTime();
+              let bb = new Date(b.dateTime).getTime();
               // (await new Date(a.dateTime)) - (await new Date(b.dateTime))
-              return aa - bb
-            })
-            class_date = !isEmpty(scheduleDates) ? scheduleDates[0].date : ''
+              return aa - bb;
+            });
+            class_date = !isEmpty(scheduleDates) ? scheduleDates[0].date : '';
             class_schedule_id = !isEmpty(scheduleDates)
               ? scheduleDates[0].class_schedule_id
-              : ''
+              : '';
             class_start_time = !isEmpty(scheduleDates)
               ? scheduleDates[0].start_time
-              : ''
+              : '';
             class_end_time = !isEmpty(scheduleDates)
               ? scheduleDates[0].end_time
-              : ''
+              : '';
             schedule_date_id = !isEmpty(scheduleDates)
               ? scheduleDates[0].id
-              : ''
-            credits = !isEmpty(scheduleDates) ? scheduleDates[0].credits : 0
-            coaches = !isEmpty(scheduleDates) ? [scheduleDates[0].coach] : []
+              : '';
+            credits = !isEmpty(scheduleDates) ? scheduleDates[0].credits : 0;
+            coaches = !isEmpty(scheduleDates) ? [scheduleDates[0].coach] : [];
             is_virtual = !isEmpty(scheduleDates)
               ? scheduleDates[0].is_virtual
-              : false
+              : false;
           }
 
           this.setState({
@@ -270,14 +270,14 @@ export class GymClass extends Component {
             schedule_date_id,
             credits,
             coaches,
-            is_virtual
-          })
-          return true
+            is_virtual,
+          });
+          return true;
         }
       })
       .catch(err => {
-        this.setState({isLoading: false})
-      })
+        this.setState({isLoading: false});
+      });
 
     /*      if (latitude && longitude) {
       this.props.getClassLocation(id);
@@ -286,8 +286,8 @@ export class GymClass extends Component {
       this.props.getClass(id);
       //this.props.getClasses();
     }*/
-    this.props.getSubscriptions()
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack)
+    this.props.getSubscriptions();
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }
 
   /*   async componentDidMount() {
@@ -307,17 +307,17 @@ export class GymClass extends Component {
   } */
 
   componentWillUnmount() {
-    this.focusListener.remove()
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack)
+    this.focusListener.remove();
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
   }
 
   handleBack = async () => {
-    this.props.navigation.goBack()
-    return true
-  }
+    this.props.navigation.goBack();
+    return true;
+  };
 
   handleAddFavorite = async () => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
         I18n.t('login', {locale: lang}),
@@ -326,61 +326,61 @@ export class GymClass extends Component {
           {
             text: I18n.t('no', {locale: lang}),
             onPress: () => console.log('cancel'),
-            style: 'cancel'
+            style: 'cancel',
           },
           {
             text: I18n.t('yes', {locale: lang}),
-            onPress: () => this.props.navigation.navigate('Login')
-          }
+            onPress: () => this.props.navigation.navigate('Login'),
+          },
         ],
         {
-          cancelable: false
+          cancelable: false,
         },
-      )
+      );
     } else {
-      this.setState({isDisable: true})
-      const {id} = this.state.class
+      this.setState({isDisable: true});
+      const {id} = this.state.class;
       let addFavoriteData = {
         class: 'Class',
         foreign_id: id,
-        user_id: this.props.auth.user.id
-      }
+        user_id: this.props.auth.user.id,
+      };
       await axios
         .post(`${API_URI}/favourites`, addFavoriteData)
         .then(async res => {
           if (res.data.error.code) {
           } else {
-            const {data} = res.data
-            let gymClass = {...this.state.class}
-            gymClass.favourite = data
-            const {id} = this.props.auth.user
-            this.setState({class: gymClass, isDisable: false})
-            this.props.getFavorites(id)
+            const {data} = res.data;
+            let gymClass = {...this.state.class};
+            gymClass.favourite = data;
+            const {id} = this.props.auth.user;
+            this.setState({class: gymClass, isDisable: false});
+            this.props.getFavorites(id);
             toast.show(
               I18n.t('favoriteAddedSucessfully', {
-                locale: this.props.setting.lang
+                locale: this.props.setting.lang,
               }),
               {
                 type: 'normal',
                 placement: 'bottom',
                 duration: 2000,
                 offset: 30,
-                animationType: 'slide-in'
+                animationType: 'slide-in',
               },
-            )
+            );
           }
         })
         .catch(err => {
           /* if (err.response.data.error) {
       
       } */
-        })
+        });
       //this.props.addFavorite(addFavoriteData);
     }
-  }
+  };
 
   handleRemoveFavorite = async () => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
         I18n.t('login', {locale: lang}),
@@ -389,56 +389,56 @@ export class GymClass extends Component {
           {
             text: I18n.t('no', {locale: lang}),
             onPress: () => console.log('cancel'),
-            style: 'cancel'
+            style: 'cancel',
           },
           {
             text: I18n.t('yes', {locale: lang}),
-            onPress: () => this.props.navigation.navigate('Login')
-          }
+            onPress: () => this.props.navigation.navigate('Login'),
+          },
         ],
         {
-          cancelable: false
+          cancelable: false,
         },
-      )
+      );
     } else {
-      this.setState({isDisable: true})
-      const {id} = this.state.class.favourite
+      this.setState({isDisable: true});
+      const {id} = this.state.class.favourite;
       await axios
         .delete(`${API_URI}/favourites/${id}`)
         .then(async res => {
           if (res.data.error.code) {
           } else {
-            const {data} = res.data
-            let gymClass = {...this.state.class}
-            delete gymClass.favourite
-            const {id} = this.props.auth.user
-            this.setState({class: gymClass, isDisable: false})
-            this.props.getFavorites(id)
+            const {data} = res.data;
+            let gymClass = {...this.state.class};
+            delete gymClass.favourite;
+            const {id} = this.props.auth.user;
+            this.setState({class: gymClass, isDisable: false});
+            this.props.getFavorites(id);
             toast.show(
               I18n.t('favoriteRemovedSucessfully', {
-                locale: this.props.setting.lang
+                locale: this.props.setting.lang,
               }),
               {
                 type: 'normal',
                 placement: 'bottom',
                 duration: 2000,
                 offset: 30,
-                animationType: 'slide-in'
+                animationType: 'slide-in',
               },
-            )
+            );
           }
         })
         .catch(err => {
           /*  if (err.response.data.error) {
           
         } */
-        })
+        });
       //this.props.removeFavorite(id, 'Class');
     }
-  }
+  };
 
   handleWriteReview = () => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     if (isEmpty(this.props.auth.user)) {
       Alert.alert(
         I18n.t('login', {locale: lang}),
@@ -447,49 +447,49 @@ export class GymClass extends Component {
           {
             text: I18n.t('no', {locale: lang}),
             onPress: () => console.log('come'),
-            style: 'cancel'
+            style: 'cancel',
           },
           {
             text: I18n.t('yes', {locale: lang}),
-            onPress: () => this.props.navigation.navigate('Login')
-          }
+            onPress: () => this.props.navigation.navigate('Login'),
+          },
         ],
         {
-          cancelable: false
+          cancelable: false,
         },
-      )
+      );
     } else {
-      this.setState({isShowWriteReview: !this.state.isShowWriteReview})
+      this.setState({isShowWriteReview: !this.state.isShowWriteReview});
     }
-  }
+  };
 
   handleConfirmBooking = () => {
-    this.setState({isShowConfirmBooking: !this.state.isShowConfirmBooking})
-  }
+    this.setState({isShowConfirmBooking: !this.state.isShowConfirmBooking});
+  };
 
   renderItemGym = ({item}) => {
-    const {id} = this.state.class
-    const {attachments, name, name_ar} = item
-    const {lang} = this.props.setting
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    let image
+    const {id} = this.state.class;
+    const {attachments, name, name_ar} = item;
+    const {lang} = this.props.setting;
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    let image;
 
     if (attachments && attachments.length > 0) {
       let primaryAttachment = attachments.find(
         newImage => newImage.is_primary === true,
-      )
+      );
 
       if (!isEmpty(primaryAttachment)) {
         image = {
-          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`
-        }
+          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`,
+        };
       } else {
         image = {
-          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`
-        }
+          uri: `${IMAGE_URI}/${attachments[0].dir}/${attachments[0].file_name}`,
+        };
       }
     } else {
-      image = require('../../assets/img/no_image_found.png')
+      image = require('../../assets/img/no_image_found.png');
     }
     return (
       <TouchableOpacity
@@ -499,9 +499,9 @@ export class GymClass extends Component {
             params: {
               id: item.id,
               back: 'GymClass',
-              back_id: id
+              back_id: id,
             },
-            key: `GymClass_${Math.random() * 10000}`
+            key: `GymClass_${Math.random() * 10000}`,
           })
         }
         // onPress={() => this.props.navigation.navigate('Gym')}
@@ -509,12 +509,12 @@ export class GymClass extends Component {
           width: normalize(142),
           marginRight: normalize(10),
           height: normalize(171),
-          transform: [{scaleX: lang === 'ar' ? -1 : 1}]
+          transform: [{scaleX: lang === 'ar' ? -1 : 1}],
         }}>
         <View
           style={{
             width: normalize(142),
-            height: normalize(142)
+            height: normalize(142),
             //borderRadius: 10,
           }}>
           <Image
@@ -523,7 +523,7 @@ export class GymClass extends Component {
             style={{
               width: normalize(142),
               height: normalize(142),
-              borderRadius: normalize(10)
+              borderRadius: normalize(10),
             }}
           />
         </View>
@@ -533,35 +533,35 @@ export class GymClass extends Component {
           </Text>
         </View>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   renderReviewItem = ({item}) => {
-    const {lang} = this.props.setting
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
-    let image
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    let image;
 
     if (!isEmpty(item.user) && !isEmpty(item.user.attachment)) {
-      const {attachment} = item.user
+      const {attachment} = item.user;
       image = {
-        uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`
-      }
+        uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
+      };
     } else {
-      image = require('../../assets/img/NoPicture.png')
+      image = require('../../assets/img/NoPicture.png');
     }
     return (
       <>
         <View
           style={{
             marginTop: normalize(16),
-            marginHorizontal: normalize(16)
+            marginHorizontal: normalize(16),
           }}>
           <View
             style={{
               display: 'flex',
-              flexDirection: flexDirection
+              flexDirection: flexDirection,
             }}>
             <View style={{width: normalize(44)}}>
               <Image
@@ -569,7 +569,7 @@ export class GymClass extends Component {
                 style={{
                   width: normalize(44),
                   height: normalize(44),
-                  borderRadius: normalize(22)
+                  borderRadius: normalize(22),
                 }}
               />
             </View>
@@ -577,14 +577,14 @@ export class GymClass extends Component {
               style={{
                 marginLeft: lang === 'ar' ? 0 : normalize(16),
                 marginRight: lang === 'ar' ? normalize(16) : 0,
-                width: normalize(267)
+                width: normalize(267),
                 //marginHorizontal: normalize(16),
               }}>
               <Text
                 style={{
                   fontSize: normalize(15),
                   fontWeight: '700',
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {!isEmpty(item.user)
                   ? `${item.user.first_name} ${item.user.last_name}`
@@ -593,13 +593,13 @@ export class GymClass extends Component {
               <View
                 style={[
                   styles.classRatingContainer,
-                  {flexDirection: flexDirection}
+                  {flexDirection: flexDirection},
                 ]}>
                 <ReviewShow
                   rating={item.rating}
                   style={{
                     fontSize: normalize(11),
-                    paddingRight: normalize(2.75)
+                    paddingRight: normalize(2.75),
                   }}
                 />
               </View>
@@ -607,7 +607,7 @@ export class GymClass extends Component {
               <Text
                 style={{
                   fontSize: normalize(12),
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {item.description}
               </Text>
@@ -615,7 +615,7 @@ export class GymClass extends Component {
                 style={{
                   fontSize: normalize(12),
                   color: '#8A8A8F',
-                  textAlign: textAlign
+                  textAlign: textAlign,
                 }}>
                 {moment(item.createdAt, 'YYYY-MM-DD hh:mm:ss')
                   .startOf('hour')
@@ -625,117 +625,117 @@ export class GymClass extends Component {
           </View>
         </View>
       </>
-    )
-  }
+    );
+  };
 
   dialCall = () => {
-    const {gym_mobile} = this.state.class.gym
-    let phoneNumber = ''
+    const {gym_mobile} = this.state.class.gym;
+    let phoneNumber = '';
 
     if (Platform.OS === 'android') {
-      phoneNumber = `tel:${gym_mobile}`
+      phoneNumber = `tel:${gym_mobile}`;
     } else {
-      phoneNumber = `telprompt:${gym_mobile}`
+      phoneNumber = `telprompt:${gym_mobile}`;
     }
 
-    Linking.openURL(phoneNumber)
-  }
+    Linking.openURL(phoneNumber);
+  };
 
   _renderTruncatedFooter = handlePress => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     return (
       <Text
         style={{
           color: '#0053FE',
           marginTop: 5,
           fontSize: normalize(12),
-          fontWeight: 'bold'
+          fontWeight: 'bold',
         }}
         onPress={handlePress}>
         {I18n.t('readMore', {locale: lang})}
       </Text>
-    )
-  }
+    );
+  };
 
   _renderRevealedFooter = handlePress => {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     return (
       <Text
         style={{
           color: '#0053FE',
           marginTop: 5,
           fontSize: normalize(12),
-          fontWeight: 'bold'
+          fontWeight: 'bold',
         }}
         onPress={handlePress}>
         {I18n.t('showLess', {locale: lang})}
       </Text>
-    )
-  }
+    );
+  };
 
   handleNavigateGymDetail = (e, id) => {
-    e.preventDefault()
+    e.preventDefault();
     this.props.navigation.navigate({
       routeName: 'GymDetail',
       params: {
-        id: id
+        id: id,
       },
-      key: `GymDetail_${Math.random() * 10000}`
-    })
-  }
+      key: `GymDetail_${Math.random() * 10000}`,
+    });
+  };
 
   handleReviews = review => {
-    let gymClass = {...this.state.class}
-    gymClass.reviews.push(review)
-    gymClass.rating_count = gymClass.rating_count + 1
-    this.setState({class: gymClass})
-  }
+    let gymClass = {...this.state.class};
+    gymClass.reviews.push(review);
+    gymClass.rating_count = gymClass.rating_count + 1;
+    this.setState({class: gymClass});
+  };
 
   handleAllReviews = reviews => {
-    let gymClass = {...this.state.class}
+    let gymClass = {...this.state.class};
     if (reviews.length < 3) {
-      gymClass.reviews = reviews
+      gymClass.reviews = reviews;
     }
-    gymClass.rating_count = gymClass.rating_count + 1
-    this.setState({class: gymClass})
-  }
+    gymClass.rating_count = gymClass.rating_count + 1;
+    this.setState({class: gymClass});
+  };
 
   renderCoach = class_coach => {
-    const {lang} = this.props.setting
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
     const {id, attachment, name, name_ar, category, rating_avg, rating_count} =
-      class_coach
-    let coachImage
+      class_coach;
+    let coachImage;
     if (attachment) {
       coachImage = {
-        uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`
-      }
+        uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
+      };
     } else {
-      coachImage = require('../../assets/img/no_image_found.png')
+      coachImage = require('../../assets/img/no_image_found.png');
     }
     return (
       <TouchableOpacity
         key={id}
         onPress={e => {
-          e.preventDefault()
+          e.preventDefault();
           this.props.navigation.navigate({
             routeName: 'Coach',
             params: {
-              id: id
+              id: id,
             },
-            key: `ClassCoach_${Math.random() * 10000}`
-          })
+            key: `ClassCoach_${Math.random() * 10000}`,
+          });
         }}
         style={{
-          marginTop: normalize(8)
+          marginTop: normalize(8),
           //marginHorizontal: normalize(16),
         }}>
         <View
           style={{
             display: 'flex',
-            flexDirection: flexDirection
+            flexDirection: flexDirection,
           }}>
           <View style={{width: normalize(60)}}>
             <Image
@@ -743,7 +743,7 @@ export class GymClass extends Component {
               style={{
                 width: normalize(60),
                 height: normalize(60),
-                borderRadius: normalize(10)
+                borderRadius: normalize(10),
               }}
             />
           </View>
@@ -751,34 +751,34 @@ export class GymClass extends Component {
             style={{
               marginLeft: lang === 'ar' ? 0 : normalize(16),
               marginRight: lang === 'ar' ? normalize(16) : 0,
-              width: normalize(267)
+              width: normalize(267),
               //marginHorizontal: normalize(16),
             }}>
             <Text
               style={{
                 fontSize: normalize(15),
                 fontWeight: '700',
-                textAlign: textAlign
+                textAlign: textAlign,
               }}>
               {`${lang === 'ar' ? name_ar : name}`}
             </Text>
             <View
               style={[
                 styles.classRatingContainer,
-                {flexDirection: flexDirection}
+                {flexDirection: flexDirection},
               ]}>
               <ReviewShow
                 rating={rating_avg}
                 style={{
                   fontSize: normalize(11),
                   paddingRight: lang === 'ar' ? 0 : normalize(2.75),
-                  paddingLeft: lang === 'ar' ? normalize(2.75) : 0
+                  paddingLeft: lang === 'ar' ? normalize(2.75) : 0,
                 }}
               />
               <View
                 style={{
                   paddingRight: lang === 'ar' ? normalize(3) : 0,
-                  paddingLeft: lang === 'ar' ? 0 : normalize(3)
+                  paddingLeft: lang === 'ar' ? 0 : normalize(3),
                 }}>
                 <Text style={styles.gymRatingCountText}>({rating_count})</Text>
               </View>
@@ -786,46 +786,46 @@ export class GymClass extends Component {
           </View>
         </View>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   handleClassSuccess = () => {
-    this.setState({isShowClassSuccess: !this.state.isShowClassSuccess})
-  }
+    this.setState({isShowClassSuccess: !this.state.isShowClassSuccess});
+  };
 
   handleClassSuccessConfirm = () => {
-    this.setState({isShowClassSuccess: true})
-  }
+    this.setState({isShowClassSuccess: true});
+  };
 
   handleRefresh = async () => {
-    this.setState({refreshing: true})
-    const id = await this.props.navigation.getParam('id')
-    const date = await this.props.navigation.getParam('date')
-    const start_time = await this.props.navigation.getParam('start_time')
-    const end_time = await this.props.navigation.getParam('end_time')
-    const category_id = await this.props.navigation.getParam('category_id')
+    this.setState({refreshing: true});
+    const id = await this.props.navigation.getParam('id');
+    const date = await this.props.navigation.getParam('date');
+    const start_time = await this.props.navigation.getParam('start_time');
+    const end_time = await this.props.navigation.getParam('end_time');
+    const category_id = await this.props.navigation.getParam('category_id');
     const category_type_id =
-      await this.props.navigation.getParam('category_type_id')
+      await this.props.navigation.getParam('category_type_id');
     const creditRangeHigh =
-      await this.props.navigation.getParam('creditRangeHigh')
+      await this.props.navigation.getParam('creditRangeHigh');
     const creditRangeLow =
-      await this.props.navigation.getParam('creditRangeLow')
-    const gender_id = await this.props.navigation.getParam('gender_id')
-    const latitude = await AsyncStorage.getItem('latitude')
-    const longitude = await AsyncStorage.getItem('longitude')
-    let url
+      await this.props.navigation.getParam('creditRangeLow');
+    const gender_id = await this.props.navigation.getParam('gender_id');
+    const latitude = await AsyncStorage.getItem('latitude');
+    const longitude = await AsyncStorage.getItem('longitude');
+    let url;
     if (latitude && longitude) {
-      url = `${API_URI}/classes/${id}?latitude=${latitude}&longitude=${longitude}`
+      url = `${API_URI}/classes/${id}?latitude=${latitude}&longitude=${longitude}`;
     } else {
-      url = `${API_URI}/classes/${id}`
+      url = `${API_URI}/classes/${id}`;
     }
 
-    let filter
-    let whereFilter = ''
-    let inClass = ''
-    let inClassCategory = ''
+    let filter;
+    let whereFilter = '';
+    let inClass = '';
+    let inClassCategory = '';
     if (!isEmpty(gender_id)) {
-      inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`
+      inClass = `"inClass":{"is_active": 1,"gender_id":{"$in":[${gender_id}]} }`;
     }
 
     if (
@@ -836,7 +836,7 @@ export class GymClass extends Component {
       !isEmpty(creditRangeLow) &&
       !isEmpty(creditRangeHigh)
     ) {
-      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}],"is_virtual":{"$in":[${category_type_id}]}},"inScheduleDates": { "date": "${date}" }`
+      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}],"is_virtual":{"$in":[${category_type_id}]}},"inScheduleDates": { "date": "${date}" }`;
     } else if (
       !isEmpty(date) &&
       !isEmpty(start_time) &&
@@ -844,21 +844,21 @@ export class GymClass extends Component {
       !isEmpty(creditRangeLow) &&
       !isEmpty(creditRangeHigh)
     ) {
-      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}]},"inScheduleDates": { "date": "${date}" }`
+      whereFilter = `"inClassSchedule": {"$and": [{"$and": [{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},{"credits": { "$between": [${creditRangeLow},${creditRangeHigh}] }}]},"inScheduleDates": { "date": "${date}" }`;
     } else if (!isEmpty(date) && !isEmpty(start_time) && !isEmpty(end_time)) {
-      whereFilter = `"inClassSchedule": {"$and":[{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},"inScheduleDates":{"date":"${date}"}`
+      whereFilter = `"inClassSchedule": {"$and":[{ "start_time": { "$gte": "${start_time}" } },{ "start_time": { "$lte": "${end_time}" } }]},"inScheduleDates":{"date":"${date}"}`;
     } else if (
       !isEmpty(category_type_id) &&
       !isEmpty(creditRangeLow) &&
       !isEmpty(creditRangeHigh)
     ) {
-      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]},"is_virtual":{"$in":[${category_type_id}]}}`
+      whereFilter = `"inClassSchedule":{"credits":{"$between":[${creditRangeLow},${creditRangeHigh}]},"is_virtual":{"$in":[${category_type_id}]}}`;
     } else if (!isEmpty(date)) {
-      whereFilter = `"inScheduleDates":{"date":"${date}"}`
+      whereFilter = `"inScheduleDates":{"date":"${date}"}`;
     }
 
     if (!isEmpty(category_id)) {
-      inClassCategory = `"inClassCategory": {"category_id": {"$in":[${category_id}]}}`
+      inClassCategory = `"inClassCategory": {"category_id": {"$in":[${category_id}]}}`;
     }
 
     if (
@@ -866,106 +866,106 @@ export class GymClass extends Component {
       !isEmpty(inClassCategory) &&
       !isEmpty(whereFilter)
     ) {
-      filter = `{${inClass},${whereFilter},${inClassCategory}}`
+      filter = `{${inClass},${whereFilter},${inClassCategory}}`;
     } else if (!isEmpty(inClass) && !isEmpty(whereFilter)) {
-      filter = `{${inClass},${whereFilter}}`
+      filter = `{${inClass},${whereFilter}}`;
     } else if (!isEmpty(inClassCategory) && !isEmpty(whereFilter)) {
-      filter = `{"inClass":{"is_active": 1},${whereFilter},${inClassCategory}}`
+      filter = `{"inClass":{"is_active": 1},${whereFilter},${inClassCategory}}`;
     } else if (!isEmpty(whereFilter)) {
-      filter = `{"inClass":{"is_active": 1},${whereFilter}}`
+      filter = `{"inClass":{"is_active": 1},${whereFilter}}`;
     } else {
-      filter = `{"inClass":{"is_active": 1}}`
+      filter = `{"inClass":{"is_active": 1}}`;
     }
 
     if (url.indexOf('?') > 0) {
-      url = `${url}&filter=${filter}`
+      url = `${url}&filter=${filter}`;
     } else {
-      url = `${url}?filter=${filter}`
+      url = `${url}?filter=${filter}`;
     }
     await axios
       .get(url)
       .then(async res => {
         if (res.data.error.code) {
         } else {
-          const {data} = res.data
+          const {data} = res.data;
           data.class_schedules = await data.class_schedules.sort((a, b) =>
             a.start_time < b.start_time
               ? -1
               : a.start_time > b.start_time
                 ? 1
                 : 0,
-          )
-          let class_schedule_id
-          let schedule_date_id
-          let class_start_time
-          let class_end_time
-          let class_date
-          let credits
-          let coaches
-          let is_virtual
+          );
+          let class_schedule_id;
+          let schedule_date_id;
+          let class_start_time;
+          let class_end_time;
+          let class_date;
+          let credits;
+          let coaches;
+          let is_virtual;
           if (!isEmpty(date)) {
-            class_date = date
+            class_date = date;
             class_schedule_id = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].id
-              : ''
+              : '';
             class_start_time = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].start_time
-              : ''
+              : '';
             class_end_time = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].end_time
-              : ''
+              : '';
             schedule_date_id =
               !isEmpty(data.class_schedules) &&
               !isEmpty(data.class_schedules[0].schedule_dates)
                 ? data.class_schedules[0].schedule_dates[0].id
-                : ''
+                : '';
             credits = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].credits
-              : 0
+              : 0;
             coaches = !isEmpty(data.class_schedules)
               ? [data.class_schedules[0].coach]
-              : []
+              : [];
             is_virtual = !isEmpty(data.class_schedules)
               ? data.class_schedules[0].is_virtual
-              : false
+              : false;
           } else {
-            let scheduleDates = []
+            let scheduleDates = [];
             await data.class_schedules.map(schedule => {
               if (!isEmpty(schedule.schedule_dates)) {
-                schedule.schedule_dates[0].dateTime = `${schedule.schedule_dates[0].date}T${schedule.start_time}`
-                schedule.schedule_dates[0].start_time = schedule.start_time
-                schedule.schedule_dates[0].end_time = schedule.end_time
-                schedule.schedule_dates[0].credits = schedule.credits
-                schedule.schedule_dates[0].coach = schedule.coach
-                schedule.schedule_dates[0].is_virtual = schedule.is_virtual
-                scheduleDates.push(schedule.schedule_dates[0])
+                schedule.schedule_dates[0].dateTime = `${schedule.schedule_dates[0].date}T${schedule.start_time}`;
+                schedule.schedule_dates[0].start_time = schedule.start_time;
+                schedule.schedule_dates[0].end_time = schedule.end_time;
+                schedule.schedule_dates[0].credits = schedule.credits;
+                schedule.schedule_dates[0].coach = schedule.coach;
+                schedule.schedule_dates[0].is_virtual = schedule.is_virtual;
+                scheduleDates.push(schedule.schedule_dates[0]);
               }
-              return schedule
-            })
+              return schedule;
+            });
             scheduleDates = await scheduleDates.sort(function (a, b) {
-              let aa = new Date(a.dateTime).getTime()
-              let bb = new Date(b.dateTime).getTime()
+              let aa = new Date(a.dateTime).getTime();
+              let bb = new Date(b.dateTime).getTime();
               // (await new Date(a.dateTime)) - (await new Date(b.dateTime))
-              return aa - bb
-            })
-            class_date = !isEmpty(scheduleDates) ? scheduleDates[0].date : ''
+              return aa - bb;
+            });
+            class_date = !isEmpty(scheduleDates) ? scheduleDates[0].date : '';
             class_schedule_id = !isEmpty(scheduleDates)
               ? scheduleDates[0].class_schedule_id
-              : ''
+              : '';
             class_start_time = !isEmpty(scheduleDates)
               ? scheduleDates[0].start_time
-              : ''
+              : '';
             class_end_time = !isEmpty(scheduleDates)
               ? scheduleDates[0].end_time
-              : ''
+              : '';
             schedule_date_id = !isEmpty(scheduleDates)
               ? scheduleDates[0].id
-              : ''
-            credits = !isEmpty(scheduleDates) ? scheduleDates[0].credits : 0
-            coaches = !isEmpty(scheduleDates) ? [scheduleDates[0].coach] : []
+              : '';
+            credits = !isEmpty(scheduleDates) ? scheduleDates[0].credits : 0;
+            coaches = !isEmpty(scheduleDates) ? [scheduleDates[0].coach] : [];
             is_virtual = !isEmpty(scheduleDates)
               ? scheduleDates[0].is_virtual
-              : false
+              : false;
           }
 
           this.setState({
@@ -977,20 +977,20 @@ export class GymClass extends Component {
             schedule_date_id,
             credits,
             coaches,
-            is_virtual
-          })
-          return true
+            is_virtual,
+          });
+          return true;
         }
       })
       .catch(err => {
-        console.warn('err = ', err)
-      })
+        console.warn('err = ', err);
+      });
 
-    this.props.getSubscriptions()
+    this.props.getSubscriptions();
     setTimeout(() => {
-      this.setState({refreshing: false})
-    }, 2000)
-  }
+      this.setState({refreshing: false});
+    }, 2000);
+  };
 
   render() {
     const {
@@ -999,8 +999,8 @@ export class GymClass extends Component {
       isLoading,
       isShowClassSuccess,
       is_virtual,
-      refreshing
-    } = this.state
+      refreshing,
+    } = this.state;
     let {
       id,
       name,
@@ -1025,70 +1025,70 @@ export class GymClass extends Component {
       class_schedules,
       address,
       lattitude,
-      longitute
-    } = this.state.class
+      longitute,
+    } = this.state.class;
 
-    let class_coaches = []
+    let class_coaches = [];
 
-    let filteredClassSchedules = []
+    let filteredClassSchedules = [];
     if (!isEmpty(class_schedules)) {
       class_coaches = class_schedules.map(schedule => {
-        return schedule.coach
-      })
-      jsonObject = class_coaches.map(JSON.stringify)
+        return schedule.coach;
+      });
+      jsonObject = class_coaches.map(JSON.stringify);
 
-      uniqueSet = new Set(jsonObject)
-      uniqueArray = Array.from(uniqueSet).map(JSON.parse)
-      class_coaches = uniqueArray
+      uniqueSet = new Set(jsonObject);
+      uniqueArray = Array.from(uniqueSet).map(JSON.parse);
+      class_coaches = uniqueArray;
       class_schedules = class_schedules.sort((a, b) =>
         a.start_time < b.start_time ? -1 : a.start_time > b.start_time ? 1 : 0,
-      )
+      );
       filteredClassSchedules = class_schedules.filter(scheduleItem => {
-        let tmpRes = false
+        let tmpRes = false;
         scheduleItem.schedule_dates.map(scheduleDateItem => {
           if (scheduleDateItem.date === this.state.date) {
-            tmpRes = true
+            tmpRes = true;
           }
-        })
-        return tmpRes
-      })
+        });
+        return tmpRes;
+      });
     }
-    let gymImage
+    let gymImage;
     if (gym && gym.attachments && gym.attachments.length > 0) {
       let primaryAttachment = gym.attachments.find(
         newImage => newImage.is_primary === true,
-      )
+      );
 
       if (!isEmpty(primaryAttachment)) {
         gymImage = {
-          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`
-        }
+          uri: `${IMAGE_URI}/${primaryAttachment.dir}/${primaryAttachment.file_name}`,
+        };
       } else {
         gymImage = {
-          uri: `${IMAGE_URI}/${gym.attachments[0].dir}/${gym.attachments[0].file_name}`
-        }
+          uri: `${IMAGE_URI}/${gym.attachments[0].dir}/${gym.attachments[0].file_name}`,
+        };
       }
     } else {
-      gymImage = require('../../assets/img/no_image_found.png')
+      gymImage = require('../../assets/img/no_image_found.png');
     }
 
-    let classes = [...this.props.home.recommendedClasses]
-    classes = classes.filter(gymClass => gymClass.id !== id)
+    let classes = [...this.props.home.recommendedClasses];
+    classes = classes.filter(gymClass => gymClass.id !== id);
 
     // const {isLodaing} = this.props.errors;
-    const {lang} = this.props.setting
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
 
-    let images = []
+    let images = [];
     if (attachments && attachments.length > 0) {
       images = attachments.map(attachment => {
-        let image = `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`
-        return image
-      })
+        let image = `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`;
+        return image;
+      });
     }
-    let title = lang === 'ar' ? name_ar : name
+    let title = lang === 'ar' ? name_ar : name;
     return (
       <>
         {isLoading ? (
@@ -1113,7 +1113,7 @@ export class GymClass extends Component {
                     display: 'flex',
                     flexDirection: 'row',
                     top: Platform.OS === 'ios' ? normalize(0) : normalize(0),
-                    left: normalize(10)
+                    left: normalize(10),
                   }}>
                   <Button transparent onPress={this.handleBack}>
                     <Icon
@@ -1124,7 +1124,7 @@ export class GymClass extends Component {
                     />
                     <Text
                       /* style={styles.backButtonText} */ style={{
-                        color: '#ffffff'
+                        color: '#ffffff',
                         // left: normalize(1),
                       }}>
                       {I18n.t('back', {locale: lang})}
@@ -1135,19 +1135,19 @@ export class GymClass extends Component {
               <View
                 style={[
                   styles.ratingFavContainer,
-                  {flexDirection: flexDirection}
+                  {flexDirection: flexDirection},
                 ]}>
                 <View
                   style={[
                     styles.ratingContainer,
-                    {flexDirection: flexDirection}
+                    {flexDirection: flexDirection},
                   ]}>
                   <ReviewShow
                     rating={rating_avg}
                     style={{
                       fontSize: normalize(18),
                       paddingRight: lang === 'ar' ? 0 : normalize(4),
-                      paddingLeft: lang === 'ar' ? normalize(4) : 0
+                      paddingLeft: lang === 'ar' ? normalize(4) : 0,
                     }}
                   />
                   <Text style={styles.ratingCountText}>({rating_count})</Text>
@@ -1155,7 +1155,7 @@ export class GymClass extends Component {
                 <View
                   style={[
                     styles.favMapContainer,
-                    {flexDirection: flexDirection}
+                    {flexDirection: flexDirection},
                   ]}>
                   <TouchableOpacity onPress={this.dialCall}>
                     <CallIcon width={normalize(24)} height={normalize(24)} />
@@ -1167,10 +1167,10 @@ export class GymClass extends Component {
                         params: {
                           latitude: lattitude,
                           longitude: longitute,
-                          name: lang === 'ar' ? name_ar : name
+                          name: lang === 'ar' ? name_ar : name,
                         },
-                        key: `GymClassMap_${Math.random() * 10000}`
-                      })
+                        key: `GymClassMap_${Math.random() * 10000}`,
+                      });
                     }}>
                     <MapIcon
                       width={normalize(24)}
@@ -1239,7 +1239,7 @@ export class GymClass extends Component {
                   <Text
                     style={[
                       styles.aboutContentContainerText,
-                      {textAlign: textAlign}
+                      {textAlign: textAlign},
                     ]}>
                     {lang === 'ar' ? description_ar : description}
                   </Text>
@@ -1257,7 +1257,7 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: '#EFEFF4'
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
               <View style={[styles.dateTimeContainer, {alignSelf: alignSelf}]}>
@@ -1269,19 +1269,19 @@ export class GymClass extends Component {
               <View
                 style={[
                   styles.dateTimeContentContainer,
-                  {alignSelf: alignSelf}
+                  {alignSelf: alignSelf},
                 ]}>
                 <View
                   style={{
                     display: 'flex',
                     flexDirection: 'row',
-                    alignItems: 'center'
+                    alignItems: 'center',
                   }}>
                   <View style={{marginRight: normalize(6)}}>
                     <Text
                       style={[
                         styles.dateTimeContentContainerText,
-                        {textAlign: textAlign}
+                        {textAlign: textAlign},
                       ]}>
                       {`${
                         !isEmpty(this.state.date)
@@ -1298,7 +1298,7 @@ export class GymClass extends Component {
                         flexDirection: 'row',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        height: 25
+                        height: 25,
                       }}>
                       <View style={{justifyContent: 'center'}}>
                         <Icon
@@ -1307,18 +1307,18 @@ export class GymClass extends Component {
                           style={{
                             fontSize: normalize(6),
                             color: '#C8C7CC',
-                            textAlign: 'center'
+                            textAlign: 'center',
                           }}
                         />
                       </View>
                       <View
                         style={{
-                          marginLeft: normalize(6)
+                          marginLeft: normalize(6),
                         }}>
                         <Text
                           style={[
                             styles.dateTimeContentContainerText,
-                            {textAlign: textAlign}
+                            {textAlign: textAlign},
                           ]}>
                           {!isEmpty(this.state.start_time)
                             ? `${moment(
@@ -1345,10 +1345,10 @@ export class GymClass extends Component {
                       backgroundColor: '#FE9800',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      borderRadius: normalize(24)
+                      borderRadius: normalize(24),
                     }}
                     onPress={() => {
-                      this.setState({showModal: true})
+                      this.setState({showModal: true});
                     }}>
                     <Text style={{color: 'white'}}>More sessions</Text>
                   </TouchableOpacity>
@@ -1360,7 +1360,7 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: '#EFEFF4'
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
 
@@ -1372,17 +1372,17 @@ export class GymClass extends Component {
               <View
                 style={[
                   styles.dateTimeContentContainer,
-                  {alignSelf: alignSelf}
+                  {alignSelf: alignSelf},
                 ]}>
                 <View style={{display: 'flex', flexDirection: 'row'}}>
                   <View
                     style={{
-                      marginRight: normalize(5)
+                      marginRight: normalize(5),
                     }}>
                     <Text
                       style={[
                         styles.dateTimeContentContainerText,
-                        {textAlign: textAlign}
+                        {textAlign: textAlign},
                       ]}>
                       {address}
                     </Text>
@@ -1394,7 +1394,7 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: '#EFEFF4'
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
 
@@ -1402,25 +1402,25 @@ export class GymClass extends Component {
                 style={{
                   height: normalize(92),
                   marginHorizontal: normalize(16),
-                  marginTop: normalize(16)
+                  marginTop: normalize(16),
                 }}>
                 <Text
                   style={{
                     fontSize: normalize(14),
                     fontWeight: '700',
-                    textAlign: textAlign
+                    textAlign: textAlign,
                   }}>
                   {I18n.t('gymName', {locale: lang})}
                 </Text>
                 <TouchableOpacity
                   onPress={e => this.handleNavigateGymDetail(e, gym_id)}
                   style={{
-                    marginTop: normalize(8)
+                    marginTop: normalize(8),
                   }}>
                   <View
                     style={{
                       display: 'flex',
-                      flexDirection: flexDirection
+                      flexDirection: flexDirection,
                     }}>
                     <View style={{width: normalize(60)}}>
                       <Image
@@ -1428,7 +1428,7 @@ export class GymClass extends Component {
                         style={{
                           width: normalize(60),
                           height: normalize(60),
-                          borderRadius: normalize(10)
+                          borderRadius: normalize(10),
                         }}
                       />
                     </View>
@@ -1436,14 +1436,14 @@ export class GymClass extends Component {
                       style={{
                         marginLeft: lang === 'ar' ? 0 : normalize(16),
                         marginRight: lang === 'ar' ? normalize(16) : 0,
-                        width: normalize(267)
+                        width: normalize(267),
                         //marginHorizontal: normalize(16),
                       }}>
                       <Text
                         style={{
                           fontSize: normalize(15),
                           fontWeight: '700',
-                          textAlign: textAlign
+                          textAlign: textAlign,
                         }}>
                         {gym ? (lang === 'ar' ? gym.name_ar : gym.name) : ''}
                       </Text>
@@ -1452,7 +1452,7 @@ export class GymClass extends Component {
                           style={{
                             fontSize: normalize(12),
                             color: '#8A8A8F',
-                            textAlign: textAlign
+                            textAlign: textAlign,
                           }}>
                           {gym
                             ? gym.distance >= 1
@@ -1465,20 +1465,20 @@ export class GymClass extends Component {
                       <View
                         style={[
                           styles.classRatingContainer,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <ReviewShow
                           rating={gym ? gym.rating_avg : 0}
                           style={{
                             fontSize: normalize(11),
                             paddingRight: lang === 'ar' ? 0 : normalize(2.75),
-                            paddingLeft: lang === 'ar' ? normalize(2.75) : 0
+                            paddingLeft: lang === 'ar' ? normalize(2.75) : 0,
                           }}
                         />
                         <View
                           style={{
                             paddingRight: lang === 'ar' ? normalize(3) : 0,
-                            paddingLeft: lang === 'ar' ? 0 : normalize(3)
+                            paddingLeft: lang === 'ar' ? 0 : normalize(3),
                           }}>
                           <Text style={[styles.gymRatingCountText, ,]}>
                             ({gym ? gym.rating_count : 0})
@@ -1495,20 +1495,20 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: '#EFEFF4'
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
               <View
                 style={{
                   // height: normalize(92),
                   marginHorizontal: normalize(16),
-                  marginTop: normalize(16)
+                  marginTop: normalize(16),
                 }}>
                 <Text
                   style={{
                     fontSize: normalize(14),
                     fontWeight: '700',
-                    textAlign: textAlign
+                    textAlign: textAlign,
                   }}>
                   {I18n.t('coachName', {locale: lang})}
                 </Text>
@@ -1524,7 +1524,7 @@ export class GymClass extends Component {
                   marginHorizontal: normalize(16),
                   marginTop: normalize(8),
                   borderBottomWidth: 1,
-                  borderBottomColor: '#EFEFF4'
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
 
@@ -1535,14 +1535,14 @@ export class GymClass extends Component {
                   display: 'flex',
                   flex: 1,
                   flexDirection: flexDirection,
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
                 }}>
                 <View>
                   <Text
                     style={{
                       fontSize: normalize(20),
                       fontWeight: '700',
-                      color: '#22242A'
+                      color: '#22242A',
                     }}>
                     {rating_count} {I18n.t('reviews', {locale: lang})}
                   </Text>
@@ -1554,7 +1554,7 @@ export class GymClass extends Component {
                         foreign_id: id,
                         class: 'Class',
                         back: 'GymClass',
-                        handleReviews: data => this.handleAllReviews(data)
+                        handleReviews: data => this.handleAllReviews(data),
                       })
                     }>
                     <Text
@@ -1562,7 +1562,7 @@ export class GymClass extends Component {
                         marginTop: normalize(7),
                         fontSize: normalize(13),
                         color: '#8A8A8F',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}>
                       {I18n.t('readAll', {locale: lang})}
                     </Text>
@@ -1574,7 +1574,7 @@ export class GymClass extends Component {
                         marginTop: normalize(7),
                         fontSize: normalize(13),
                         color: '#0053FE',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}>
                       {I18n.t('writeReview', {locale: lang})}
                     </Text>
@@ -1584,7 +1584,7 @@ export class GymClass extends Component {
               {reviews && reviews.length > 0 ? (
                 <View style={{marginBottom: normalize(10)}}>
                   {reviews.map(item => {
-                    return this.renderReviewItem({item})
+                    return this.renderReviewItem({item});
                   })}
                 </View>
               ) : null}
@@ -1593,14 +1593,14 @@ export class GymClass extends Component {
                   marginTop: normalize(6),
                   marginHorizontal: normalize(16),
                   borderBottomWidth: 1,
-                  borderBottomColor: '#EFEFF4'
+                  borderBottomColor: '#EFEFF4',
                 }}
               />
               <View
                 style={{
                   marginTop: normalize(20),
                   marginHorizontal: normalize(16),
-                  flexDirection: flexDirection
+                  flexDirection: flexDirection,
                 }}>
                 <Text style={{fontSize: normalize(20), fontWeight: 'bold'}}>
                   {I18n.t('recommendedClassForYou', {locale: lang})}
@@ -1613,7 +1613,7 @@ export class GymClass extends Component {
                   height: normalize(171),
                   transform: [{rotateY: lang === 'ar' ? '180deg' : '0deg'}],
                   paddingLeft: normalize(16),
-                  flexDirection: flexDirection
+                  flexDirection: flexDirection,
                 }}>
                 {classes.length > 0 ? (
                   <FlatList
@@ -1633,13 +1633,13 @@ export class GymClass extends Component {
                       borderRadius: normalize(10),
                       backgroundColor: '#efefef',
                       justifyContent: 'center',
-                      alignItems: 'center'
+                      alignItems: 'center',
                     }}>
                     <Text
                       style={{
                         fontSize: normalize(16),
                         color: '#8f8f8f',
-                        textAlign: 'center'
+                        textAlign: 'center',
                       }}>
                       {I18n.t('noRecommendedClasses', {locale: lang})}
                     </Text>
@@ -1669,24 +1669,24 @@ export class GymClass extends Component {
                     backgroundColor: '#FE9800',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    borderRadius: normalize(24)
+                    borderRadius: normalize(24),
                   }}>
                   <Text
                     style={{
                       color: '#ffffff',
                       fontSize: normalize(16),
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
                     }}>
                     {this.state.credits > 0
                       ? `${I18n.t('bookClass', {
-                          locale: lang
+                          locale: lang,
                         })} (${this.state.credits} ${I18n.t('credits', {
-                          locale: lang
+                          locale: lang,
                         })})`
                       : `${I18n.t('bookClass', {
-                          locale: lang
+                          locale: lang,
                         })} (${I18n.t('free', {
-                          locale: lang
+                          locale: lang,
                         })})`}
                   </Text>
                 </TouchableOpacity>
@@ -1709,7 +1709,7 @@ export class GymClass extends Component {
                   handleClassSuccess={this.handleClassSuccess}
                   text={I18n.t('successful', {locale: lang})}
                   shortText={`${I18n.t('youHaveSuccessfullyBooked', {
-                    locale: lang
+                    locale: lang,
                   })} ${title}`}
                   buttonText={I18n.t('continue', {locale: lang})}
                   MoveScreenName={'Home'}
@@ -1738,17 +1738,17 @@ export class GymClass extends Component {
                       return (
                         <TouchableOpacity
                           onPress={() => {
-                            let val
+                            let val;
                             item.item.schedule_dates.forEach(value => {
                               const date = moment(value.date).format(
                                 'YYYY-MM-DD',
-                              )
-                              const today = moment().format('YYYY-MM-DD')
+                              );
+                              const today = moment().format('YYYY-MM-DD');
 
                               if (this.state.date === value.date) {
-                                val = value
+                                val = value;
                               }
-                            })
+                            });
 
                             this.setState({
                               isLoading: false,
@@ -1758,24 +1758,24 @@ export class GymClass extends Component {
                               showModal: false,
                               credits: item.item.credits,
                               schedule_date_id: val.id,
-                              class_schedule_id: val.class_schedule_id
-                            })
+                              class_schedule_id: val.class_schedule_id,
+                            });
                           }}
                           style={[
                             styles.dateTimeContentContainer,
-                            {alignSelf: alignSelf}
+                            {alignSelf: alignSelf},
                           ]}>
                           <View
                             style={{
                               display: 'flex',
                               flexDirection: 'row',
-                              alignItems: 'center'
+                              alignItems: 'center',
                             }}>
                             <View style={{marginRight: normalize(6)}}>
                               <Text
                                 style={[
                                   styles.dateTimeContentContainerText,
-                                  {textAlign: textAlign}
+                                  {textAlign: textAlign},
                                 ]}>
                                 {`${
                                   !isEmpty(this.state.date)
@@ -1784,7 +1784,7 @@ export class GymClass extends Component {
                                         'YYYY-MM-DD',
                                       ).format('dddd, D MMM YYYY')
                                     : I18n.t('noDateAvailable', {
-                                        locale: lang
+                                        locale: lang,
                                       })
                                 }`}
                               </Text>
@@ -1795,7 +1795,7 @@ export class GymClass extends Component {
                                   flexDirection: 'row',
                                   justifyContent: 'center',
                                   alignItems: 'center',
-                                  height: 25
+                                  height: 25,
                                 }}>
                                 <View style={{justifyContent: 'center'}}>
                                   <Icon
@@ -1804,18 +1804,18 @@ export class GymClass extends Component {
                                     style={{
                                       fontSize: normalize(6),
                                       color: '#C8C7CC',
-                                      textAlign: 'center'
+                                      textAlign: 'center',
                                     }}
                                   />
                                 </View>
                                 <View
                                   style={{
-                                    marginLeft: normalize(6)
+                                    marginLeft: normalize(6),
                                   }}>
                                   <Text
                                     style={[
                                       styles.dateTimeContentContainerText,
-                                      {textAlign: textAlign}
+                                      {textAlign: textAlign},
                                     ]}>
                                     {!isEmpty(item.item.start_time)
                                       ? `${moment(
@@ -1832,7 +1832,7 @@ export class GymClass extends Component {
                             ) : null}
                           </View>
                         </TouchableOpacity>
-                      )
+                      );
                     }}
                   />
                 </View>
@@ -1842,73 +1842,73 @@ export class GymClass extends Component {
         )}
         <Toast ref={ref => (global['toast'] = ref)} />
       </>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   aboutContainer: {
-    marginHorizontal: normalize(16)
+    marginHorizontal: normalize(16),
   },
   aboutContainerText: {
     color: '#22242A',
     fontSize: normalize(14),
     fontWeight: '700',
-    marginTop: normalize(12)
+    marginTop: normalize(12),
   },
   aboutContentContainer: {
     marginHorizontal: normalize(16),
-    marginTop: normalize(6)
+    marginTop: normalize(6),
   },
   aboutContentContainerText: {
     color: '#8A8A8F',
-    fontSize: normalize(12)
+    fontSize: normalize(12),
   },
   classRatingContainer: {
     display: 'flex',
     //flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   classStarIcon: {
     color: '#FE9800',
     fontSize: normalize(11),
-    paddingRight: normalize(2.75)
+    paddingRight: normalize(2.75),
   },
   classTitleContainer: {
     marginHorizontal: normalize(16),
-    marginTop: normalize(12)
+    marginTop: normalize(12),
   },
   classTitleContainerText: {
     color: '#22242A',
     fontSize: normalize(20),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   container: {
-    flex: 1
+    flex: 1,
   },
   dateTimeContainer: {
     marginHorizontal: normalize(16),
-    marginTop: normalize(11)
+    marginTop: normalize(11),
   },
   dateTimeContainerText: {
     color: '#22242A',
     fontSize: normalize(14),
     fontWeight: '700',
-    marginTop: normalize(8)
+    marginTop: normalize(8),
   },
   dateTimeContentContainer: {
     marginHorizontal: normalize(16),
-    marginTop: normalize(6)
+    marginTop: normalize(6),
   },
   dateTimeContentContainerText: {
     color: '#8A8A8F',
-    fontSize: normalize(12)
+    fontSize: normalize(12),
   },
   favMapContainer: {
     flex: 1,
     display: 'flex',
     //flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   genderContainer: {
     alignItems: 'center',
@@ -1918,24 +1918,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginHorizontal: normalize(16),
     marginTop: normalize(11),
-    width: normalize(108)
+    width: normalize(108),
   },
   genderContainerText: {
     color: '#8A8A8F',
-    fontSize: normalize(12)
+    fontSize: normalize(12),
   },
   gymRatingCountText: {
     color: '#8A8A8F',
-    fontSize: normalize(12)
+    fontSize: normalize(12),
   },
   ratingContainer: {
     display: 'flex',
-    flex: 2
+    flex: 2,
     //flexDirection: 'row',
   },
   ratingCountText: {
     color: '#8A8A8F',
-    fontSize: normalize(14)
+    fontSize: normalize(14),
   },
   ratingFavContainer: {
     backgroundColor: '#F9F9F9',
@@ -1943,29 +1943,29 @@ const styles = StyleSheet.create({
     display: 'flex',
     //flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: normalize(16)
+    paddingHorizontal: normalize(16),
   },
   starIcon: {
     color: '#FE9800',
-    fontSize: normalize(18)
+    fontSize: normalize(18),
     //paddingRight: normalize(4),
   },
   titleContainer: {
-    marginHorizontal: normalize(16)
+    marginHorizontal: normalize(16),
   },
   titleContainerText: {
     color: '#22242A',
     fontSize: normalize(32),
-    fontWeight: 'bold'
-  }
-})
+    fontWeight: 'bold',
+  },
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   home: state.home,
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   getClass,
@@ -1976,5 +1976,5 @@ export default connect(mapStateToProps, {
   getClassLocation,
   clearClass,
   getFavorites,
-  getSubscriptions
-})(GymClass)
+  getSubscriptions,
+})(GymClass);

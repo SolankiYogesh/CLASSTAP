@@ -1,46 +1,40 @@
-import React, {useEffect, useState} from 'react'
-import {
-  Dimensions,
-  Image,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
-import Carousel, {Pagination} from 'react-native-snap-carousel'
-import {connect} from 'react-redux'
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Image, Text, TouchableOpacity, View} from 'react-native';
+import normalize from 'react-native-normalize';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
+import {connect} from 'react-redux';
 
-import CircleCheckIcon from '../../assets/img/check_circle.svg'
-import CircleCheckActiveIcon from '../../assets/img/check_circle_active.svg'
-import CircleCheckSelectIcon from '../../assets/img/check_circle_select.svg'
-import {IMAGE_URI} from '../../utils/config'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import styles from './styles'
-const {width} = Dimensions.get('window')
+import CircleCheckIcon from '../../assets/img/check_circle.svg';
+import CircleCheckActiveIcon from '../../assets/img/check_circle_active.svg';
+import CircleCheckSelectIcon from '../../assets/img/check_circle_select.svg';
+import {IMAGE_URI} from '../../utils/config';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import styles from './styles';
+const {width} = Dimensions.get('window');
 
 const PageSlider = props => {
-  const [selectedIndex, setIndex] = useState(0)
-  const [selectPackage, setPackage] = useState()
-  const [showList, setShowList] = useState(false)
+  const [selectedIndex, setIndex] = useState(0);
+  const [selectPackage, setPackage] = useState();
+  const [showList, setShowList] = useState(false);
 
   useEffect(() => {
-    setIndex(props.selectIndex)
-    setPackage(props.selectPackage)
+    setIndex(props.selectIndex);
+    setPackage(props.selectPackage);
 
-    setShowList(true)
-  }, [props])
+    setShowList(true);
+  }, [props]);
 
   const setSelectedIndex = selectedIndex => {
-    setIndex(selectedIndex)
-    props.handleSelectIndex(selectedIndex)
-    handlePackage(selectedIndex)
-  }
+    setIndex(selectedIndex);
+    props.handleSelectIndex(selectedIndex);
+    handlePackage(selectedIndex);
+  };
 
   const handlePackage = index => {
-    props.handleSelectPackage(props.data[index].id)
-    setPackage(props.data[index].id)
-  }
+    props.handleSelectPackage(props.data[index].id);
+    setPackage(props.data[index].id);
+  };
 
   const pagination = () => {
     return (
@@ -52,19 +46,19 @@ const PageSlider = props => {
           height: 10,
           borderRadius: 5,
           marginHorizontal: 8,
-          backgroundColor: 'black'
+          backgroundColor: 'black',
         }}
         inactiveDotOpacity={0.4}
         inactiveDotScale={0.6}
       />
-    )
-  }
+    );
+  };
 
   const renderItem = ({item, index}) => {
-    const {lang} = props.setting
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
-    const alignItems = lang === 'ar' ? 'flex-end' : 'flex-start'
+    const {lang} = props.setting;
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
+    const alignItems = lang === 'ar' ? 'flex-end' : 'flex-start';
 
     const {
       id,
@@ -74,17 +68,17 @@ const PageSlider = props => {
       description_ar,
       description,
       price,
-      period
-    } = item
+      period,
+    } = item;
 
-    let image
+    let image;
 
     if (!isEmpty(attachment)) {
       image = {
-        uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`
-      }
+        uri: `${IMAGE_URI}/${attachment.dir}/${attachment.file_name}`,
+      };
     } else {
-      image = require('../../assets/img/no_image_found.png')
+      image = require('../../assets/img/no_image_found.png');
     }
     return (
       <TouchableOpacity
@@ -92,7 +86,7 @@ const PageSlider = props => {
         onPress={() => handlePackage(index)}
         style={[
           {transform: [{scaleX: lang === 'ar' ? -1 : 1}]},
-          styles.sliderItem
+          styles.sliderItem,
         ]}>
         <View style={styles.contentItem}>
           <Image style={styles.backgroundImage} source={image} />
@@ -102,7 +96,7 @@ const PageSlider = props => {
             style={{
               position: 'absolute',
               right: normalize(8),
-              top: normalize(8)
+              top: normalize(8),
             }}>
             {props.subscription_id === id &&
             !props.isLastPackage &&
@@ -126,7 +120,7 @@ const PageSlider = props => {
             flex: 1.7,
             alignSelf: alignSelf,
             alignItems: alignItems,
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
           }}>
           <View>
             <Text
@@ -135,7 +129,7 @@ const PageSlider = props => {
                 fontSize: normalize(12),
                 fontWeight: '600',
                 color: '#FE9800',
-                textAlign: textAlign
+                textAlign: textAlign,
               }}>
               {lang === 'ar' ? name_ar : name}
             </Text>
@@ -145,7 +139,7 @@ const PageSlider = props => {
               fontSize: normalize(13),
               fontWeight: '600',
               color: '#22242A',
-              textAlign: textAlign
+              textAlign: textAlign,
             }}>
             {lang === 'ar' ? description_ar : description}
           </Text>
@@ -155,7 +149,7 @@ const PageSlider = props => {
                 fontSize: normalize(20),
                 fontWeight: 'bold',
                 color: '#0053FE',
-                textAlign: textAlign
+                textAlign: textAlign,
               }}>
               {price} {I18n.t('QAR', {locale: lang})}
             </Text>
@@ -165,7 +159,7 @@ const PageSlider = props => {
             style={{
               fontSize: normalize(12),
               color: '#8A8A8F',
-              textAlign: textAlign
+              textAlign: textAlign,
             }}>
             {period > 1
               ? `${period} ${I18n.t('months', {locale: lang})}`
@@ -174,8 +168,8 @@ const PageSlider = props => {
           </Text>
         </View>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   return (
     <View style={styles.pageWrapper}>
@@ -197,14 +191,14 @@ const PageSlider = props => {
 
       {pagination()}
     </View>
-  )
-}
+  );
+};
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
   subscription: state.subscription,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
-export default connect(mapStateToProps, {})(PageSlider)
+export default connect(mapStateToProps, {})(PageSlider);

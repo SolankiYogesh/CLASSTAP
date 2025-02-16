@@ -1,5 +1,5 @@
-import {Icon} from 'native-base'
-import React, {Component} from 'react'
+import {Icon} from 'native-base';
+import React, {Component} from 'react';
 import {
   Dimensions,
   Keyboard,
@@ -11,132 +11,127 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import normalize from 'react-native-normalize';
+import {connect} from 'react-redux';
 
-import {clearErrors} from '../../actions/errorAction'
-import {addReview, getTodayClasses} from '../../actions/homeActions'
-import {addReviewValidation} from '../../validation/validation'
-const {width, height} = Dimensions.get('window')
-import axios from 'axios'
-import Toast from 'react-native-toast-notifications'
+import {clearErrors} from '../../actions/errorAction';
+import {addReview, getTodayClasses} from '../../actions/homeActions';
+import {addReviewValidation} from '../../validation/validation';
+const {height} = Dimensions.get('window');
+import axios from 'axios';
+import Toast from 'react-native-toast-notifications';
 
-import {API_URI} from '../../utils/config'
-import I18n from '../../utils/i18n'
-import {UtilsParserReviews} from '../../utils/regExp'
+import {API_URI} from '../../utils/config';
+import I18n from '../../utils/i18n';
+import {UtilsParserReviews} from '../../utils/regExp';
 
 export class WriteReview extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       rating: 0,
       description: '',
       Max_Rating: 5,
       errors: {},
-      isEnablrdScroll: false
-    }
+      isEnablrdScroll: false,
+    };
   }
   UpdateRating(key) {
-    this.setState({rating: key})
+    this.setState({rating: key});
   }
   handleReview = async () => {
-    const {lang} = this.props.setting
-    const {description, rating} = this.state
-    const {foreign_id, class: reviewClass, auth} = this.props
+    const {lang} = this.props.setting;
+    const {description, rating} = this.state;
+    const {foreign_id, class: reviewClass, auth} = this.props;
     const addReviewData = {
       user_id: auth.user.id,
       foreign_id,
       class: reviewClass,
       description,
-      rating
-    }
-    const {errors, isValid} = addReviewValidation(addReviewData, lang)
+      rating,
+    };
+    const {errors, isValid} = addReviewValidation(addReviewData, lang);
 
     if (isValid) {
-      // this.props.addReview(addReviewData);
       await axios
         .post(`${API_URI}/reviews`, addReviewData)
         .then(async res => {
           if (res.data.error.code) {
           } else {
-            const {data} = res.data
+            const {data} = res.data;
             toast.show(I18n.t('reviewAddedSucessfully', {locale: lang}), {
               type: 'normal',
               placement: 'bottom',
               duration: 2000,
               offset: 30,
-              animationType: 'slide-in'
-            })
-            this.props.getTodayClasses()
-            this.props.handleReviews(data)
+              animationType: 'slide-in',
+            });
+            this.props.getTodayClasses();
+            this.props.handleReviews(data);
           }
         })
-        .catch(err => {
-          /* if (err.response.data.error) {
-          } */
-        })
+        .catch(() => {});
 
-      this.props.handleWriteReview()
+      this.props.handleWriteReview();
     } else {
-      this.setState({errors})
+      this.setState({errors});
     }
-  }
+  };
   truncate = (str, no_words) => {
-    return str.split(' ').splice(0, no_words).join(' ')
-  }
+    return str.split(' ').splice(0, no_words).join(' ');
+  };
   handleChangeText = (name, value) => {
-    const {errors} = this.state
+    const {errors} = this.state;
 
     if (errors[name]) {
-      delete errors[name]
+      delete errors[name];
 
       //delete errors.common;
     }
 
-    delete errors.common
-    this.props.clearErrors()
+    delete errors.common;
+    this.props.clearErrors();
     if (value.trim()) {
       if (name === 'description') {
-        const a = UtilsParserReviews(value)
+        const a = UtilsParserReviews(value);
 
         if (a) {
-          let description = this.truncate(value, 100)
-          this.setState({description, errors})
+          let description = this.truncate(value, 100);
+          this.setState({description, errors});
         }
       } else {
-        this.setState({[name]: value, errors})
+        this.setState({[name]: value, errors});
       }
     } else {
       if (this.state.description) {
-        this.setState({[name]: value, errors})
+        this.setState({[name]: value, errors});
       }
     }
-  }
+  };
 
   onKeyboarDidShow = () => {
-    this.setState({isEnablrdScroll: true})
-  }
+    this.setState({isEnablrdScroll: true});
+  };
 
   onKeyboardWillHide = () => {
-    this.setState({isEnablrdScroll: false})
-  }
+    this.setState({isEnablrdScroll: false});
+  };
 
   componentDidMount() {
-    this.props.clearErrors()
+    this.props.clearErrors();
   }
 
   componentWillUnmount() {
-    this.props.clearErrors()
+    this.props.clearErrors();
   }
   render() {
-    const {description, errors, isEnablrdScroll} = this.state
-    const {lang} = this.props.setting
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
-    let React_Native_Rating_Bar = []
+    const {description, errors} = this.state;
+    const {lang} = this.props.setting;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    let React_Native_Rating_Bar = [];
     //Array to hold the filled or empty Stars
     for (var i = 1; i <= this.state.Max_Rating; i++) {
       React_Native_Rating_Bar.push(
@@ -158,7 +153,7 @@ export class WriteReview extends Component {
             />
           )}
         </TouchableOpacity>,
-      )
+      );
     }
     return (
       <>
@@ -167,7 +162,7 @@ export class WriteReview extends Component {
           animationType="slide"
           transparent={true}
           onRequestClose={() => {
-            this.props.handleWriteReview()
+            this.props.handleWriteReview();
           }}>
           <KeyboardAvoidingView
             enabled
@@ -177,11 +172,11 @@ export class WriteReview extends Component {
               keyboardShouldPersistTaps="handled">
               <TouchableOpacity
                 onPress={() => {
-                  this.props.handleWriteReview()
+                  this.props.handleWriteReview();
                 }}
                 style={{
                   height: height - normalize(406),
-                  backgroundColor: 'rgba(34, 36, 42, 0.2)'
+                  backgroundColor: 'rgba(34, 36, 42, 0.2)',
                 }}
               />
               <View style={styles.modalContent}>
@@ -192,7 +187,7 @@ export class WriteReview extends Component {
                         fontSize: normalize(24),
                         color: '#231F20',
                         textAlign: 'center',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
                       }}>
                       {I18n.t('howWasYourExperience', {locale: lang})}
                     </Text>
@@ -200,7 +195,7 @@ export class WriteReview extends Component {
                   <View
                     style={[
                       styles.classRatingContainer,
-                      {flexDirection: flexDirection}
+                      {flexDirection: flexDirection},
                     ]}>
                     {React_Native_Rating_Bar}
                   </View>
@@ -212,7 +207,7 @@ export class WriteReview extends Component {
 
                   <TextInput
                     placeholder={I18n.t('describeYouExperienceInWords', {
-                      locale: lang
+                      locale: lang,
                     })}
                     placeholderTextColor="#8A8A8F"
                     numberOfLines={10}
@@ -222,7 +217,7 @@ export class WriteReview extends Component {
                       height: normalize(164),
                       backgroundColor: '#F9F9F9',
                       textAlignVertical: 'top',
-                      borderRadius: normalize(16)
+                      borderRadius: normalize(16),
                     }}
                     onChangeText={val =>
                       this.handleChangeText('description', val)
@@ -252,7 +247,7 @@ export class WriteReview extends Component {
         </Modal>
         <Toast ref={ref => (global['toast'] = ref)} />
       </>
-    )
+    );
   }
 }
 
@@ -260,7 +255,7 @@ const styles = StyleSheet.create({
   StarImage: {
     height: normalize(40),
     resizeMode: 'cover',
-    width: normalize(40)
+    width: normalize(40),
   },
   accountButton: {
     backgroundColor: '#FE9800',
@@ -269,46 +264,46 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: Platform.OS === 'ios' ? normalize(46) : normalize(15),
     marginHorizontal: normalize(33),
-    marginVertical: normalize(15)
+    marginVertical: normalize(15),
   },
   accountButtonText: {
     color: '#ffffff',
     fontSize: normalize(16),
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   classRatingContainer: {
     alignSelf: 'center',
     display: 'flex',
-    marginVertical: normalize(25)
+    marginVertical: normalize(25),
   },
   classStarIcon: {
     fontSize: normalize(42),
-    paddingRight: normalize(14)
+    paddingRight: normalize(14),
   },
   errorMessage: {
     color: 'red',
     fontSize: normalize(12),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   modalContainer: {
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: '#ffffff',
     flexDirection: 'column',
-    height: normalize(406)
-  }
-})
+    height: normalize(406),
+  },
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   addReview,
   clearErrors,
-  getTodayClasses
-})(WriteReview)
+  getTodayClasses,
+})(WriteReview);

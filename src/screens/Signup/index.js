@@ -1,9 +1,9 @@
 import appleAuth, {
   AppleAuthRequestOperation,
-  AppleAuthRequestScope
-} from '@invertase/react-native-apple-authentication'
-import {CheckBox, Container, Form, Input, Item} from 'native-base'
-import React, {Component} from 'react'
+  AppleAuthRequestScope,
+} from '@invertase/react-native-apple-authentication';
+import {CheckBox, Container, Form, Input, Item} from 'native-base';
+import React, {Component} from 'react';
 import {
   BackHandler,
   Keyboard,
@@ -11,31 +11,31 @@ import {
   Switch,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native'
-import {AccessToken, LoginManager} from 'react-native-fbsdk-next'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import normalize from 'react-native-normalize'
-import FIcon from 'react-native-vector-icons/FontAwesome6'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import normalize from 'react-native-normalize';
+import FIcon from 'react-native-vector-icons/FontAwesome6';
+import {connect} from 'react-redux';
 
-import {registerUser, socialLoginUser} from '../../actions/authActions'
-import {clearErrors} from '../../actions/errorAction'
-import LockIcon from '../../assets/img/lock.svg'
-import MailIcon from '../../assets/img/mail.svg'
-import PhoneIcon from '../../assets/img/phone.svg'
-import UserIcon from '../../assets/img/user.svg'
-import HeaderComponent from '../../components/Header'
-import Term from '../../components/Terms'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import {registerValidation} from '../../validation/validation'
-import Loading from '../Loading'
-import styles from './styles'
+import {registerUser, socialLoginUser} from '../../actions/authActions';
+import {clearErrors} from '../../actions/errorAction';
+import LockIcon from '../../assets/img/lock.svg';
+import MailIcon from '../../assets/img/mail.svg';
+import PhoneIcon from '../../assets/img/phone.svg';
+import UserIcon from '../../assets/img/user.svg';
+import HeaderComponent from '../../components/Header';
+import Term from '../../components/Terms';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import {registerValidation} from '../../validation/validation';
+import Loading from '../Loading';
+import styles from './styles';
 
 export class Signup extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       firstName: '',
       lastName: '',
@@ -48,8 +48,8 @@ export class Signup extends Component {
       errors: {},
       isEnablrdScroll: false,
       isShowTermUrl: false,
-      is_newsletter: true
-    }
+      is_newsletter: true,
+    };
   }
   static getDerivedStateFromProps(props, state) {
     if (props.auth.isAuthenticated) {
@@ -62,65 +62,65 @@ export class Signup extends Component {
           errors: {
             isMobile: true,
             mobile: I18n.t('phoneNumberAlreadyExist', {
-              locale: props.setting.lang
-            })
-          }
-        }
+              locale: props.setting.lang,
+            }),
+          },
+        };
       } else if (props.errors.error === 'Email already exist!') {
         return {
           errors: {
             isEmail: true,
             email: I18n.t('emailAlreadyExist', {
-              locale: props.setting.lang
-            })
-          }
-        }
+              locale: props.setting.lang,
+            }),
+          },
+        };
       } else {
         return {
-          errors: {common: props.errors.error}
-        }
+          errors: {common: props.errors.error},
+        };
       }
     } else {
       if (state.errors.common) {
-        delete state.errors.common
+        delete state.errors.common;
       }
     }
-    return null
+    return null;
   }
 
   handleChangeText = (name, value) => {
-    const {errors} = this.state
+    const {errors} = this.state;
     if (name === 'firstName' && errors.isFirstName) {
-      delete errors.isFirstName
+      delete errors.isFirstName;
     } else if (name === 'lastName' && errors.isLastName) {
-      delete errors.isLastName
+      delete errors.isLastName;
     } else if (name === 'email' && errors.isEmail) {
-      delete errors.isEmail
+      delete errors.isEmail;
     } else if (name === 'mobile' && errors.isMobile) {
-      delete errors.isMobile
+      delete errors.isMobile;
     } else if (name === 'password' && errors.isPassword) {
-      delete errors.isPassword
+      delete errors.isPassword;
     }
     if (errors[name]) {
-      delete errors[name]
+      delete errors[name];
 
       //delete errors.common;
     }
-    delete errors.common
-    this.props.clearErrors()
-    this.setState({[name]: value, errors})
-  }
+    delete errors.common;
+    this.props.clearErrors();
+    this.setState({[name]: value, errors});
+  };
   handleIsNotification = () => {
-    this.setState({is_newsletter: !this.state.is_newsletter})
-  }
+    this.setState({is_newsletter: !this.state.is_newsletter});
+  };
   handleIsTerm = () => {
-    this.setState({isTerm: !this.state.isTerm})
-  }
+    this.setState({isTerm: !this.state.isTerm});
+  };
   handleShowPassword = () => {
-    this.setState({isSecure: !this.state.isSecure})
-  }
+    this.setState({isSecure: !this.state.isSecure});
+  };
 
-  handleTerms = () => {}
+  handleTerms = () => {};
   handleMoveLogin = () => {
     this.setState({
       firstName: '',
@@ -132,51 +132,51 @@ export class Signup extends Component {
       isTerm: false,
       isSecure: true,
       errors: {},
-      isEnablrdScroll: false
-    })
-    this.props.clearErrors()
-    this.props.navigation.navigate('Login')
-  }
+      isEnablrdScroll: false,
+    });
+    this.props.clearErrors();
+    this.props.navigation.navigate('Login');
+  };
 
   onKeyboarDidShow = () => {
-    this.setState({isEnablrdScroll: true})
-  }
+    this.setState({isEnablrdScroll: true});
+  };
 
   onKeyboardWillHide = () => {
-    this.setState({isEnablrdScroll: false})
-  }
+    this.setState({isEnablrdScroll: false});
+  };
 
   componentDidMount() {
-    this.props.clearErrors()
-    BackHandler.addEventListener('hardwareBackPress', this.handleBack)
+    this.props.clearErrors();
+    BackHandler.addEventListener('hardwareBackPress', this.handleBack);
   }
 
   componentWillUnmount() {
-    this.props.clearErrors()
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBack)
+    this.props.clearErrors();
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
   }
 
   handleBack = async back => {
-    this.props.navigation.goBack()
-    return true
-  }
+    this.props.navigation.goBack();
+    return true;
+  };
 
   handleTermUrl = () => {
     this.setState({
-      isShowTermUrl: !this.state.isShowTermUrl
-    })
-  }
+      isShowTermUrl: !this.state.isShowTermUrl,
+    });
+  };
 
   handlePasswordVal = e => {
-    const {lang} = this.props.setting
-    let errors = {...this.state.errors}
+    const {lang} = this.props.setting;
+    let errors = {...this.state.errors};
     if (this.state.password.length < 6) {
-      errors.password = I18n.t('PasswordMustMinimumCharacters', {locale: lang})
+      errors.password = I18n.t('PasswordMustMinimumCharacters', {locale: lang});
     } else {
-      delete errors.password
+      delete errors.password;
     }
-    this.setState({errors})
-  }
+    this.setState({errors});
+  };
 
   handleCreateAccount = () => {
     const {
@@ -187,8 +187,8 @@ export class Signup extends Component {
       password,
       isNotification,
       isTerm,
-      is_newsletter
-    } = this.state
+      is_newsletter,
+    } = this.state;
     const addUserData = {
       first_name: firstName,
       last_name: lastName,
@@ -199,17 +199,17 @@ export class Signup extends Component {
       password: password,
       is_notification: isNotification,
       is_newsletter: is_newsletter,
-      is_term: isTerm
-    }
-    const {lang} = this.props.setting
-    const {errors, isValid} = registerValidation(addUserData, lang)
+      is_term: isTerm,
+    };
+    const {lang} = this.props.setting;
+    const {errors, isValid} = registerValidation(addUserData, lang);
 
     if (isValid) {
-      this.props.registerUser(addUserData, this.props.navigation)
+      this.props.registerUser(addUserData, this.props.navigation);
     } else {
-      this.setState({errors})
+      this.setState({errors});
     }
-  }
+  };
 
   onAppleButtonPress = async () => {
     return appleAuth
@@ -217,11 +217,11 @@ export class Signup extends Component {
         requestedOperation: AppleAuthRequestOperation.LOGIN,
         requestedScopes: [
           AppleAuthRequestScope.EMAIL,
-          AppleAuthRequestScope.FULL_NAME
-        ]
+          AppleAuthRequestScope.FULL_NAME,
+        ],
       })
       .then(appleAuthRequestResponse => {
-        let {email, fullName, identityToken, user} = appleAuthRequestResponse
+        let {email, fullName, identityToken, user} = appleAuthRequestResponse;
         const addUserData = {
           first_name: fullName.givenName || '',
           last_name: fullName.familyName || '',
@@ -229,36 +229,36 @@ export class Signup extends Component {
           is_notification: true,
           is_social_login: true,
           social_login_id: user,
-          token: identityToken
-        }
-        this.props.socialLoginUser(addUserData, this.props.navigation)
-      })
-  }
+          token: identityToken,
+        };
+        this.props.socialLoginUser(addUserData, this.props.navigation);
+      });
+  };
 
   handleFacebookLogin = async () => {
-    LoginManager.logOut()
+    LoginManager.logOut();
 
     if (Platform.OS === 'android') {
-      LoginManager.setLoginBehavior('browser')
+      LoginManager.setLoginBehavior('browser');
     }
     let data = await LoginManager.logInWithPermissions([
       'public_profile',
       'email',
-      'user_gender'
+      'user_gender',
     ]).then(
       async function (result) {
         if (result.isCancelled) {
-          return false
+          return false;
         } else {
           let accessToken = await AccessToken.getCurrentAccessToken().then(
             async data => {
-              const {accessToken} = data
+              const {accessToken} = data;
 
-              return accessToken
+              return accessToken;
             },
-          )
+          );
 
-          let addUserData = await initUser(accessToken)
+          let addUserData = await initUser(accessToken);
 
           async function initUser(token) {
             let userData = await fetch(
@@ -276,28 +276,28 @@ export class Signup extends Component {
                   is_notification: true,
                   is_social_login: true,
                   social_login_id: json.id,
-                  token: token
-                }
-                return addUserData
+                  token: token,
+                };
+                return addUserData;
               })
               .catch(() => {
-                reject('ERROR GETTING DATA FROM FACEBOOK')
-                return false
-              })
-            return userData
+                reject('ERROR GETTING DATA FROM FACEBOOK');
+                return false;
+              });
+            return userData;
           }
-          return addUserData
+          return addUserData;
         }
       },
       function (error) {},
-    )
+    );
     if (data) {
-      this.props.socialLoginUser(data, this.props.navigation)
+      this.props.socialLoginUser(data, this.props.navigation);
     }
-  }
+  };
 
   render() {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     const {
       firstName,
       lastName,
@@ -310,15 +310,15 @@ export class Signup extends Component {
       errors,
       isEnablrdScroll,
       isShowTermUrl,
-      is_newsletter
-    } = this.state
-    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row'
-    const textAlign = lang === 'ar' ? 'right' : 'left'
-    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start'
+      is_newsletter,
+    } = this.state;
+    const flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+    const textAlign = lang === 'ar' ? 'right' : 'left';
+    const alignSelf = lang === 'ar' ? 'flex-end' : 'flex-start';
 
-    console.log(this.props)
+    console.log(this.props);
 
-    const {isLodaing} = this.props.errors
+    const {isLodaing} = this.props.errors;
     return (
       <>
         {isLodaing ? (
@@ -346,7 +346,7 @@ export class Signup extends Component {
                     <View
                       style={{
                         //display: 'flex',
-                        flexDirection: flexDirection
+                        flexDirection: flexDirection,
                         //justifyContent: 'space-between',
                       }}>
                       <View style={{flex: 1}}>
@@ -355,7 +355,7 @@ export class Signup extends Component {
                           style={{
                             flex: 1,
                             marginLeft: normalize(40),
-                            flexDirection: flexDirection
+                            flexDirection: flexDirection,
                           }}>
                           <UserIcon
                             width={normalize(20)}
@@ -369,7 +369,7 @@ export class Signup extends Component {
                               fontSize: normalize(13),
                               marginLeft: 5,
                               flexDirection: 'row',
-                              textAlign: textAlign
+                              textAlign: textAlign,
                             }}
                             onChangeText={val =>
                               this.handleChangeText('firstName', val)
@@ -384,7 +384,7 @@ export class Signup extends Component {
                           <Text
                             style={[
                               styles.errorMessage,
-                              {textAlign: textAlign}
+                              {textAlign: textAlign},
                             ]}>
                             {errors.firstName}
                           </Text>
@@ -397,7 +397,7 @@ export class Signup extends Component {
                             flex: 1,
                             marginRight: normalize(40),
                             marginLeft: '7%',
-                            flexDirection: flexDirection
+                            flexDirection: flexDirection,
                           }}>
                           <Input
                             placeholderTextColor="#8A8A8F"
@@ -405,7 +405,7 @@ export class Signup extends Component {
                             style={{
                               fontSize: normalize(13),
                               flexDirection: 'row',
-                              textAlign: textAlign
+                              textAlign: textAlign,
                             }}
                             onChangeText={val =>
                               this.handleChangeText('lastName', val)
@@ -420,7 +420,7 @@ export class Signup extends Component {
                           <Text
                             style={[
                               styles.errorMessage,
-                              {textAlign: textAlign}
+                              {textAlign: textAlign},
                             ]}>
                             {errors.lastName}
                           </Text>
@@ -433,7 +433,7 @@ export class Signup extends Component {
                         error={errors.isEmail ? true : false}
                         style={[
                           styles.formInputText,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <MailIcon
                           width={normalize(20)}
@@ -470,7 +470,7 @@ export class Signup extends Component {
                         error={errors.isMobile ? true : false}
                         style={[
                           styles.formInputText,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         {/*  <FIcon name="phone" size={18} /> */}
                         <PhoneIcon
@@ -478,8 +478,8 @@ export class Signup extends Component {
                           height={normalize(20)}
                           style={{
                             transform: [
-                              {rotate: lang === 'ar' ? '270deg' : '0deg'}
-                            ]
+                              {rotate: lang === 'ar' ? '270deg' : '0deg'},
+                            ],
                           }}
                         />
                         <Input
@@ -514,7 +514,7 @@ export class Signup extends Component {
                         error={errors.isPassword ? true : false}
                         style={[
                           styles.formInputText,
-                          {flexDirection: flexDirection}
+                          {flexDirection: flexDirection},
                         ]}>
                         <LockIcon
                           width={normalize(20)}
@@ -565,8 +565,8 @@ export class Signup extends Component {
                       style={[
                         styles.notificationContainer,
                         {
-                          flexDirection: flexDirection
-                        }
+                          flexDirection: flexDirection,
+                        },
                       ]}>
                       <View>
                         <Switch
@@ -580,7 +580,7 @@ export class Signup extends Component {
                                 ? 0
                                 : lang === 'ar'
                                   ? normalize(8)
-                                  : normalize(-8)
+                                  : normalize(-8),
                           }}
                           onValueChange={this.handleIsNotification}
                           value={is_newsletter}
@@ -597,19 +597,19 @@ export class Signup extends Component {
                             Platform.OS === 'ios'
                               ? normalize(10)
                               : normalize(2),
-                          marginRight: 10
+                          marginRight: 10,
                         }}>
                         <Text
                           style={{
                             fontSize: normalize(12),
-                            textAlign: textAlign
+                            textAlign: textAlign,
                           }}>
                           {I18n.t('receiveUpdates', {locale: lang})}
                         </Text>
                         <Text
                           style={{
                             fontSize: normalize(12),
-                            textAlign: textAlign
+                            textAlign: textAlign,
                           }}>
                           {I18n.t('latestEvents', {locale: lang})}
                         </Text>
@@ -619,14 +619,14 @@ export class Signup extends Component {
                       style={{
                         marginTop: '4%',
                         marginLeft: normalize(40),
-                        marginRight: normalize(40)
+                        marginRight: normalize(40),
                       }}>
                       <View
                         style={{
                           display: 'flex',
                           flexDirection: flexDirection,
                           alignItems: 'center',
-                          marginBottom: normalize(10)
+                          marginBottom: normalize(10),
                         }}>
                         <CheckBox
                           checked={isTerm}
@@ -639,7 +639,7 @@ export class Signup extends Component {
                             borderRadius: 0,
                             borderWidth: 2,
                             alignItems: 'flex-start',
-                            justifyContent: 'flex-start'
+                            justifyContent: 'flex-start',
                           }}
                         />
                         <TouchableOpacity
@@ -686,7 +686,7 @@ export class Signup extends Component {
                       onPress={this.onAppleButtonPress}
                       style={[
                         styles.appleButton,
-                        {flexDirection: flexDirection}
+                        {flexDirection: flexDirection},
                       ]}>
                       <FIcon name="apple" size={18} color="#000000" />
                       <Text style={styles.appleButtonText}>
@@ -719,18 +719,18 @@ export class Signup extends Component {
           </Container>
         )}
       </>
-    )
+    );
   }
 }
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   registerUser,
   clearErrors,
-  socialLoginUser
-})(Signup)
+  socialLoginUser,
+})(Signup);

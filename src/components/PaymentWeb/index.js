@@ -1,5 +1,5 @@
-import {Body, Button, Header, Icon, Left, Text} from 'native-base'
-import React, {Component} from 'react'
+import {Body, Button, Header, Icon, Left, Text} from 'native-base';
+import React, {Component} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -7,63 +7,63 @@ import {
   Platform,
   SafeAreaView,
   StyleSheet,
-  View
-} from 'react-native'
-import normalize from 'react-native-normalize'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import normalize from 'react-native-normalize';
+import {connect} from 'react-redux';
 
-import {clearErrors} from '../../actions/errorAction'
-import {addBookingClass} from '../../actions/subscriptionActions'
-const {width, height} = Dimensions.get('window')
+import {clearErrors} from '../../actions/errorAction';
+import {addBookingClass} from '../../actions/subscriptionActions';
+const {width, height} = Dimensions.get('window');
 
-import moment from 'moment-timezone'
+import moment from 'moment-timezone';
 
-import I18n from '../../utils/i18n'
-moment.tz.setDefault('Asia/Qatar')
+import I18n from '../../utils/i18n';
+moment.tz.setDefault('Asia/Qatar');
 
-import {WebView} from 'react-native-webview'
+import {WebView} from 'react-native-webview';
 
-import paymentPage from './test.html'
+import paymentPage from './test.html';
 
 export class PaymentWeb extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       errors: '',
-      visible: true
-    }
+      visible: true,
+    };
   }
   componentDidMount() {
-    this.props.clearErrors()
+    this.props.clearErrors();
   }
 
   componentWillUnmount() {
-    this.props.clearErrors()
+    this.props.clearErrors();
   }
   _onNavigationStateChange(webViewState) {
-    const res = webViewState.url.includes('backToMerchant')
-    const cancel = webViewState.url.includes('cancelOperation')
-    const error = webViewState.url.includes('cancelOperation')
+    const res = webViewState.url.includes('backToMerchant');
+    const cancel = webViewState.url.includes('cancelOperation');
+    const error = webViewState.url.includes('cancelOperation');
 
     if (res) {
-      this.props.handlePaymentWeb('success')
+      this.props.handlePaymentWeb('success');
     } else if (cancel) {
-      this.props.handlePaymentWeb()
+      this.props.handlePaymentWeb();
     } else if (error) {
-      this.props.handlePaymentWeb('failed')
+      this.props.handlePaymentWeb('failed');
     }
   }
 
   handleBack = () => {
-    this.props.handlePaymentWeb()
-  }
+    this.props.handlePaymentWeb();
+  };
 
   hideSpinner = () => {
-    this.setState({visible: false})
-  }
+    this.setState({visible: false});
+  };
 
   render() {
-    const {lang} = this.props.setting
+    const {lang} = this.props.setting;
     const {
       access_code,
       amount,
@@ -75,8 +75,8 @@ export class PaymentWeb extends Component {
       merchant_identifier,
       merchant_reference,
       signature,
-      token_name
-    } = this.props.data
+      token_name,
+    } = this.props.data;
 
     const INJECTED_JAVASCRIPT = `(function() {
       Array.from(document.getElementsByTagName('input')).forEach((item) => {
@@ -114,7 +114,7 @@ export class PaymentWeb extends Component {
           item.value = '${token_name}';
         }
       })
-    })();`
+    })();`;
 
     return (
       <Modal
@@ -122,7 +122,7 @@ export class PaymentWeb extends Component {
         animationType="slide"
         transparent={true}
         onRequestClose={() => {
-          this.handleBack()
+          this.handleBack();
         }}>
         <SafeAreaView style={styles.modalContent}>
           <Header style={styles.headerContainer}>
@@ -153,7 +153,7 @@ export class PaymentWeb extends Component {
               mixedContentMode={'always'}
               javaScriptEnabled={true}
               onMessage={event => {
-                console.log('event: ', event)
+                console.log('event: ', event);
               }}
             />
           )}
@@ -165,7 +165,7 @@ export class PaymentWeb extends Component {
           )}
         </SafeAreaView>
       </Modal>
-    )
+    );
   }
 }
 
@@ -173,34 +173,34 @@ const styles = StyleSheet.create({
   backButtonContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   backButtonIcon: {
     color: '#22242A',
     fontSize: normalize(18),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   backButtonText: {
     color: '#22242A',
     fontSize: normalize(12),
-    top: Platform.OS === 'ios' ? normalize(3) : normalize(3.3)
+    top: Platform.OS === 'ios' ? normalize(3) : normalize(3.3),
   },
   headerContainer: {
     backgroundColor: '#ffffff',
-    borderBottomWidth: 0
+    borderBottomWidth: 0,
   },
   modalContent: {
-    flex: 1
-  }
-})
+    flex: 1,
+  },
+});
 
 const mapStateToProps = state => ({
   auth: state.auth,
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   clearErrors,
-  addBookingClass
-})(PaymentWeb)
+  addBookingClass,
+})(PaymentWeb);

@@ -1,10 +1,10 @@
 import appleAuth, {
   AppleAuthRequestOperation,
-  AppleAuthRequestScope
-} from '@invertase/react-native-apple-authentication'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import Geolocation from '@react-native-community/geolocation'
-import React, {useEffect} from 'react'
+  AppleAuthRequestScope,
+} from '@invertase/react-native-apple-authentication';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geolocation from '@react-native-community/geolocation';
+import React, {useCallback, useEffect} from 'react';
 import {
   Alert,
   BackHandler,
@@ -13,27 +13,27 @@ import {
   SafeAreaView,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native'
-import {AccessToken, LoginManager} from 'react-native-fbsdk-next'
-import {check, PERMISSIONS, request} from 'react-native-permissions'
-import FIcon from 'react-native-vector-icons/FontAwesome6'
-import {connect} from 'react-redux'
+  View,
+} from 'react-native';
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
+import {check, PERMISSIONS, request} from 'react-native-permissions';
+import FIcon from 'react-native-vector-icons/FontAwesome6';
+import {connect} from 'react-redux';
 
-import {socialLoginUser} from '../../actions/authActions'
+import {socialLoginUser} from '../../actions/authActions';
 import {
   clearErrors,
   clearLoading,
-  clearSocialErrors
-} from '../../actions/errorAction'
-import {setLatLong} from '../../actions/settingActions'
-import I18n from '../../utils/i18n'
-import isEmpty from '../../validation/is-empty'
-import Loading from '../Loading'
+  clearSocialErrors,
+} from '../../actions/errorAction';
+import {setLatLong} from '../../actions/settingActions';
+import I18n from '../../utils/i18n';
+import isEmpty from '../../validation/is-empty';
+import Loading from '../Loading';
 
 const Welcome = props => {
   useEffect(() => {
-    const {lang} = props.setting
+    const {lang} = props.setting;
 
     if (!isEmpty(props.errors.socialError)) {
       Alert.alert(
@@ -42,14 +42,14 @@ const Welcome = props => {
         [
           {
             text: I18n.t('ok', {locale: lang}),
-            onPress: () => props.clearSocialErrors()
-          }
+            onPress: () => props.clearSocialErrors(),
+          },
         ],
         {cancelable: false},
-      )
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.setting, props.errors])
+  }, [props.setting, props.errors]);
 
   const handleLocation = async () => {
     Geolocation.getCurrentPosition(
@@ -57,17 +57,17 @@ const Welcome = props => {
         await AsyncStorage.setItem(
           'latitude',
           position.coords.latitude.toString(),
-        )
+        );
         await AsyncStorage.setItem(
           'longitude',
           position.coords.longitude.toString(),
-        )
+        );
 
         await props.setLatLong(
           position.coords.latitude,
           position.coords.longitude,
-        )
-        return true
+        );
+        return true;
       },
       () => {
         //Alert.alert(JSON.stringify(error));
@@ -75,10 +75,10 @@ const Welcome = props => {
       {
         enableHighAccuracy: /* Platform.OS === 'ios' ? true : */ false,
         timeout: 20000,
-        maximumAge: 10000
+        maximumAge: 10000,
       },
-    )
-  }
+    );
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -89,17 +89,17 @@ const Welcome = props => {
               await request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(
                 async result => {
                   if (result === 'granted') {
-                    await handleLocation()
+                    await handleLocation();
                   }
                 },
-              )
+              );
             } else if (result === 'granted') {
-              await handleLocation()
+              await handleLocation();
             }
           })
           .catch(() => {
             // …
-          })
+          });
       } else {
         await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
           .then(async result => {
@@ -107,47 +107,45 @@ const Welcome = props => {
               await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(
                 async result => {
                   if (result === 'granted') {
-                    await handleLocation()
+                    await handleLocation();
                   }
                 },
-              )
+              );
             } else if (result === 'granted') {
               //alert(result);
-              await handleLocation()
+              await handleLocation();
             }
           })
           .catch(error => {
             // …
-          })
+          });
       }
-    }
-    load()
-  }, [])
+    };
+    load();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      props?.clearLoading();
+    }, []),
+  );
 
   useEffect(() => {
-    const focusListener = props.navigation.addListener('didFocus', () => {
-      props.clearLoading()
-    })
-    BackHandler.addEventListener('hardwareBackPress', handleBack)
-
+    const back = BackHandler.addEventListener('hardwareBackPress', handleBack);
     return () => {
-      focusListener.remove()
-    }
-  }, [])
-
-  useEffect(() => {
-    return () => {
-      props.clearErrors()
-      BackHandler.removeEventListener('hardwareBackPress', handleBack)
-    }
-  }, [])
+      props?.clearErrors();
+      if (back.remove) {
+        back.remove(0);
+      }
+    };
+  }, []);
 
   const handleGuestAccount = () => {
-    props.navigation.navigate('Main')
-  }
+    props.navigation.navigate('Main');
+  };
 
   const handleBack = () => {
-    const {lang} = props.setting
+    const {lang} = props.setting;
     Alert.alert(
       I18n.t('exit', {locale: lang}),
       I18n.t('areYouExitApp', {locale: lang}),
@@ -155,42 +153,42 @@ const Welcome = props => {
         {
           text: I18n.t('no', {locale: lang}),
           onPress: () => console.log('come'),
-          style: 'cancel'
+          style: 'cancel',
         },
         {
           text: I18n.t('yes', {locale: lang}),
-          onPress: () => BackHandler.exitApp()
-        }
+          onPress: () => BackHandler.exitApp(),
+        },
       ],
       {cancelable: false},
-    )
+    );
 
-    return true
-  }
+    return true;
+  };
 
   const handleFacebookLogin = async () => {
-    LoginManager.logOut()
-    LoginManager.setLoginBehavior('browser')
+    LoginManager.logOut();
+    LoginManager.setLoginBehavior('browser');
     /* if (Platform.OS === 'android') {
       LoginManager.setLoginBehavior('web_only');
     } */
     let data = await LoginManager.logInWithPermissions([
       'public_profile',
       'email',
-      'user_gender'
+      'user_gender',
     ]).then(async function (result) {
       if (result.isCancelled) {
-        return false
+        return false;
       } else {
         let accessToken = await AccessToken.getCurrentAccessToken().then(
           async data => {
-            const {accessToken} = data
+            const {accessToken} = data;
 
-            return accessToken
+            return accessToken;
           },
-        )
+        );
 
-        let addUserData = await initUser(accessToken)
+        let addUserData = await initUser(accessToken);
 
         async function initUser(token) {
           let userData = await fetch(
@@ -206,23 +204,23 @@ const Welcome = props => {
                 is_notification: true,
                 is_social_login: true,
                 social_login_id: json.id,
-                token: token
-              }
-              return addUserData
+                token: token,
+              };
+              return addUserData;
             })
             .catch(() => {
-              reject('ERROR GETTING DATA FROM FACEBOOK')
-              return false
-            })
-          return userData
+              reject('ERROR GETTING DATA FROM FACEBOOK');
+              return false;
+            });
+          return userData;
         }
-        return addUserData
+        return addUserData;
       }
-    })
+    });
     if (data) {
-      props.socialLoginUser(data, props.navigation)
+      props.socialLoginUser(data, props.navigation);
     }
-  }
+  };
 
   const onAppleButtonPress = async () => {
     return appleAuth
@@ -230,11 +228,11 @@ const Welcome = props => {
         requestedOperation: AppleAuthRequestOperation.LOGIN,
         requestedScopes: [
           AppleAuthRequestScope.EMAIL,
-          AppleAuthRequestScope.FULL_NAME
-        ]
+          AppleAuthRequestScope.FULL_NAME,
+        ],
       })
       .then(appleAuthRequestResponse => {
-        let {email, fullName, identityToken, user} = appleAuthRequestResponse
+        let {email, fullName, identityToken, user} = appleAuthRequestResponse;
         const addUserData = {
           first_name: fullName.givenName || '',
           last_name: fullName.familyName || '',
@@ -242,15 +240,15 @@ const Welcome = props => {
           is_notification: true,
           is_social_login: true,
           social_login_id: user,
-          token: identityToken
-        }
+          token: identityToken,
+        };
 
-        props.socialLoginUser(addUserData, props.navigation)
-      })
-  }
+        props.socialLoginUser(addUserData, props.navigation);
+      });
+  };
 
-  const flexDirection = props.setting.lang === 'ar' ? 'row-reverse' : 'row'
-  const textAlign = props.setting.lang === 'ar' ? 'right' : 'left'
+  const flexDirection = props.setting.lang === 'ar' ? 'row-reverse' : 'row';
+  const textAlign = props.setting.lang === 'ar' ? 'right' : 'left';
 
   return (
     <>
@@ -325,20 +323,21 @@ const Welcome = props => {
         </SafeAreaView>
       )}
     </>
-  )
-}
+  );
+};
 
-import styles from './styles'
+import styles from './styles';
+import {useFocusEffect} from '@react-navigation/native';
 
 const mapStateToProps = state => ({
   setting: state.setting,
-  errors: state.errors
-})
+  errors: state.errors,
+});
 
 export default connect(mapStateToProps, {
   socialLoginUser,
   clearErrors,
   clearSocialErrors,
   clearLoading,
-  setLatLong
-})(Welcome)
+  setLatLong,
+})(Welcome);

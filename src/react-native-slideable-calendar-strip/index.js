@@ -1,2 +1,2 @@
-import CalendarStrip from './lib/CalendarStrip.js'
-module.exports = CalendarStrip
+import CalendarStrip from './lib/CalendarStrip.js';
+module.exports = CalendarStrip;

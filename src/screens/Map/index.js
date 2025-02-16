@@ -1,29 +1,26 @@
-import {Card, Container, Form, Input, Item} from 'native-base'
-import React, {Component} from 'react'
-import {StyleSheet, Text, View} from 'react-native'
+import {Container} from 'native-base';
+import React, {Component} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 //import axios from 'axios';
-import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps'
+import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 
-import HeaderComponent from '../../components/Header'
-import {API_URI, IMAGE_URI} from '../../utils/config'
-import isEmpty from '../../validation/is-empty'
-import Loading from '../Loading'
+import HeaderComponent from '../../components/Header';
 
 export class Map extends Component {
   constructor(props) {
-    super(props)
-    this.state = {}
+    super(props);
+    this.state = {};
   }
   render() {
-    const latitude = this.props.navigation.getParam('latitude')
-    const longitude = this.props.navigation.getParam('longitude')
-    const name = this.props.navigation.getParam('name')
+    const latitude = this.props.navigation.getParam('latitude');
+    const longitude = this.props.navigation.getParam('longitude');
+    const name = this.props.navigation.getParam('name');
     let initialPosition = {
       latitude: latitude,
       longitude: longitude,
       latitudeDelta: 0.09,
-      longitudeDelta: 0.035
-    }
+      longitudeDelta: 0.035,
+    };
     return (
       <Container style={{flex: 1, backgroundColor: '#ffffff'}}>
         <HeaderComponent navigation={this.props.navigation} />
@@ -37,7 +34,7 @@ export class Map extends Component {
             <Marker
               coordinate={{
                 latitude: latitude,
-                longitude: longitude
+                longitude: longitude,
               }}
               title={name}>
               <Callout>
@@ -47,14 +44,14 @@ export class Map extends Component {
           </MapView>
         </View>
       </Container>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   map: {
-    ...StyleSheet.absoluteFillObject
-  }
-})
+    ...StyleSheet.absoluteFillObject,
+  },
+});
 
-export default Map
+export default Map;

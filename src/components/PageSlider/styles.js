@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native'
-import normalize from 'react-native-normalize'
+import {StyleSheet} from 'react-native';
+import normalize from 'react-native-normalize';
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     // height: normalize(326),
     width: '100%',
     resizeMode: 'cover',
-    alignSelf: 'stretch'
+    alignSelf: 'stretch',
     //marginRight: normalize(10),
   },
   circleDiv: {
@@ -20,16 +20,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: 10
+    height: 10,
   },
   container: {
-    flex: 1
+    flex: 1,
   },
   contentItem: {flex: 6.3},
 
   pageWrapper: {
     flex: 1,
-    marginLeft: normalize(16)
+    marginLeft: normalize(16),
   },
   sliderItem: {
     backgroundColor: '#ffffff',
@@ -42,20 +42,20 @@ const styles = StyleSheet.create({
     shadowColor: '#00000029',
     shadowOffset: {
       width: 0,
-      height: 3
+      height: 3,
     },
     shadowOpacity: 1,
     shadowRadius: 4,
 
-    width: normalize(321)
+    width: normalize(321),
   },
   whiteCircle: {
     backgroundColor: '#fff',
     borderRadius: 1,
     height: 2,
     margin: 5,
-    width: 9.14
-  }
-})
+    width: 9.14,
+  },
+});
 
-export default styles
+export default styles;
