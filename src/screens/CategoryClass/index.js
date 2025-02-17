@@ -1,10 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import analytics from '@react-native-firebase/analytics';
 import axios from 'axios';
 import React, {Component} from 'react';
 import {
   BackHandler,
   FlatList,
   Image,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,16 +19,14 @@ import {connect} from 'react-redux';
 import {getCategoryClasses} from '../../actions/homeActions';
 import HeaderComponent from '../../components/Header';
 import {API_URI, IMAGE_URI} from '../../utils/config';
+import Const from '../../utils/Const';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import ConfirmBooking from '../ConfirmBooking';
 import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
-import analytics from '@react-native-firebase/analytics';
-import Const from '../../utils/Const';
 
-
- class CategoryClass extends Component {
+class CategoryClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,14 +46,14 @@ import Const from '../../utils/Const';
   } */
   async componentDidMount() {
     analytics().logEvent(Const.ANALYTICS_EVENT.CATEGORY_CLASS_SCREEN);
-    const id = await this.props.navigation.getParam('id');
+
+    const id = await this.props.route.params.id;
     const latitude = await AsyncStorage.getItem('latitude');
     const longitude = await AsyncStorage.getItem('longitude');
     let url = `${API_URI}/classes?filter={"inClass": {"is_active": 1},"inClassCategory": {"category_id": ${id}}}`;
     if (latitude && longitude) {
       url = `${url}&latitude=${latitude}&longitude=${longitude}`;
     }
-
     await axios
       .get(url)
       .then(res => {
@@ -333,6 +333,7 @@ import Const from '../../utils/Const';
           <Loading />
         ) : (
           <View style={{flex: 1, backgroundColor: '#ffffff'}}>
+            <SafeAreaView />
             <HeaderComponent navigation={this.props.navigation} />
             {/* <StatusBar hidden={true} /> */}
             <ScrollView
@@ -341,7 +342,7 @@ import Const from '../../utils/Const';
               <View style={[styles.titleContainer, {alignSelf: alignSelf}]}>
                 <Text
                   style={[styles.titleContainerText, {textAlign: textAlign}]}>
-                  {this.props.navigation.getParam('categoryName')}
+                  {this.props.route.params.categoryName}
                 </Text>
               </View>
 

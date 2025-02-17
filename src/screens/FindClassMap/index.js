@@ -1,6 +1,7 @@
 import FastImage from '@d11/react-native-fast-image';
 import Geolocation from '@react-native-community/geolocation';
-import {Icon, Input, Item} from 'native-base';
+import analytics from '@react-native-firebase/analytics';
+import {Icon, Input, FormControl} from 'native-base';
 import React, {Component} from 'react';
 import {
   Alert,
@@ -29,12 +30,11 @@ import FilterSearchIcon from '../../assets/img/filter_search.svg';
 import ListIcon from '../../assets/img/list.svg';
 import CalendarStrip from '../../react-native-slideable-calendar-strip';
 import {IMAGE_URI} from '../../utils/config';
+import Const from '../../utils/Const';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 import ReviewShow from '../Review/ReviewShow';
-import analytics from '@react-native-firebase/analytics';
-import Const from '../../utils/Const';
 
 const {width} = Dimensions.get('window');
 
@@ -745,7 +745,7 @@ class FindClassMap extends Component {
             marginHorizontal: normalize(16),
             flexDirection: flexDirection,
           }}>
-          <Item
+          <FormControl
             style={{
               backgroundColor: '#EFEFF4',
               width: normalize(263),
@@ -770,7 +770,7 @@ class FindClassMap extends Component {
               value={search}
               onChangeText={val => this.handleChangeText('search', val)}
             />
-          </Item>
+          </FormControl>
           <View
             style={{
               // marginLeft: normalize(16),

@@ -516,13 +516,9 @@ class Home extends PureComponent {
 
   handleNavigateCategoryClass = (e, id, categoryName) => {
     e.preventDefault();
-    this.props.navigation.navigate({
-      routeName: 'CategoryClass',
-      params: {
-        id: id,
-        categoryName,
-      },
-      key: `CategoryClass_${Math.random() * 10000}`,
+    this.props.navigation.navigate('CategoryClass', {
+      id: id,
+      categoryName: categoryName,
     });
   };
   renderItemCategory = ({item}) => {

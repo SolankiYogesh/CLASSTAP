@@ -1,9 +1,11 @@
+import analytics from '@react-native-firebase/analytics';
 import moment from 'moment-timezone';
-import {Body, Button, Container, Header, Icon, Left} from 'native-base';
+import {Box, Button, Icon} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
   Platform,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -18,7 +20,6 @@ import {clearErrors} from '../../actions/errorAction';
 import CalendarStrip from '../../react-native-slideable-calendar-strip';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
-import analytics from '@react-native-firebase/analytics';
 moment.tz.setDefault('Asia/Qatar');
 
 //import {getCategories} from '../../actions/homeActions';
@@ -277,9 +278,10 @@ class Membership extends Component {
       .toISOString()
       .split('T')[0];
     return (
-      <Container style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <Header style={styles.headerContainer}>
-          <Left>
+      <Box style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+        <SafeAreaView />
+        <Box style={styles.headerContainer}>
+          <Box>
             <Button transparent onPress={this.handleBack}>
               <View style={styles.backButtonContainer}>
                 <Icon
@@ -292,9 +294,9 @@ class Membership extends Component {
                 </Text>
               </View>
             </Button>
-          </Left>
-          <Body />
-        </Header>
+          </Box>
+          <Box />
+        </Box>
         <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View
@@ -836,7 +838,7 @@ class Membership extends Component {
             </TouchableOpacity>
           </ScrollView>
         </View>
-      </Container>
+      </Box>
     );
   }
 }
