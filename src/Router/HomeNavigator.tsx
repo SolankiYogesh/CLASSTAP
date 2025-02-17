@@ -21,7 +21,7 @@ import CategoryClass from '../screens/CategoryClass';
 const Stack = createNativeStackNavigator();
 
 export default () => (
-  <Stack.Navigator initialRouteName="Home">
+  <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown: false}}>
     <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
     <Stack.Screen name="Gym" component={Gym} options={{headerShown: false}} />
     <Stack.Screen

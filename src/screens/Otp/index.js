@@ -1,7 +1,13 @@
 import axios from 'axios';
-import {Container, Input, Item} from 'native-base';
+import {Input} from 'native-base';
 import React, {Component} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Col, Grid} from 'react-native-easy-grid';
 import normalize from 'react-native-normalize';
 import Toast from 'react-native-toast-notifications';
@@ -67,7 +73,7 @@ class Otp extends Component {
     const txt = inputs.map((i, j) => {
       return (
         <Col key={j} style={styles.txtMargin}>
-          <Item
+          <View
             style={{
               borderColor: this.state.otp.length > j ? '#FE9800' : '#C8C7CC',
               borderBottomWidth: this.state.otp.length > j ? 3 : 1,
@@ -80,7 +86,7 @@ class Otp extends Component {
               onKeyPress={e => this.focusPrevious(e.nativeEvent.key, j)}
               ref={ref => (this.otpTextInput[j] = ref)}
             />
-          </Item>
+          </View>
         </Col>
       );
     });
@@ -169,7 +175,7 @@ class Otp extends Component {
         {isLodaing ? (
           <Loading />
         ) : (
-          <Container>
+          <SafeAreaView>
             <HeaderComponent navigation={this.props.navigation} />
             <View style={styles.contentContainer}>
               <View style={styles.titleContainer}>
@@ -209,7 +215,7 @@ class Otp extends Component {
                 </Text>
               </View>
             </View>
-          </Container>
+          </SafeAreaView>
         )}
         <Toast ref={ref => (global['toast'] = ref)} />
       </>

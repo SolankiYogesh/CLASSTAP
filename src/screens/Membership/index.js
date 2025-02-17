@@ -1,11 +1,14 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+/* eslint-disable comma-dangle */
+/* eslint-disable semi */
+import analytics from '@react-native-firebase/analytics';
 import axios from 'axios';
-import {Body, Button, Container, Header, Icon, Left} from 'native-base';
+import {Box, Button, Container, HStack, Icon} from 'native-base';
 import React, {Component} from 'react';
 import {
   Alert,
   BackHandler,
   Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -25,11 +28,10 @@ import PageSlider from '../../components/PageSlider';
 import PaymentSuccess from '../../components/PaymentSuccess';
 import PaymentWeb from '../../components/PaymentWeb';
 import {API_URI} from '../../utils/config';
+import Const from '../../utils/Const';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
-import analytics from '@react-native-firebase/analytics';
-import Const from '../../utils/Const';
 
 class Membership extends Component {
   constructor(props) {
@@ -433,7 +435,9 @@ class Membership extends Component {
     const textAlign = lang === 'ar' ? 'right' : 'left';
     const {subscriptions} = this.props.subscription;
 
-    const type = this.props.navigation.getParam('type');
+    // const type = this.props.navigation.getParam('type');
+    const type = 'new';
+
     const {
       selectIndex,
       isShowPaymentWeb,
@@ -452,8 +456,9 @@ class Membership extends Component {
 
     return (
       <Container style={{flex: 1, backgroundColor: '#F9F9F9'}}>
-        <Header style={styles.headerContainer}>
-          <Left>
+        <SafeAreaView />
+        <Box style={styles.headerContainer}>
+          <HStack>
             <Button transparent onPress={this.handleBack}>
               <View style={styles.backButtonContainer}>
                 <Icon
@@ -466,9 +471,8 @@ class Membership extends Component {
                 </Text>
               </View>
             </Button>
-          </Left>
-          <Body />
-        </Header>
+          </HStack>
+        </Box>
         {isLoading ? (
           <Loading />
         ) : (

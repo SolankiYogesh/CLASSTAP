@@ -18,7 +18,9 @@ import CoachReview from '../screens/CoachReview';
 const Stack = createNativeStackNavigator();
 
 export default () => (
-  <Stack.Navigator initialRouteName="Favorities">
+  <Stack.Navigator
+    initialRouteName="Favorities"
+    screenOptions={{headerShown: false}}>
     <Stack.Screen
       name="Favorities"
       component={Favorites}

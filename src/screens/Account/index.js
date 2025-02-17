@@ -1,10 +1,13 @@
-import {ActionSheet, Form, Input, Item, Label} from 'native-base';
+/* eslint-disable semi */
+import analytics from '@react-native-firebase/analytics';
+import {Box, FormControl, Input, VStack} from 'native-base';
 import React, {Component} from 'react';
 import {
   Alert,
   BackHandler,
   Image,
   Keyboard,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -31,12 +34,11 @@ import PhoneIcon from '../../assets/img/phone.svg';
 import UserIcon from '../../assets/img/user.svg';
 import HeaderComponent from '../../components/Header';
 import {IMAGE_URI} from '../../utils/config';
+import Const from '../../utils/Const';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import {updateUserValidation} from '../../validation/validation';
 import Loading from '../Loading';
-import analytics from '@react-native-firebase/analytics';
-import Const from '../../utils/Const';
 
 class Account extends Component {
   constructor(props) {
@@ -59,7 +61,6 @@ class Account extends Component {
     };
   }
 
-  
   componentDidUpdate(props, state) {
     if (props.auth.isUpdateUser) {
       toast.show(
@@ -245,24 +246,24 @@ class Account extends Component {
       'Remove Photo',
       'Cancel',
     ];
-    ActionSheet.show(
-      {options: BUTTONS, cancelButtonIndex: 3, title: 'Select a Photo'},
-      buttonIndex => {
-        switch (buttonIndex) {
-          case 0:
-            this.takePhotoFromCamera();
-            break;
-          case 1:
-            this.choosePhotoFromLibrary();
-            break;
-          case 2:
-            this.handleRemovePhoto();
-            break;
-          default:
-            break;
-        }
-      },
-    );
+    // ActionSheet.show(
+    //   {options: BUTTONS, cancelButtonIndex: 3, title: 'Select a Photo'},
+    //   buttonIndex => {
+    //     switch (buttonIndex) {
+    //       case 0:
+    //         this.takePhotoFromCamera();
+    //         break;
+    //       case 1:
+    //         this.choosePhotoFromLibrary();
+    //         break;
+    //       case 2:
+    //         this.handleRemovePhoto();
+    //         break;
+    //       default:
+    //         break;
+    //     }
+    //   },
+    // );
   };
   handleShowChangePassword = () => {
     const {isChangePassword, password} = this.state;
@@ -309,6 +310,7 @@ class Account extends Component {
           <Loading />
         ) : (
           <View style={{flex: 1}}>
+            <SafeAreaView />
             <HeaderComponent navigation={this.props.navigation} />
             <View style={styles.contentContainer}>
               <View style={styles.userImageContainer}>
@@ -331,7 +333,7 @@ class Account extends Component {
                   enableResetScrollToCoords={false}
                   scrollEnabled={isEnablrdScroll}
                   enableAutomaticScroll={isEnablrdScroll}>
-                  <Form>
+                  <VStack>
                     <View
                       style={{
                         flexDirection: flexDirection,
@@ -366,7 +368,7 @@ class Account extends Component {
                                       : 'rgba(0, 0, 0, 0.2)',
                                   },
                                 ]}>
-                                <Item
+                                <Box
                                   floatingLabel
                                   error={errors.isFirstName ? true : false}
                                   style={
@@ -374,13 +376,13 @@ class Account extends Component {
                                       ? styles.formInputContainerArabic
                                       : styles.formInputContainer
                                   }>
-                                  <Label
+                                  <FormControl.Label
                                     style={{
                                       alignSelf: alignSelf,
                                       fontSize: normalize(11),
                                     }}>
                                     {I18n.t('firstName', {locale: lang})}
-                                  </Label>
+                                  </FormControl.Label>
                                   <Input
                                     style={[
                                       styles.inputText,
@@ -399,7 +401,7 @@ class Account extends Component {
                                     returnKeyType="done"
                                     onSubmitEditing={Keyboard.dismiss}
                                   />
-                                </Item>
+                                </Box>
                               </View>
                             </View>
                             {errors.firstName ? (
@@ -433,7 +435,7 @@ class Account extends Component {
                                       : 'rgba(0, 0, 0, 0.2)',
                                   },
                                 ]}>
-                                <Item
+                                <Box
                                   floatingLabel
                                   error={errors.isLastName ? true : false}
                                   style={
@@ -441,13 +443,13 @@ class Account extends Component {
                                       ? styles.formInputLastNameContainerArabic
                                       : styles.formInputLastNameContainer
                                   }>
-                                  <Label
+                                  <FormControl.Label
                                     style={{
                                       alignSelf: alignSelf,
                                       fontSize: normalize(11),
                                     }}>
                                     {I18n.t('lastName', {locale: lang})}
-                                  </Label>
+                                  </FormControl.Label>
                                   <Input
                                     style={[
                                       styles.inputText,
@@ -466,7 +468,7 @@ class Account extends Component {
                                     returnKeyType="done"
                                     onSubmitEditing={Keyboard.dismiss}
                                   />
-                                </Item>
+                                </Box>
                               </View>
                             </View>
                             {errors.lastName ? (
@@ -504,7 +506,7 @@ class Account extends Component {
                                 : 'rgba(0, 0, 0, 0.2)',
                             },
                           ]}>
-                          <Item
+                          <Box
                             floatingLabel
                             error={errors.isEmail ? true : false}
                             style={
@@ -512,13 +514,13 @@ class Account extends Component {
                                 ? styles.formInputContainerArabic
                                 : styles.formInputContainer
                             }>
-                            <Label
+                            <FormControl.Label
                               style={{
                                 alignSelf: alignSelf,
                                 fontSize: normalize(11),
                               }}>
                               {I18n.t('email', {locale: lang})}
-                            </Label>
+                            </FormControl.Label>
                             <Input
                               style={[
                                 styles.inputText,
@@ -535,7 +537,7 @@ class Account extends Component {
                               returnKeyType="done"
                               onSubmitEditing={Keyboard.dismiss}
                             />
-                          </Item>
+                          </Box>
                         </View>
                       </View>
 
@@ -573,7 +575,7 @@ class Account extends Component {
                                 : 'rgba(0, 0, 0, 0.2)',
                             },
                           ]}>
-                          <Item
+                          <Box
                             floatingLabel
                             error={errors.isMobile ? true : false}
                             style={
@@ -581,13 +583,13 @@ class Account extends Component {
                                 ? styles.formInputContainerArabic
                                 : styles.formInputContainer
                             }>
-                            <Label
+                            <FormControl.Label
                               style={{
                                 alignSelf: alignSelf,
                                 fontSize: normalize(11),
                               }}>
                               {I18n.t('phoneNumber', {locale: lang})}
-                            </Label>
+                            </FormControl.Label>
                             <Input
                               disabled
                               style={[
@@ -606,7 +608,7 @@ class Account extends Component {
                               returnKeyType="done"
                               onSubmitEditing={Keyboard.dismiss}
                             />
-                          </Item>
+                          </Box>
                         </View>
                         <TouchableOpacity
                           onPress={this.handleShowChangeMobile}
@@ -659,7 +661,7 @@ class Account extends Component {
                                   : 'rgba(0, 0, 0, 0.2)',
                               },
                             ]}>
-                            <Item
+                            <Box
                               floatingLabel
                               error={errors.isPassword ? true : false}
                               style={
@@ -667,7 +669,7 @@ class Account extends Component {
                                   ? styles.formInputContainerArabic
                                   : styles.formInputContainer
                               }>
-                              <Label
+                              <FormControl.Label
                                 style={{
                                   alignSelf: alignSelf,
                                   fontSize: normalize(11),
@@ -675,7 +677,7 @@ class Account extends Component {
                                 {!isChangePassword
                                   ? I18n.t('password', {locale: lang})
                                   : I18n.t('oldPassword', {locale: lang})}
-                              </Label>
+                              </FormControl.Label>
                               <Input
                                 disabled={!isChangePassword}
                                 secureTextEntry={isSecure}
@@ -695,7 +697,7 @@ class Account extends Component {
                                 onSubmitEditing={Keyboard.dismiss}
                                 //onEndEditing={Keyboard.dismiss}
                               />
-                            </Item>
+                            </Box>
                           </View>
 
                           <TouchableOpacity
@@ -753,7 +755,7 @@ class Account extends Component {
                                     : 'rgba(0, 0, 0, 0.2)',
                                 },
                               ]}>
-                              <Item
+                              <Box
                                 floatingLabel
                                 error={errors.isNewPassword ? true : false}
                                 style={
@@ -761,13 +763,13 @@ class Account extends Component {
                                     ? styles.formInputContainerArabic
                                     : styles.formInputContainer
                                 }>
-                                <Label
+                                <FormControl.Label
                                   style={{
                                     alignSelf: alignSelf,
                                     fontSize: normalize(11),
                                   }}>
                                   {I18n.t('newPassword', {locale: lang})}
-                                </Label>
+                                </FormControl.Label>
                                 <Input
                                   secureTextEntry={isSecure}
                                   style={[
@@ -786,7 +788,7 @@ class Account extends Component {
                                   returnKeyType="done"
                                   onSubmitEditing={Keyboard.dismiss}
                                 />
-                              </Item>
+                              </Box>
                             </View>
                           </View>
 
@@ -827,7 +829,7 @@ class Account extends Component {
                                     : 'rgba(0, 0, 0, 0.2)',
                                 },
                               ]}>
-                              <Item
+                              <Box
                                 floatingLabel
                                 error={errors.isConfirmPassword ? true : false}
                                 style={
@@ -835,13 +837,13 @@ class Account extends Component {
                                     ? styles.formInputContainerArabic
                                     : styles.formInputContainer
                                 }>
-                                <Label
+                                <FormControl.Label
                                   style={{
                                     alignSelf: alignSelf,
                                     fontSize: normalize(11),
                                   }}>
                                   {I18n.t('confirmPassword', {locale: lang})}
-                                </Label>
+                                </FormControl.Label>
                                 <Input
                                   secureTextEntry={isSecure}
                                   style={[
@@ -863,7 +865,7 @@ class Account extends Component {
                                   returnKeyType="done"
                                   onSubmitEditing={Keyboard.dismiss}
                                 />
-                              </Item>
+                              </Box>
                             </View>
                           </View>
 
@@ -885,7 +887,7 @@ class Account extends Component {
                         {errors.common}
                       </Text>
                     ) : null}
-                  </Form>
+                  </VStack>
                 </KeyboardAwareScrollView>
               </View>
 

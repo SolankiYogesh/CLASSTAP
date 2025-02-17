@@ -764,7 +764,6 @@ class FindClass extends Component {
           }>
           <View
             style={{
-              marginTop: normalize(20),
               marginHorizontal: normalize(16),
               flexDirection: flexDirection,
             }}>
@@ -792,8 +791,8 @@ class FindClass extends Component {
                 paddingLeft: normalize(10),
                 borderBottomWidth: 0,
                 flexDirection: flexDirection,
-                alignItems:"center",
-                flex:1
+                alignItems: 'center',
+                flex: 1,
               }}>
               <FilterSearchIcon width={normalize(20)} height={normalize(20)} />
               <Input
@@ -805,8 +804,8 @@ class FindClass extends Component {
                   fontSize: normalize(14),
                   textAlign: textAlign,
                   flexDirection: 'row',
-                  outlineWidth:0,
-                  borderWidth:0
+                  outlineWidth: 0,
+                  borderWidth: 0,
                 }}
                 returnKeyLabel="Search"
                 returnKeyType="search"
@@ -817,7 +816,6 @@ class FindClass extends Component {
             </View>
             <View
               style={{
-     
                 flexDirection: flexDirection,
                 justifyContent: 'space-evenly',
                 alignItems: 'center',

@@ -12,7 +12,9 @@ import Welcome from '../screens/Welcome';
 const Stack = createNativeStackNavigator();
 
 export default () => (
-  <Stack.Navigator initialRouteName="Welcome">
+  <Stack.Navigator
+    initialRouteName="Welcome"
+    screenOptions={{headerShown: false}}>
     <Stack.Screen
       name="Welcome"
       component={Welcome}

@@ -8,6 +8,7 @@ import {
   BackHandler,
   FlatList,
   Image,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -65,7 +66,7 @@ class MySchedule extends Component {
       this.handleData();
     });
 
-    handleData();
+    this.handleData();
     this.back = BackHandler.addEventListener(
       'hardwareBackPress',
       this.handleBack,
@@ -324,13 +325,13 @@ class MySchedule extends Component {
           <Loading />
         ) : (
           <Container style={{flex: 1, backgroundColor: '#ffffff'}}>
+            <SafeAreaView />
             <HeaderComponent navigation={this.props.navigation} />
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={{backgroundColor: '#ffffff'}}>
               <View
                 style={{
-                  height: normalize(50),
                   marginHorizontal: normalize(16),
                   justifyContent: 'center',
                   //flexDirection: flexDirection,

@@ -460,7 +460,6 @@ class Favorities extends Component {
               }>
               <View
                 style={{
-                  height: normalize(40),
                   marginHorizontal: normalize(16),
                   justifyContent: 'center',
                   marginTop: normalize(16),

@@ -1,5 +1,6 @@
+/* eslint-disable semi */
 import moment from 'moment-timezone';
-import {Body, Card, CardItem, Icon, Text} from 'native-base';
+import {Box, Icon} from 'native-base';
 import React, {Component} from 'react';
 import {
   Alert,
@@ -12,6 +13,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -24,9 +26,9 @@ import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
 moment.tz.setDefault('Asia/Qatar');
+import analytics from '@react-native-firebase/analytics';
 import axios from 'axios';
 import Toast from 'react-native-toast-notifications';
-import analytics from '@react-native-firebase/analytics';
 
 import {
   addUserSubscription,
@@ -39,7 +41,6 @@ import CalendarIcon from '../../assets/img/calendar.svg';
 import ContactIcon from '../../assets/img/contact.svg';
 import LogoutIcon from '../../assets/img/exit_to_app.svg';
 import FitnessIcon from '../../assets/img/fitness_center.svg';
-import PaymentIcon from '../../assets/img/payment.svg';
 import SettingIcon from '../../assets/img/settings.svg';
 import PaymentSuccess from '../../components/PaymentSuccess';
 import PaymentWeb from '../../components/PaymentWeb';
@@ -473,281 +474,355 @@ class Profile extends Component {
                 style={{
                   marginTop: normalize(-25),
                   marginHorizontal: '5%',
+                  backgroundColor: 'white',
+                  paddingHorizontal: 10,
+                  paddingTop: 10,
+                  borderRadius: 10,
+                  justifyContent: 'space-between',
+                  elevation: 3,
+                  shadowColor: '#000000',
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
                 }}>
-                <Card style={styles.cardContainer}>
+                {/* <Card style={styles.cardContainer}>
                   <CardItem
                     bordered
-                    style={[styles.cardItemContainer, styles.cardItemStart]}>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.props.navigation.navigate('MySchedule')
-                      }>
-                      <Body
-                        style={[
-                          styles.cardItemBody,
-                          {flexDirection: flexDirection},
-                        ]}>
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            alignItems: 'center',
-                            width: '80%',
-                          }}>
-                          <CalendarIcon
-                            width={normalize(24)}
-                            height={normalize(24)}
-                            style={styles.cardItemIcon}
-                          />
+                    style={[styles.cardItemContainer, styles.cardItemStart]}>*/}
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('MySchedule')}>
+                  <Box
+                    style={[
+                      styles.cardItemBody,
+                      {flexDirection: flexDirection},
+                    ]}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: flexDirection,
+                        alignItems: 'center',
+                        width: '80%',
+                      }}>
+                      <CalendarIcon
+                        width={normalize(24)}
+                        height={normalize(24)}
+                        style={styles.cardItemIcon}
+                      />
 
-                          <Text style={styles.cardItemText}>
-                            {I18n.t('mySchedule', {locale: lang})}
-                          </Text>
-                        </View>
+                      <Text style={styles.cardItemText}>
+                        {I18n.t('mySchedule', {locale: lang})}
+                      </Text>
+                    </View>
 
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            justifyContent: 'flex-end',
-                            width: '20%',
-                          }}>
-                          <Icon
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: flexDirection,
+                        justifyContent: 'flex-end',
+                        width: '20%',
+                      }}>
+                      {/* <Icon
+                        type="FontAwesome"
+                        name={lang === 'ar' ? 'angle-left' : 'angle-right'}
+                        style={{
+                          fontSize: normalize(24),
+                          color: '#CFCFCF',
+                        }}
+                      /> */}
+                    </View>
+                  </Box>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    height: 0.2,
+                    width: '100%',
+                    backgroundColor: '#808080',
+                  }}
+                />
+                {/* </CardItem>
+                  <CardItem
+                    bordered
+                    style={[styles.cardItemContainer, styles.cardItemEnd]}>*/}
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('Membership')}>
+                  <Box
+                    style={[
+                      styles.cardItemBody,
+                      {flexDirection: flexDirection},
+                    ]}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: flexDirection,
+                        alignItems: 'center',
+                        width: '80%',
+                      }}>
+                      <FitnessIcon
+                        width={normalize(24)}
+                        height={normalize(24)}
+                        style={styles.cardItemIcon}
+                      />
+
+                      <Text style={styles.cardItemText}>
+                        {I18n.t('membership', {locale: lang})}
+                      </Text>
+                    </View>
+
+                    <View
+                      style={{
+                        marginHorizontal: '5%',
+                        backgroundColor: 'white',
+                        paddingHorizontal: 10,
+                        paddingTop: 10,
+                        borderRadius: 10,
+                        justifyContent: 'space-between',
+                        elevation: 3,
+                        shadowColor: '#000000',
+                        shadowOffset: {
+                          width: 0,
+                          height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+                      }}>
+                      {/* <Icon
                             type="FontAwesome"
                             name={lang === 'ar' ? 'angle-left' : 'angle-right'}
                             style={{
                               fontSize: normalize(24),
                               color: '#CFCFCF',
                             }}
-                          />
-                        </View>
-                      </Body>
-                    </TouchableOpacity>
-                  </CardItem>
-                  <CardItem
-                    bordered
-                    style={[styles.cardItemContainer, styles.cardItemEnd]}>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.props.navigation.navigate('Membership')
-                      }>
-                      <Body
-                        style={[
-                          styles.cardItemBody,
-                          {flexDirection: flexDirection},
-                        ]}>
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            alignItems: 'center',
-                            width: '80%',
-                          }}>
-                          <FitnessIcon
-                            width={normalize(24)}
-                            height={normalize(24)}
-                            style={styles.cardItemIcon}
-                          />
-
-                          <Text style={styles.cardItemText}>
-                            {I18n.t('membership', {locale: lang})}
-                          </Text>
-                        </View>
-
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            justifyContent: 'flex-end',
-                            width: '20%',
-                          }}>
-                          <Icon
-                            type="FontAwesome"
-                            name={lang === 'ar' ? 'angle-left' : 'angle-right'}
-                            style={{
-                              fontSize: normalize(24),
-                              color: '#CFCFCF',
-                            }}
-                          />
-                        </View>
-                      </Body>
-                    </TouchableOpacity>
-                  </CardItem>
-                </Card>
+                          /> */}
+                    </View>
+                  </Box>
+                </TouchableOpacity>
+                {/* </CardItem>
+                </Card> */}
               </View>
-              <View style={{marginHorizontal: '5%'}}>
-                <Card
+              <View
+                style={{
+                  marginVertical: normalize(25),
+                  marginHorizontal: '5%',
+                  backgroundColor: 'white',
+                  paddingHorizontal: 10,
+                  paddingTop: 10,
+                  borderRadius: 10,
+                  justifyContent: 'space-between',
+                  elevation: 3,
+                  shadowColor: '#000000',
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+                }}>
+                {/* <Card
                   style={[styles.cardContainer, {marginTop: normalize(20)}]}>
                   <CardItem
                     bordered
-                    style={[styles.cardItemContainer, styles.cardItemStart]}>
-                    <TouchableOpacity
-                      onPress={() => this.props.navigation.navigate('Account')}>
-                      <Body
-                        style={[
-                          styles.cardItemBody,
-                          {flexDirection: flexDirection},
-                        ]}>
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            alignItems: 'center',
-                            width: '80%',
-                          }}>
-                          <AccountIcon
-                            width={normalize(24)}
-                            height={normalize(24)}
-                            style={styles.cardItemIcon}
-                          />
+                    style={[styles.cardItemContainer, styles.cardItemStart]}>*/}
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('Account')}>
+                  <Box
+                    style={[
+                      styles.cardItemBody,
+                      {flexDirection: flexDirection},
+                    ]}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: flexDirection,
+                        alignItems: 'center',
+                        width: '80%',
+                      }}>
+                      <AccountIcon
+                        width={normalize(24)}
+                        height={normalize(24)}
+                        style={styles.cardItemIcon}
+                      />
 
-                          <Text style={styles.cardItemText}>
-                            {I18n.t('account', {locale: lang})}
-                          </Text>
-                        </View>
+                      <Text style={styles.cardItemText}>
+                        {I18n.t('account', {locale: lang})}
+                      </Text>
+                    </View>
 
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            justifyContent: 'flex-end',
-                            width: '20%',
-                          }}>
-                          <Icon
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: flexDirection,
+                        justifyContent: 'flex-end',
+                        width: '20%',
+                      }}>
+                      {/* <Icon
                             type="FontAwesome"
                             name={lang === 'ar' ? 'angle-left' : 'angle-right'}
                             style={{
                               fontSize: normalize(24),
                               color: '#CFCFCF',
                             }}
-                          />
-                        </View>
-                      </Body>
-                    </TouchableOpacity>
-                  </CardItem>
-                  <CardItem bordered style={styles.cardItemContainer}>
-                    <TouchableOpacity
-                      onPress={() => this.props.navigation.navigate('Setting')}>
-                      <Body
-                        style={[
-                          styles.cardItemBody,
-                          {flexDirection: flexDirection},
-                        ]}>
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            alignItems: 'center',
-                            width: '80%',
-                          }}>
-                          <SettingIcon
-                            width={normalize(24)}
-                            height={normalize(24)}
-                            style={styles.cardItemIcon}
-                          />
+                          /> */}
+                    </View>
+                  </Box>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    height: 0.2,
+                    width: '100%',
+                    backgroundColor: '#808080',
+                  }}
+                />
+                <View
+                  style={{
+                    height: 0.2,
+                    width: '100%',
+                    backgroundColor: '#808080',
+                  }}
+                />
+                {/* </CardItem>
+                  <CardItem bordered style={styles.cardItemContainer}> */}
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('Setting')}>
+                  <Box
+                    style={[
+                      styles.cardItemBody,
+                      {flexDirection: flexDirection},
+                    ]}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: flexDirection,
+                        alignItems: 'center',
+                        width: '80%',
+                      }}>
+                      <SettingIcon
+                        width={normalize(24)}
+                        height={normalize(24)}
+                        style={styles.cardItemIcon}
+                      />
 
-                          <Text style={styles.cardItemText}>
-                            {I18n.t('settings', {locale: lang})}
-                          </Text>
-                        </View>
+                      <Text style={styles.cardItemText}>
+                        {I18n.t('settings', {locale: lang})}
+                      </Text>
+                    </View>
 
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            justifyContent: 'flex-end',
-                            width: '20%',
-                          }}>
-                          <Icon
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: flexDirection,
+                        justifyContent: 'flex-end',
+                        width: '20%',
+                      }}>
+                      {/* <Icon
                             type="FontAwesome"
                             name={lang === 'ar' ? 'angle-left' : 'angle-right'}
                             style={{
                               fontSize: normalize(24),
                               color: '#CFCFCF',
                             }}
-                          />
-                        </View>
-                      </Body>
-                    </TouchableOpacity>
-                  </CardItem>
-                  <CardItem bordered style={styles.cardItemContainer}>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.props.navigation.navigate('ContactUs')
-                      }>
-                      <Body
-                        style={[
-                          styles.cardItemBody,
-                          {flexDirection: flexDirection},
-                        ]}>
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            alignItems: 'center',
-                            width: '80%',
-                          }}>
-                          <ContactIcon
-                            width={normalize(24)}
-                            height={normalize(24)}
-                            style={styles.cardItemIcon}
-                          />
+                          /> */}
+                    </View>
+                  </Box>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    height: 0.2,
+                    width: '100%',
+                    backgroundColor: '#808080',
+                  }}
+                />
+                {/* </CardItem>
+                  <CardItem bordered style={styles.cardItemContainer}> */}
+                <View
+                  style={{
+                    height: 0.2,
+                    width: '100%',
+                    backgroundColor: '#808080',
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('ContactUs')}>
+                  <Box
+                    style={[
+                      styles.cardItemBody,
+                      {flexDirection: flexDirection},
+                    ]}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: flexDirection,
+                        alignItems: 'center',
+                        width: '80%',
+                      }}>
+                      <ContactIcon
+                        width={normalize(24)}
+                        height={normalize(24)}
+                        style={styles.cardItemIcon}
+                      />
 
-                          <Text style={styles.cardItemText}>
-                            {I18n.t('contactus', {locale: lang})}
-                          </Text>
-                        </View>
+                      <Text style={styles.cardItemText}>
+                        {I18n.t('contactus', {locale: lang})}
+                      </Text>
+                    </View>
 
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: flexDirection,
-                            justifyContent: 'flex-end',
-                            width: '20%',
-                          }}>
-                          <Icon
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: flexDirection,
+                        justifyContent: 'flex-end',
+                        width: '20%',
+                      }}>
+                      {/* <Icon
                             type="FontAwesome"
                             name={lang === 'ar' ? 'angle-left' : 'angle-right'}
                             style={{
                               fontSize: normalize(24),
                               color: '#CFCFCF',
                             }}
-                          />
-                        </View>
-                      </Body>
-                    </TouchableOpacity>
-                  </CardItem>
+                          /> */}
+                    </View>
+                  </Box>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    height: 0.2,
+                    width: '100%',
+                    backgroundColor: '#808080',
+                  }}
+                />
+                {/* </CardItem>
                   <CardItem
                     bordered
-                    style={[styles.cardItemContainer, styles.cardItemEnd]}>
-                    <TouchableOpacity
-                      style={{flexDirection: flexDirection}}
-                      onPress={() =>
-                        this.props.logoutUser(this.props.navigation)
-                      }>
-                      <Body
-                        style={[
-                          styles.cardItemBody,
-                          {flexDirection: flexDirection},
-                        ]}>
-                        <LogoutIcon
-                          width={normalize(24)}
-                          height={normalize(24)}
-                          style={styles.cardItemIcon}
-                        />
-                        <Text
-                          style={[
-                            styles.cardItemText,
-                            {
-                              flexDirection: flexDirection,
-                            },
-                          ]}>
-                          {I18n.t('logout', {locale: lang})}
-                        </Text>
-                      </Body>
-                    </TouchableOpacity>
-                  </CardItem>
-                </Card>
+                    style={[styles.cardItemContainer, styles.cardItemEnd]}> */}
+                <TouchableOpacity
+                  style={{flexDirection: flexDirection}}
+                  onPress={() => this.props.logoutUser(this.props.navigation)}>
+                  <Box
+                    style={[
+                      styles.cardItemBody,
+                      {flexDirection: flexDirection},
+                    ]}>
+                    <LogoutIcon
+                      width={normalize(24)}
+                      height={normalize(24)}
+                      style={styles.cardItemIcon}
+                    />
+                    <Text
+                      style={[
+                        styles.cardItemText,
+                        {
+                          flexDirection: flexDirection,
+                        },
+                      ]}>
+                      {I18n.t('logout', {locale: lang})}
+                    </Text>
+                  </Box>
+                </TouchableOpacity>
+                {/* </CardItem>
+                </Card> */}
               </View>
             </ScrollView>
 
@@ -803,6 +878,10 @@ const styles = StyleSheet.create({
     // flexDirection: 'row-reverse',
     alignItems: 'center',
     //paddingVertical: normalize(13),
+    marginBottom: 10,
+
+    borderRadius: normalize(20),
+    padding: normalize(20),
   },
   cardItemContainer: {
     height: normalize(60),

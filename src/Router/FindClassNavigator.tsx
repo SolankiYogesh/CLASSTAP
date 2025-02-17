@@ -19,7 +19,9 @@ import WriteReview from '../screens/WriteReview';
 const Stack = createNativeStackNavigator();
 
 export default () => (
-  <Stack.Navigator initialRouteName="FindClass">
+  <Stack.Navigator
+    initialRouteName="FindClass"
+    screenOptions={{headerShown: false}}>
     <Stack.Screen
       name="FindClass"
       component={FindClass}

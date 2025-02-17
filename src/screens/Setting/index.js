@@ -8,6 +8,7 @@ import {
   BackHandler,
   Linking,
   Platform,
+  SafeAreaView,
   StyleSheet,
   Switch,
   Text,
@@ -223,6 +224,7 @@ class Setting extends Component {
 
     return (
       <Container style={{flex: 1, backgroundColor: '#ffffff'}}>
+        <SafeAreaView />
         <HeaderComponent navigation={this.props.navigation} back={'Profile'} />
         <View style={{flex: 1, backgroundColor: '#ffffff'}}>
           {/* <View

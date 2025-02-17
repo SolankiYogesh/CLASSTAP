@@ -22,7 +22,9 @@ import WriteReview from '../screens/WriteReview';
 const Stack = createNativeStackNavigator();
 export default () => {
   return (
-    <Stack.Navigator initialRouteName="Profile">
+    <Stack.Navigator
+      initialRouteName="Profile"
+      screenOptions={{headerShown: false}}>
       <Stack.Screen
         name="Profile"
         component={Profile}

@@ -1,9 +1,11 @@
+import analytics from '@react-native-firebase/analytics';
 import axios from 'axios';
-import {Container, Form, Input, Item, Textarea} from 'native-base';
+import {Box, FormControl, Input, TextArea, VStack} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
   Keyboard,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,12 +23,11 @@ import PhoneIcon from '../../assets/img/phone.svg';
 import UserIcon from '../../assets/img/user.svg';
 import HeaderComponent from '../../components/Header';
 import {API_URI} from '../../utils/config';
+import Const from '../../utils/Const';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import {contactValidation} from '../../validation/validation';
 import Loading from '../Loading';
-import analytics from '@react-native-firebase/analytics';
-import Const from '../../utils/Const';
 
 class ContactUs extends Component {
   constructor(props) {
@@ -40,9 +41,8 @@ class ContactUs extends Component {
       isEnablrdScroll: false,
     };
   }
-  
-  componentDidUpdate(props, state) {
 
+  componentDidUpdate(props, state) {
     if (!isEmpty(props.errors.error)) {
       return {
         errors: {common: props.errors.error},
@@ -164,7 +164,8 @@ class ContactUs extends Component {
         {isLodaing ? (
           <Loading />
         ) : (
-          <Container>
+          <Box>
+            <SafeAreaView />
             <HeaderComponent navigation={this.props.navigation} />
             <View style={styles.contentContainer}>
               <View style={styles.titleContainer}>
@@ -179,9 +180,9 @@ class ContactUs extends Component {
                 scrollEnabled={isEnablrdScroll}
                 enableAutomaticScroll={isEnablrdScroll}>
                 <View style={styles.formContainer}>
-                  <Form>
+                  <VStack>
                     <View style={{display: 'flex'}}>
-                      <Item
+                      <FormControl
                         error={errors.isName ? true : false}
                         style={[
                           styles.formInputText,
@@ -209,7 +210,7 @@ class ContactUs extends Component {
                           returnKeyType="done"
                           onSubmitEditing={Keyboard.dismiss}
                         />
-                      </Item>
+                      </FormControl>
                       {errors.name ? (
                         <Text
                           style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -219,7 +220,7 @@ class ContactUs extends Component {
                     </View>
 
                     <View style={{display: 'flex'}}>
-                      <Item
+                      <FormControl
                         error={errors.isEmail ? true : false}
                         style={[
                           styles.formInputText,
@@ -247,7 +248,7 @@ class ContactUs extends Component {
                           returnKeyType="done"
                           onSubmitEditing={Keyboard.dismiss}
                         />
-                      </Item>
+                      </FormControl>
                       {errors.email ? (
                         <Text
                           style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -256,7 +257,7 @@ class ContactUs extends Component {
                       ) : null}
                     </View>
                     <View style={{display: 'flex'}}>
-                      <Item
+                      <FormControl
                         error={errors.isMobile ? true : false}
                         style={[
                           styles.formInputText,
@@ -292,7 +293,7 @@ class ContactUs extends Component {
                           returnKeyType="done"
                           onSubmitEditing={Keyboard.dismiss}
                         />
-                      </Item>
+                      </FormControl>
                       {errors.mobile ? (
                         <Text
                           style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -301,7 +302,7 @@ class ContactUs extends Component {
                       ) : null}
                     </View>
                     <View style={{display: 'flex'}}>
-                      <Textarea
+                      <TextArea
                         style={[
                           styles.formInputText,
                           {flexDirection: flexDirection},
@@ -326,7 +327,7 @@ class ContactUs extends Component {
                         </Text>
                       ) : null}
                     </View>
-                  </Form>
+                  </VStack>
                 </View>
                 {errors.common ? (
                   <Text style={[styles.errorMessage, {textAlign: textAlign}]}>
@@ -344,7 +345,7 @@ class ContactUs extends Component {
                 </View>
               </KeyboardAwareScrollView>
             </View>
-          </Container>
+          </Box>
         )}
         <Toast ref={ref => (global['toast'] = ref)} />
       </>

@@ -2,7 +2,7 @@ import appleAuth, {
   AppleAuthRequestOperation,
   AppleAuthRequestScope,
 } from '@invertase/react-native-apple-authentication';
-import {Checkbox,   FormControl, Input} from 'native-base';
+import {Checkbox, FormControl, Input} from 'native-base';
 import React, {Component} from 'react';
 import {
   BackHandler,
@@ -54,7 +54,7 @@ class Signup extends Component {
       is_newsletter: true,
     };
   }
-  
+
   componentDidUpdate(props, state) {
     if (props.auth.isAuthenticated) {
       //props.history.push("/dashboard");
@@ -277,6 +277,7 @@ class Signup extends Component {
             )
               .then(response => response.json())
               .then(json => {
+                console.log('json', json);
                 //Alert.alert(json.email.toString());
 
                 const addUserData = {
@@ -334,10 +335,11 @@ class Signup extends Component {
         {isLodaing ? (
           <Loading />
         ) : (
-          <SafeAreaView style={{
-            flex:1,
-            backgroundColor: '#ffffff',
-          }}>
+          <SafeAreaView
+            style={{
+              flex: 1,
+              backgroundColor: '#ffffff',
+            }}>
             <HeaderComponent navigation={this.props.navigation} />
             <View style={styles.contentContainer}>
               <View style={styles.titleContainer}>
@@ -355,31 +357,30 @@ class Signup extends Component {
                 scrollEnabled={isEnablrdScroll}
                 enableAutomaticScroll={isEnablrdScroll}>
                 <View style={styles.formContainer}>
-                  <FormControl style={{
-                    rowGap: normalize(10),
-                  }}>
+                  <FormControl
+                    style={{
+                      rowGap: normalize(10),
+                    }}>
                     <View
                       style={{
                         flexDirection: flexDirection,
-               
                       }}>
                       <View style={{flex: 1}}>
                         <View
-                       
                           style={{
                             flex: 1,
                             marginLeft: normalize(40),
                             flexDirection: flexDirection,
                           }}>
-                         
                           <Input
-                          variant="underlined"
-                          width={"100%"}
-                          InputLeftElement={ <UserIcon
-                            width={normalize(20)}
-                            height={normalize(20)}
-                          />
-}
+                            variant="underlined"
+                            width={'100%'}
+                            InputLeftElement={
+                              <UserIcon
+                                width={normalize(20)}
+                                height={normalize(20)}
+                              />
+                            }
                             placeholderTextColor="#8A8A8F"
                             placeholder={I18n.t('firstName', {locale: lang})}
                             style={{
@@ -417,8 +418,8 @@ class Signup extends Component {
                             flexDirection: flexDirection,
                           }}>
                           <Input
-                          variant="underlined"
-                          width={"100%"}
+                            variant="underlined"
+                            width={'100%'}
                             placeholderTextColor="#8A8A8F"
                             placeholder={I18n.t('lastName', {locale: lang})}
                             style={{
@@ -454,14 +455,15 @@ class Signup extends Component {
                           styles.formInputText,
                           {flexDirection: flexDirection},
                         ]}>
-                     
                         <Input
-                        InputLeftElement={   <MailIcon
-                          width={normalize(20)}
-                          height={normalize(20)}
-                        />}
-                        variant="underlined"
-                        width={"100%"}
+                          InputLeftElement={
+                            <MailIcon
+                              width={normalize(20)}
+                              height={normalize(20)}
+                            />
+                          }
+                          variant="underlined"
+                          width={'100%'}
                           autoCapitalize="none"
                           placeholderTextColor="#8A8A8F"
                           placeholder={I18n.t('email', {locale: lang})}
@@ -493,19 +495,20 @@ class Signup extends Component {
                           styles.formInputText,
                           {flexDirection: flexDirection},
                         ]}>
-                    
                         <Input
-                        variant="underlined"
-                        width={"100%"}
-                        InputLeftElement={   <PhoneIcon
-                          width={normalize(20)}
-                          height={normalize(20)}
-                          style={{
-                            transform: [
-                              {rotate: lang === 'ar' ? '270deg' : '0deg'},
-                            ],
-                          }}
-                        />}
+                          variant="underlined"
+                          width={'100%'}
+                          InputLeftElement={
+                            <PhoneIcon
+                              width={normalize(20)}
+                              height={normalize(20)}
+                              style={{
+                                transform: [
+                                  {rotate: lang === 'ar' ? '270deg' : '0deg'},
+                                ],
+                              }}
+                            />
+                          }
                           placeholderTextColor="#8A8A8F"
                           minLength={8}
                           maxLength={13}
@@ -539,14 +542,15 @@ class Signup extends Component {
                           styles.formInputText,
                           {flexDirection: flexDirection},
                         ]}>
-                   
                         <Input
-                        InputLeftElement={     <LockIcon
-                          width={normalize(20)}
-                          height={normalize(20)}
-                        />}
-                        variant="underlined"
-                        width={"100%"}
+                          InputLeftElement={
+                            <LockIcon
+                              width={normalize(20)}
+                              height={normalize(20)}
+                            />
+                          }
+                          variant="underlined"
+                          width={'100%'}
                           onEndEditing={val => this.handlePasswordVal(val)}
                           placeholderTextColor="#8A8A8F"
                           placeholder={I18n.t('password', {locale: lang})}
@@ -562,17 +566,21 @@ class Signup extends Component {
                           value={password}
                           returnKeyLabel="Done"
                           returnKeyType="done"
-                          InputRightElement={  <TouchableOpacity onPress={this.handleShowPassword}>
-                          <Text
-                            style={{fontSize: normalize(11), color: '#666666'}}>
-                            {isSecure
-                              ? I18n.t('show', {locale: lang})
-                              : I18n.t('hide', {locale: lang})}
-                          </Text>
-                        </TouchableOpacity>}
+                          InputRightElement={
+                            <TouchableOpacity onPress={this.handleShowPassword}>
+                              <Text
+                                style={{
+                                  fontSize: normalize(11),
+                                  color: '#666666',
+                                }}>
+                                {isSecure
+                                  ? I18n.t('show', {locale: lang})
+                                  : I18n.t('hide', {locale: lang})}
+                              </Text>
+                            </TouchableOpacity>
+                          }
                           onSubmitEditing={Keyboard.dismiss}
                         />
-                      
                       </View>
                       {errors.password ? (
                         <Text
@@ -649,7 +657,7 @@ class Signup extends Component {
                         }}>
                         <Checkbox
                           isChecked={isTerm}
-                          colorScheme={"primary"}
+                          colorScheme={'primary'}
                           borderColor={'#FE9800'}
                           onPress={this.handleIsTerm}
                           style={{

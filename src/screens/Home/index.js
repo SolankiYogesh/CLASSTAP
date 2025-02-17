@@ -628,7 +628,6 @@ class Home extends PureComponent {
               }>
               <View
                 style={{
-                  height: normalize(40),
                   marginHorizontal: normalize(16),
                   justifyContent: 'center',
                   marginTop: normalize(16),

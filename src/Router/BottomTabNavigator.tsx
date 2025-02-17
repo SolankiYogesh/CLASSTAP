@@ -22,6 +22,7 @@ export default ({lang}: any) => (
     screenOptions={{
       tabBarActiveTintColor: '#FE9800',
       tabBarShowLabel: false,
+      headerShown: false,
       tabBarStyle: {
         borderTopColor: 'rgba(108, 123, 138, 0.1)',
       },

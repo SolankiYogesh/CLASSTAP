@@ -4,6 +4,8 @@ import appleAuth, {
 } from '@invertase/react-native-apple-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
+import analytics from '@react-native-firebase/analytics';
+import Instabug, {InvocationEvent} from 'instabug-reactnative';
 import React, {useCallback, useEffect} from 'react';
 import {
   Alert,
@@ -30,7 +32,6 @@ import {setLatLong} from '../../actions/settingActions';
 import I18n from '../../utils/i18n';
 import isEmpty from '../../validation/is-empty';
 import Loading from '../Loading';
-import analytics from '@react-native-firebase/analytics';
 
 const Welcome = props => {
   useEffect(() => {
